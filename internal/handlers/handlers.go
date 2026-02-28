@@ -23,7 +23,7 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 			}
 			return template.JS(a), nil
 		},
-	}).ParseFiles("templates/index.html")
+	}).ParseFiles("web/templates/index.html")
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error parsing template: %v", err), http.StatusInternalServerError)
@@ -48,7 +48,7 @@ func SaveData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := ioutil.WriteFile("data.json", body, 0644); err != nil {
+	if err := ioutil.WriteFile("internal/data/data.json", body, 0644); err != nil {
 		http.Error(w, "Error writing to file", http.StatusInternalServerError)
 		return
 	}

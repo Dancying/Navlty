@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.SiteTitle}}</title>
-    <style>{{.CSS}}</style>
+    <link rel="stylesheet" href="/static/css/links.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/buttons.css">
+    <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
     <div class="container">
@@ -12,7 +15,9 @@
             <img src="{{.AvatarURL}}" alt="Avatar" class="avatar">
             <h1 class="site-title">{{.SiteTitle}}</h1>
             <div class="controls">
-                <button id="toggle-panel-button" class="toggle-button">Secondary</button>
+                <button id="toggle-panel-button" class="toggle-button">
+                    <i data-feather="grid"></i>
+                </button>
             </div>
         </header>
 
@@ -34,10 +39,11 @@
             <div id="secondary-panel" class="panel">
                 <div class="grid secondary-grid">
                     {{range .SecondaryLinks}}
-                    <a href="{{.URL}}" target="_blank" class="card secondary">
+                    <a href="{{.URL}}" target="_blank" class="card">
                          <img src="https://icon.horse/icon/{{.URL}}" alt="{{.Title}} icon" class="icon">
                         <div class="content">
                             <h3 class="title">{{.Title}}</h3>
+                            <p class="desc">{{.Desc}}</p> <!-- Added description here -->
                         </div>
                     </a>
                     {{end}}
@@ -46,6 +52,9 @@
         </main>
     </div>
 
-    <script>{{.JS}}</script>
+    <script src="/static/js/script.js"></script>
+    <script>
+      feather.replace()
+    </script>
 </body>
 </html>

@@ -37,7 +37,7 @@ func main() {
 	mux.HandleFunc("/api/save", handlers.SaveData)
 
 	// Serve static files
-	fs := http.FileServer(http.Dir("./static"))
+	fs := http.FileServer(http.Dir("web/static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	log.Println("Starting server on :8080")

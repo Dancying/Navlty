@@ -1,0 +1,67 @@
+/* static/css/panels.css */
+.panel {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+.panel.active {
+    display: block;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column list view */
+    gap: 0.75rem; /* Space between cards */
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+    border-color: #c7c7c7;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.card .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card .title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #111;
+    margin: 0 0 0.15rem 0;
+}
+
+.card .desc {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+    display: block; /* Ensure description is always visible */
+}
+
+/* Hide description if it's empty to maintain alignment */
+.card .desc:empty {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

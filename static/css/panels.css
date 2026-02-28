@@ -1,0 +1,79 @@
+/* static/css/panels.css */
+.panel {
+    display: none; /* Panels are hidden by default */
+    animation: fadeIn 0.5s;
+}
+
+.panel.active {
+    display: block; /* The active panel is visible */
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.primary-grid {
+    grid-template-columns: 1fr; /* Single column for primary links */
+}
+
+.secondary-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    transition: box-shadow 0.2s, transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.card .content {
+    display: flex;
+    flex-direction: column;
+}
+
+.card .title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 0.25rem 0;
+}
+
+.card .desc {
+    font-size: 0.875rem;
+    color: #606770;
+    margin: 0;
+}
+
+.card.secondary {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+}
+
+.card.secondary .icon {
+    margin-right: 0;
+    margin-bottom: 0.75rem;
+    width: 40px;
+    height: 40px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

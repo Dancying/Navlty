@@ -2,12 +2,13 @@
 # see: https://developers.google.com/idx/guides/customize-idx-env
 { pkgs, ... }: {
   # Which nixpkgs channel to use.
-  channel = "stable-23.11"; # or "unstable"
+  channel = "unstable"; # Using unstable to get a newer Go version
   # Use https://search.nixos.org/packages to find packages
   packages = [
-    pkgs.go
-    pkgs.nodejs_20
-    pkgs.nodePackages.nodemon
+    pkgs.go # Using the latest Go version
+    pkgs.gopls # Go language server
+    pkgs.go-outline # Go outline tool
+    pkgs.delve # Go debugger
   ];
   # Sets environment variables in the workspace
   env = {};
@@ -15,12 +16,11 @@
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [
       "golang.go"
-      "google.gemini-cli-vscode-ide-companion"
     ];
     workspace = {
+      # Runs when the workspace is created
       onCreate = {
-        # Open editors for the following files by default, if they exist:
-        default.openFiles = ["main.go"];
+        default.openFiles = [ "main.go" ];
       };
     };
     # Enable previews and customize configuration
@@ -28,13 +28,7 @@
       enable = true;
       previews = {
         web = {
-          command = [
-            "nodemon"
-            "--signal" "SIGHUP"
-            "-w" "."
-            "-e" "go,html"
-            "-x" "go run main.go -addr localhost:$PORT"
-          ];
+          command = [ "go", "run", "main.go" ];
           manager = "web";
         };
       };

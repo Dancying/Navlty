@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.SiteTitle}}</title>
+    <style>{{.CSS}}</style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="{{.AvatarURL}}" alt="Avatar" class="avatar">
+            <h1 class="site-title">{{.SiteTitle}}</h1>
+            <div class="controls">
+                <button id="toggle-panel-button" class="toggle-button">Secondary</button>
+            </div>
+        </header>
+
+        <main>
+            <div id="primary-panel" class="panel active">
+                <div class="grid primary-grid">
+                    {{range .PrimaryLinks}}
+                    <a href="{{.URL}}" target="_blank" class="card">
+                        <img src="https://icon.horse/icon/{{.URL}}" alt="{{.Title}} icon" class="icon">
+                        <div class="content">
+                            <h3 class="title">{{.Title}}</h3>
+                            <p class="desc">{{.Desc}}</p>
+                        </div>
+                    </a>
+                    {{end}}
+                </div>
+            </div>
+
+            <div id="secondary-panel" class="panel">
+                <div class="grid secondary-grid">
+                    {{range .SecondaryLinks}}
+                    <a href="{{.URL}}" target="_blank" class="card secondary">
+                         <img src="https://icon.horse/icon/{{.URL}}" alt="{{.Title}} icon" class="icon">
+                        <div class="content">
+                            <h3 class="title">{{.Title}}</h3>
+                        </div>
+                    </a>
+                    {{end}}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>{{.JS}}</script>
+</body>
+</html>

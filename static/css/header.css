@@ -1,0 +1,47 @@
+/* static/css/header.css */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative; /* For positioning the toggle button */
+}
+
+.header .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header .site-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header .controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.header .toggle-button {
+    background-color: #e7f3ff;
+    color: #007aff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.header .toggle-button:hover {
+    background-color: #dbeeff;
+}

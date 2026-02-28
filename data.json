@@ -1,0 +1,26 @@
+{
+  "siteTitle": "Navlty",
+  "avatarURL": "https://github.com/Dancying/Image-Source-Library/blob/main/avatar/%5BAirota&VCB-Studio%5D%20Majo%20no%20Tabitabi%20%5B07%5D%5BMa10p_1080p%5D%5Bx265_flac%5D.mkv_snapshot_14.57_%5B2025.06.05_19.18.43%5D%5B1080x1080%5D.jpg?raw=true",
+  "primaryLinks": [
+    {
+      "title": "GitHub",
+      "url": "https://github.com",
+      "desc": "A web-based hosting service for version control using Git."
+    },
+    {
+      "title": "Google",
+      "url": "https://google.com",
+      "desc": "The world's most popular search engine."
+    }
+  ],
+  "secondaryLinks": [
+    {
+      "title": "Hacker News",
+      "url": "https://news.ycombinator.com"
+    },
+    {
+      "title": "Reddit",
+      "url": "https://reddit.com"
+    }
+  ]
+}

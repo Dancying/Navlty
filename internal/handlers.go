@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -22,8 +23,9 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 
 	templatePath := filepath.Join("web", "templates", "index.html")
 	t, err := template.New("index.html").Funcs(template.FuncMap{
-		"safeCSS": func(s string) template.CSS { return template.CSS(s) },
-		"safeJS":  func(s string) template.JS { return template.JS(s) },
+		"safeCSS":   func(s string) template.CSS { return template.CSS(s) },
+		"safeJS":    func(s string) template.JS { return template.JS(s) },
+		"hasPrefix": strings.HasPrefix,
 	}).ParseFiles(templatePath)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error parsing template: %v", err), http.StatusInternalServerError)

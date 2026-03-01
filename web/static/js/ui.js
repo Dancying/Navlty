@@ -122,22 +122,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (settingsModal) {
         document.getElementById('settings-save-button')?.addEventListener('click', handleSettings);
     }
-    updateCardOverflow();
+    
+    // --- Apply Settings and Overflow Logic ---
+    fetch('/api/settings').then(r => r.json()).then(settings => {
+        document.documentElement.style.setProperty('--cards-per-row', settings.cardsPerRow || 4);
+        checkDescriptionOverflow();
+    });
+
+    function checkDescriptionOverflow() {
+        document.querySelectorAll('.card').forEach(card => {
+            const desc = card.querySelector('.desc');
+            if (desc.scrollWidth > desc.clientWidth) {
+                card.classList.add('scrolling-desc');
+            }
+        });
+    }
 });
 
-function updateCardOverflow() {
-    document.querySelectorAll('.card').forEach(card => {
-        const desc = card.querySelector('.desc');
-        if (desc) {
-            const isOverflowing = desc.scrollWidth > desc.clientWidth;
-            if (isOverflowing) {
-                card.classList.add('is-overflowing');
-            } else {
-                card.classList.remove('is-overflowing');
-            }
-        }
-    });
-}
 
 // --- Handler Functions ---
 
@@ -175,7 +176,6 @@ function handleSingleLink() {
         .then(response => {
             if (!response.ok) throw new Error('Server responded with an error');
             showToast('保存成功', 'success');
-            updateCardOverflow();
         })
         .catch(error => {
             showToast('保存失败', 'error');
@@ -207,7 +207,6 @@ function handleBulkLinks() {
         .then(response => {
             if (!response.ok) throw new Error('Server responded with an error');
             showToast('保存成功', 'success');
-            updateCardOverflow();
         })
         .catch(error => {
             showToast('保存失败', 'error');
@@ -235,6 +234,7 @@ function handleSettings() {
         .then(response => {
             if (!response.ok) throw new Error('Server responded with an error');
             showToast('保存成功', 'success');
+            document.documentElement.style.setProperty('--cards-per-row', settings.cardsPerRow);
         })
         .catch(error => {
             showToast('保存失败', 'error');

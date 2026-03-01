@@ -1,11 +1,11 @@
 {
-  "siteName": "1123",
+  "siteName": "",
   "siteIcon": "",
   "siteTitle": "Navlty Dashboard",
   "avatarURL": "7788",
-  "backgroundURL": "",
-  "backgroundBlur": 12,
-  "cardsPerRow": 8,
+  "backgroundURL": "https://github.com/Dancying/Image-Source-Library/raw/main/anime/%5BNekomoe%20kissaten%5D%5BGIRLS%20BAND%20CRY%5D%5B01%5D%5B1080p%5D%5BJPSC%5D.mp4_snapshot_09.28_%5B2024.05.21_20.29.10%5D.jpg",
+  "backgroundBlur": 5,
+  "cardsPerRow": 3,
   "customCSS": "",
   "externalJS": [
     "111",

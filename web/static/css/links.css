@@ -1,8 +1,8 @@
 /* static/css/link-card.css */
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
 }
 
@@ -14,82 +14,84 @@
     display: flex;
     align-items: center;
     transition: transform 0.2s, box-shadow 0.2s;
-    width: 280px;
-    height: 100px;
+    height: 80px;
     text-decoration: none;
     color: inherit;
     overflow: hidden;
+    flex: 1 1 calc(100% / var(--cards-per-row, 4) - 1.5rem);
+    box-sizing: border-box;
 }
 
 a.card:hover {
     text-decoration: none;
 }
 
-
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+.card.scrolling-desc:hover .desc {
+    animation: scroll 10s linear infinite;
+}
+
 .card .icon {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     margin-right: 15px;
     flex-shrink: 0;
+    color: #00a1f1; /* Sky blue color */
 }
 
 .card .content {
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
-    width: 100%;
+    min-width: 0; 
 }
 
 .card .title {
     font-weight: 600;
     font-size: 1.1rem;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #00a1f1; /* Sky blue color */
 }
 
 .card .desc {
     font-size: 0.9rem;
-    color: #666;
-    margin: 0.2rem 0 0;
+    color: #333;
+    margin-top: 4px; /* Adjust as needed */
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
+    transform: translateX(0);
 }
 
-.card.is-overflowing:hover .desc {
-    animation: scroll-text 3s ease-in-out alternate infinite;
-}
-
-@keyframes scroll-text {
-    from {
+@keyframes scroll {
+    0% {
         transform: translateX(0);
     }
-    to {
-        transform: translateX(calc(185px - 100%));
+    100% {
+        transform: translateX(-100%);
     }
 }
-
 
 /* Styles for sub-navigation pages */
 .sub-nav .card {
-    height: 30px; /* Reduced height for sub-navigation cards */
-    width: 120px;  /* Reduced width for sub-navigation cards */
+    height: 30px;
 }
 
 .sub-nav .card .content {
-    justify-content: center; /* Center title vertically */
+    justify-content: center;
 }
 
 .sub-nav .card .desc {
-    display: none; /* Hide description on sub-navigation pages */
+    display: none;
 }
 
 .sub-nav .card .icon {
-    width: 24px; /* Adjust icon size for smaller cards */
+    width: 24px;
     height: 24px;
     margin-right: 10px;
 }

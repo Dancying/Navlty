@@ -3,7 +3,7 @@
     "title": "Notion",
     "url": "https://notion.so",
     "desc": "Connected workspace where better, faster work happens.",
-    "icon_url": "logos:notion",
+    "icon_url": "edit-3",
     "panel": "primary",
     "category": "Productivity"
   },
@@ -11,7 +11,7 @@
     "title": "GitHub",
     "url": "https://github.com",
     "desc": "Where the world builds software and hosts open source projects.",
-    "icon_url": "mdi:github",
+    "icon_url": "github",
     "panel": "primary",
     "category": "Development"
   },
@@ -19,7 +19,7 @@
     "title": "Figma",
     "url": "https://figma.com",
     "desc": "The collaborative interface design tool for teams.",
-    "icon_url": "logos:figma",
+    "icon_url": "layers",
     "panel": "primary",
     "category": "Design"
   },
@@ -27,7 +27,7 @@
     "title": "ChatGPT",
     "url": "https://chatgpt.com",
     "desc": "Conversational AI model by OpenAI for various tasks.",
-    "icon_url": "simple-icons:openai",
+    "icon_url": "cpu",
     "panel": "primary",
     "category": "AI"
   },
@@ -35,7 +35,7 @@
     "title": "Vercel",
     "url": "https://vercel.com",
     "desc": "Develop, preview, and ship at the edge for frontend developers.",
-    "icon_url": "logos:vercel-icon",
+    "icon_url": "cloud",
     "panel": "primary",
     "category": "Deployment"
   },
@@ -43,7 +43,7 @@
     "title": "Dribbble",
     "url": "https://dribbble.com",
     "desc": "The world's leading community for creatives to share work.",
-    "icon_url": "uiw:dribbble",
+    "icon_url": "image",
     "panel": "primary",
     "category": "Inspiration"
   },
@@ -51,7 +51,7 @@
     "title": "Stack Overflow",
     "url": "https://stackoverflow.com",
     "desc": "The largest online community for developers to learn and share.",
-    "icon_url": "mdi:stack-overflow",
+    "icon_url": "help-circle",
     "panel": "primary",
     "category": "Community"
   },
@@ -59,7 +59,7 @@
     "title": "Unsplash",
     "url": "https://unsplash.com",
     "desc": "Beautiful, free images and photos that you can download and use.",
-    "icon_url": "fa6-brands:unsplash",
+    "icon_url": "camera",
     "panel": "primary",
     "category": "Resources"
   },
@@ -67,7 +67,7 @@
     "title": "DeepL",
     "url": "https://deepl.com",
     "desc": "The world's most accurate translator using neural networks.",
-    "icon_url": "ri:translate-2",
+    "icon_url": "globe",
     "panel": "primary",
     "category": "Tools"
   },
@@ -75,7 +75,7 @@
     "title": "Trello",
     "url": "https://trello.com",
     "desc": "Track tasks and projects with flexible boards and lists.",
-    "icon_url": "logos:trello",
+    "icon_url": "columns",
     "panel": "primary",
     "category": "Management"
   },
@@ -83,7 +83,7 @@
     "title": "MDN Web Docs",
     "url": "https://developer.mozilla.org",
     "desc": "Resources for developers, by developers.",
-    "icon_url": "simple-icons:mdnwebdocs",
+    "icon_url": "book-open",
     "panel": "primary",
     "category": "Docs"
   },
@@ -91,7 +91,7 @@
     "title": "Iconfont",
     "url": "https://iconfont.cn",
     "desc": "Vector icon library provided by Alibaba.",
-    "icon_url": "ant-design:iconfont-outlined",
+    "icon_url": "grid",
     "panel": "primary",
     "category": "Resources"
   },
@@ -99,7 +99,7 @@
     "title": "Slack",
     "url": "https://slack.com",
     "desc": "Team communication tool that brings all your work into one place.",
-    "icon_url": "logos:slack-icon",
+    "icon_url": "slack",
     "panel": "primary",
     "category": "Communication"
   },
@@ -107,7 +107,7 @@
     "title": "Redis",
     "url": "https://redis.io",
     "desc": "In-memory data structure store, used as a database and cache.",
-    "icon_url": "logos:redis",
+    "icon_url": "database",
     "panel": "primary",
     "category": "Database"
   },
@@ -115,7 +115,7 @@
     "title": "Behance",
     "url": "https://behance.net",
     "desc": "The world's largest creative network for showcasing work.",
-    "icon_url": "fa6-brands:behance",
+    "icon_url": "eye",
     "panel": "primary",
     "category": "Inspiration"
   },
@@ -123,7 +123,7 @@
     "title": "YouTube",
     "url": "https://youtube.com",
     "desc": "Watch and share videos with friends, family, and the world.",
-    "icon_url": "logos:youtube-icon",
+    "icon_url": "video",
     "panel": "primary",
     "category": "Video"
   },
@@ -131,7 +131,7 @@
     "title": "Medium",
     "url": "https://medium.com",
     "desc": "Where good ideas find you through quality storytelling.",
-    "icon_url": "bi:medium",
+    "icon_url": "pen-tool",
     "panel": "primary",
     "category": "Blog"
   },
@@ -139,7 +139,7 @@
     "title": "Product Hunt",
     "url": "https://producthunt.com",
     "desc": "The best new products in tech, every day.",
-    "icon_url": "ph:product-hunt-logo-fill",
+    "icon_url": "package",
     "panel": "primary",
     "category": "Discovery"
   },
@@ -147,7 +147,7 @@
     "title": "Canva",
     "url": "https://canva.com",
     "desc": "Create professional designs with easy-to-use templates.",
-    "icon_url": "logos:canva",
+    "icon_url": "layout",
     "panel": "primary",
     "category": "Design"
   },
@@ -155,7 +155,327 @@
     "title": "LeetCode",
     "url": "https://leetcode.com",
     "desc": "Platform for practicing coding skills and technical interviews.",
-    "icon_url": "simple-icons:leetcode",
+    "icon_url": "code",
+    "panel": "primary",
+    "category": "Learning"
+  },
+  {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "Connected workspace where better, faster work happens.",
+    "icon_url": "edit-3",
+    "panel": "secondary",
+    "category": "Productivity"
+  },
+  {
+    "title": "GitHub",
+    "url": "https://github.com",
+    "desc": "Where the world builds software and hosts open source projects.",
+    "icon_url": "github",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Figma",
+    "url": "https://figma.com",
+    "desc": "The collaborative interface design tool for teams.",
+    "icon_url": "layers",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "desc": "Conversational AI model by OpenAI for various tasks.",
+    "icon_url": "cpu",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Vercel",
+    "url": "https://vercel.com",
+    "desc": "Develop, preview, and ship at the edge for frontend developers.",
+    "icon_url": "cloud",
+    "panel": "secondary",
+    "category": "Deployment"
+  },
+  {
+    "title": "Dribbble",
+    "url": "https://dribbble.com",
+    "desc": "The world's leading community for creatives to share work.",
+    "icon_url": "image",
+    "panel": "secondary",
+    "category": "Inspiration"
+  },
+  {
+    "title": "Stack Overflow",
+    "url": "https://stackoverflow.com",
+    "desc": "The largest online community for developers to learn and share.",
+    "icon_url": "help-circle",
+    "panel": "secondary",
+    "category": "Community"
+  },
+  {
+    "title": "Unsplash",
+    "url": "https://unsplash.com",
+    "desc": "Beautiful, free images and photos that you can download and use.",
+    "icon_url": "camera",
+    "panel": "secondary",
+    "category": "Resources"
+  },
+  {
+    "title": "DeepL",
+    "url": "https://deepl.com",
+    "desc": "The world's most accurate translator using neural networks.",
+    "icon_url": "globe",
+    "panel": "secondary",
+    "category": "Tools"
+  },
+  {
+    "title": "Trello",
+    "url": "https://trello.com",
+    "desc": "Track tasks and projects with flexible boards and lists.",
+    "icon_url": "columns",
+    "panel": "secondary",
+    "category": "Management"
+  },
+  {
+    "title": "MDN Web Docs",
+    "url": "https://developer.mozilla.org",
+    "desc": "Resources for developers, by developers.",
+    "icon_url": "book-open",
+    "panel": "secondary",
+    "category": "Docs"
+  },
+  {
+    "title": "Iconfont",
+    "url": "https://iconfont.cn",
+    "desc": "Vector icon library provided by Alibaba.",
+    "icon_url": "grid",
+    "panel": "secondary",
+    "category": "Resources"
+  },
+  {
+    "title": "Slack",
+    "url": "https://slack.com",
+    "desc": "Team communication tool that brings all your work into one place.",
+    "icon_url": "slack",
+    "panel": "secondary",
+    "category": "Communication"
+  },
+  {
+    "title": "Redis",
+    "url": "https://redis.io",
+    "desc": "In-memory data structure store, used as a database and cache.",
+    "icon_url": "database",
+    "panel": "secondary",
+    "category": "Database"
+  },
+  {
+    "title": "Behance",
+    "url": "https://behance.net",
+    "desc": "The world's largest creative network for showcasing work.",
+    "icon_url": "eye",
+    "panel": "secondary",
+    "category": "Inspiration"
+  },
+  {
+    "title": "YouTube",
+    "url": "https://youtube.com",
+    "desc": "Watch and share videos with friends, family, and the world.",
+    "icon_url": "video",
+    "panel": "secondary",
+    "category": "Video"
+  },
+  {
+    "title": "Medium",
+    "url": "https://medium.com",
+    "desc": "Where good ideas find you through quality storytelling.",
+    "icon_url": "pen-tool",
+    "panel": "secondary",
+    "category": "Blog"
+  },
+  {
+    "title": "Product Hunt",
+    "url": "https://producthunt.com",
+    "desc": "The best new products in tech, every day.",
+    "icon_url": "package",
+    "panel": "secondary",
+    "category": "Discovery"
+  },
+  {
+    "title": "Canva",
+    "url": "https://canva.com",
+    "desc": "Create professional designs with easy-to-use templates.",
+    "icon_url": "layout",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "LeetCode",
+    "url": "https://leetcode.com",
+    "desc": "Platform for practicing coding skills and technical interviews.",
+    "icon_url": "code",
+    "panel": "secondary",
+    "category": "Learning"
+  },
+  {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "Connected workspace where better, faster work happens.",
+    "icon_url": "edit-3",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "GitHub",
+    "url": "https://github.com",
+    "desc": "Where the world builds software and hosts open source projects.",
+    "icon_url": "github",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Figma",
+    "url": "https://figma.com",
+    "desc": "The collaborative interface design tool for teams.",
+    "icon_url": "layers",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "desc": "Conversational AI model by OpenAI for various tasks.",
+    "icon_url": "cpu",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Vercel",
+    "url": "https://vercel.com",
+    "desc": "Develop, preview, and ship at the edge for frontend developers.",
+    "icon_url": "cloud",
+    "panel": "primary",
+    "category": "Deployment"
+  },
+  {
+    "title": "Dribbble",
+    "url": "https://dribbble.com",
+    "desc": "The world's leading community for creatives to share work.",
+    "icon_url": "image",
+    "panel": "primary",
+    "category": "Inspiration"
+  },
+  {
+    "title": "Stack Overflow",
+    "url": "https://stackoverflow.com",
+    "desc": "The largest online community for developers to learn and share.",
+    "icon_url": "help-circle",
+    "panel": "primary",
+    "category": "Community"
+  },
+  {
+    "title": "Unsplash",
+    "url": "https://unsplash.com",
+    "desc": "Beautiful, free images and photos that you can download and use.",
+    "icon_url": "camera",
+    "panel": "primary",
+    "category": "Resources"
+  },
+  {
+    "title": "DeepL",
+    "url": "https://deepl.com",
+    "desc": "The world's most accurate translator using neural networks.",
+    "icon_url": "globe",
+    "panel": "primary",
+    "category": "Tools"
+  },
+  {
+    "title": "Trello",
+    "url": "https://trello.com",
+    "desc": "Track tasks and projects with flexible boards and lists.",
+    "icon_url": "columns",
+    "panel": "primary",
+    "category": "Management"
+  },
+  {
+    "title": "MDN Web Docs",
+    "url": "https://developer.mozilla.org",
+    "desc": "Resources for developers, by developers.",
+    "icon_url": "book-open",
+    "panel": "primary",
+    "category": "Docs"
+  },
+  {
+    "title": "Iconfont",
+    "url": "https://iconfont.cn",
+    "desc": "Vector icon library provided by Alibaba.",
+    "icon_url": "grid",
+    "panel": "primary",
+    "category": "Resources"
+  },
+  {
+    "title": "Slack",
+    "url": "https://slack.com",
+    "desc": "Team communication tool that brings all your work into one place.",
+    "icon_url": "slack",
+    "panel": "primary",
+    "category": "Communication"
+  },
+  {
+    "title": "Redis",
+    "url": "https://redis.io",
+    "desc": "In-memory data structure store, used as a database and cache.",
+    "icon_url": "database",
+    "panel": "primary",
+    "category": "Database"
+  },
+  {
+    "title": "Behance",
+    "url": "https://behance.net",
+    "desc": "The world's largest creative network for showcasing work.",
+    "icon_url": "eye",
+    "panel": "primary",
+    "category": "Inspiration"
+  },
+  {
+    "title": "YouTube",
+    "url": "https://youtube.com",
+    "desc": "Watch and share videos with friends, family, and the world.",
+    "icon_url": "video",
+    "panel": "primary",
+    "category": "Video"
+  },
+  {
+    "title": "Medium",
+    "url": "https://medium.com",
+    "desc": "Where good ideas find you through quality storytelling.",
+    "icon_url": "pen-tool",
+    "panel": "primary",
+    "category": "Blog"
+  },
+  {
+    "title": "Product Hunt",
+    "url": "https://producthunt.com",
+    "desc": "The best new products in tech, every day.",
+    "icon_url": "package",
+    "panel": "primary",
+    "category": "Discovery"
+  },
+  {
+    "title": "Canva",
+    "url": "https://canva.com",
+    "desc": "Create professional designs with easy-to-use templates.",
+    "icon_url": "layout",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "LeetCode",
+    "url": "https://leetcode.com",
+    "desc": "Platform for practicing coding skills and technical interviews.",
+    "icon_url": "code",
     "panel": "primary",
     "category": "Learning"
   },

@@ -6,6 +6,9 @@
     <title>{{.SiteTitle}}</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
+        :root {
+            --cards-per-row: {{.CardsPerRow}};
+        }
         body { margin: 0; }
         {{.CSS | safeCSS}}
     </style>
@@ -34,12 +37,16 @@
             <div id="primary-panel" class="panel active">
                 {{range $category, $links := .PrimaryLinks}}
                     <h2 class="category-title">{{$category}}</h2>
-                    <div class="grid primary-grid">
+                    <div class="card-container primary-grid">
                         {{range $links}}
                         <a href="{{.URL}}" target="_blank" class="card">
-                            <img src="{{.IconURL}}" alt="{{.Title}} icon" class="icon">
+                            {{if hasPrefix .IconURL "/static/"}}
+                                <img src="{{.IconURL}}" class="icon"/>
+                            {{else}}
+                                <i data-feather="{{.IconURL}}" class="icon"></i>
+                            {{end}}
                             <div class="content">
-                                <h3 class.title="title">{{.Title}}</h3>
+                                <h3 class="title">{{.Title}}</h3>
                                 <p class="desc">{{.Desc}}</p>
                             </div>
                         </a>
@@ -51,10 +58,14 @@
             <div id="secondary-panel" class="panel sub-nav">
                  {{range $category, $links := .SecondaryLinks}}
                     <h2 class="category-title">{{$category}}</h2>
-                    <div class="grid secondary-grid">
+                    <div class="card-container secondary-grid">
                         {{range $links}}
                         <a href="{{.URL}}" target="_blank" class="card">
-                            <img src="{{.IconURL}}" alt="{{.Title}} icon" class="icon">
+                            {{if hasPrefix .IconURL "/static/"}}
+                                <img src="{{.IconURL}}" class="icon"/>
+                            {{else}}
+                                <i data-feather="{{.IconURL}}" class="icon"></i>
+                            {{end}}
                             <div class="content">
                                 <h3 class="title">{{.Title}}</h3>
                                 <p class="desc">{{.Desc}}</p>

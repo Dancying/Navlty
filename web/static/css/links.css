@@ -79,11 +79,9 @@ a.card:hover {
 
 /* Styles for sub-navigation pages */
 .sub-nav .card {
-    height: 30px;
-}
-
-.sub-nav .card .content {
-    justify-content: center;
+    height: 48px; /* Set fixed height to 48px */
+    flex: 1 1 250px; /* Allow growing from a base size */
+    max-width: 200px; /* But prevent growing too wide */
 }
 
 .sub-nav .card .desc {

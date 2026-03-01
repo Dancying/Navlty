@@ -19,16 +19,24 @@ body.modal-open {
 }
 
 .modal-content {
+    position: absolute;
     background-color: #fff;
-    margin: 5vh auto;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     width: 95%;
-    max-width: 900px; /* Increased width */
-    animation: slide-down 0.3s ease-out;
+    max-width: 900px;
     display: flex;
     flex-direction: column;
+    height: 650px; /* Fixed height for all modals */
     max-height: 90vh;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.modal.show .modal-content {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .modal-header {
@@ -37,6 +45,7 @@ body.modal-open {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -48,6 +57,7 @@ body.modal-open {
 .modal-body {
     padding: 2rem;
     overflow-y: auto;
+    flex-grow: 1; /* Allow body to fill available space */
 }
 
 .modal-footer {
@@ -59,6 +69,7 @@ body.modal-open {
     gap: 1rem;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
+    flex-shrink: 0;
 }
 
 .close-button {
@@ -74,15 +85,4 @@ body.modal-open {
 .close-button:hover,
 .close-button:focus {
     color: #333;
-}
-
-@keyframes slide-down {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 }

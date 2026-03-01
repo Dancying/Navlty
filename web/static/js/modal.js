@@ -4,17 +4,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const modals = document.querySelectorAll('.modal');
     const modalButtons = document.querySelectorAll('[data-modal-target]');
 
+    function centerModal(modal) {
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+            const top = (window.innerHeight - modalContent.offsetHeight) / 2;
+            const left = (window.innerWidth - modalContent.offsetWidth) / 2;
+            modalContent.style.top = `${top > 0 ? top : 0}px`;
+            modalContent.style.left = `${left > 0 ? left : 0}px`;
+        }
+    }
+
     const openModal = function(modal) {
         if (modal) {
             modal.style.display = 'block';
+            centerModal(modal);
+            modal.classList.add('show');
             document.body.classList.add('modal-open');
         }
     };
 
     const closeModal = function(modal) {
         if (modal) {
-            modal.style.display = 'none';
-            document.body.classList.remove('modal-open');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.classList.remove('modal-open');
+            }, 200);
         }
     };
 
@@ -39,22 +54,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         window.addEventListener('click', (event) => {
-            if (event.target == modal) {
+            if (event.target === modal) {
                 closeModal(modal);
+            }
+        });
+
+        // Tab switching logic
+        const tabButtons = modal.querySelectorAll('.tab-button');
+        const tabContents = modal.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                tabContents.forEach(content => {
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Slider value display logic
+        const sliders = modal.querySelectorAll('.slider');
+        sliders.forEach(slider => {
+            const valueSpan = document.getElementById(`${slider.id}-value`);
+            if (valueSpan) {
+                slider.addEventListener('input', () => {
+                    valueSpan.textContent = slider.value;
+                });
             }
         });
     });
 
-    // Legacy button handling for backward compatibility
-    const addButton = document.getElementById('add-button');
-    if (addButton && !addButton.hasAttribute('data-modal-target')) {
-        const addLinkModal = document.getElementById('addLinkModal');
-        addButton.addEventListener('click', () => openModal(addLinkModal));
-    }
-
-    const settingsButton = document.getElementById('settings-button');
-    if (settingsButton && !settingsButton.hasAttribute('data-modal-target')) {
-        const settingsModal = document.getElementById('settings-modal');
-        settingsButton.addEventListener('click', () => openModal(settingsModal));
-    }
+    window.addEventListener('resize', () => {
+        modals.forEach(modal => {
+            if (modal.classList.contains('show')) {
+                centerModal(modal);
+            }
+        });
+    });
 });

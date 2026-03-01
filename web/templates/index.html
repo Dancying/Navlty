@@ -9,6 +9,7 @@
         body { margin: 0; }
         {{.CSS | safeCSS}}
     </style>
+    <link rel="stylesheet" href="/static/css/slider.css">
     {{if .CustomCSS}}<style>{{.CustomCSS | safeCSS}}</style>{{end}}
 </head>
 <body>
@@ -67,110 +68,171 @@
     </div>
 
     <!-- Modals -->
-<div id="addLinkModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>添加链接</h2>
-            <span class="close-button"><i data-feather="x"></i></span>
-        </div>
-        <div class="modal-body">
-            <div class="tab-switcher">
-                <button class="tab-button active" data-tab="single-link-tab">单个添加</button>
-                <button class="tab-button" data-tab="bulk-add-tab">批量添加</button>
-            </div>
-
-            <div class="tab-content-container">
-                <div id="single-link-tab" class="tab-content active">
-                     <form id="add-link-form" class="form-grid">
-                        <div class="form-group span-two">
-                            <label>目标面板</label>
-                            <div class="switch-field">
-                                <input type="radio" id="switch_primary_single" name="switch_panel_single" value="primary" checked/>
-                                <label for="switch_primary_single">主面板</label>
-                                <input type="radio" id="switch_secondary_single" name="switch_panel_single" value="secondary" />
-                                <label for="switch_secondary_single">副面板</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="link-title">标题*</label>
-                            <input type="text" id="link-title" name="title" placeholder="例如：Google" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="link-url">URL*</label>
-                            <input type="url" id="link-url" name="url" placeholder="https://google.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="link-category">分类</label>
-                            <input type="text" id="link-category" name="category" placeholder="例如：搜索引擎">
-                        </div>
-                        <div class="form-group">
-                            <label for="link-icon">图标 URL</label>
-                            <div class="input-with-button">
-                                <input type="text" id="link-icon" name="icon" placeholder="输入或上传图标">
-                                <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
-                            </div>
-                        </div>
-                        <div class="form-group span-two">
-                            <label for="link-description">描述</label>
-                            <textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea>
-                        </div>
-                    </form>
-                </div>
-
-                <div id="bulk-add-tab" class="tab-content">
-                    <form id="bulk-add-form">
-                         <div class="form-group">
-                            <label>目标面板</label>
-                            <div class="switch-field">
-                                <input type="radio" id="switch_primary_bulk" name="switch_panel_bulk" value="primary" checked/>
-                                <label for="switch_primary_bulk">主面板</label>
-                                <input type="radio" id="switch_secondary_bulk" name="switch_panel_bulk" value="secondary" />
-                                <label for="switch_secondary_bulk">副面板</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="bulk-links">批量链接 (一行一个)</label>
-                            <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
-                            <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary cancel-button">取消</button>
-            <button class="btn btn-primary" id="save-link-button">保存</button>
-        </div>
-    </div>
-</div>
-    <div id="settings-modal" class="modal">
+    <div id="addLinkModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>设置</h2>
+                <h2>添加链接</h2>
                 <span class="close-button"><i data-feather="x"></i></span>
             </div>
             <div class="modal-body">
-                <form id="settings-form">
-                    <label for="site-title">站点标题</label>
-                    <input type="text" id="site-title" name="siteTitle" value="{{.SiteTitle}}">
+                <div class="tab-switcher">
+                    <button class="tab-button active" data-tab="single-link-tab">单个添加</button>
+                    <button class="tab-button" data-tab="bulk-add-tab">批量添加</button>
+                </div>
 
-                    <label for="avatar-url">头像 URL</label>
-                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}">
+                <div class="tab-content-container">
+                    <div id="single-link-tab" class="tab-content active">
+                         <form id="add-link-form" class="form-grid">
+                            <div class="form-group span-two">
+                                <label>目标面板</label>
+                                <div class="switch-field">
+                                    <input type="radio" id="switch_primary_single" name="switch_panel_single" value="primary" checked/>
+                                    <label for="switch_primary_single">主面板</label>
+                                    <input type="radio" id="switch_secondary_single" name="switch_panel_single" value="secondary" />
+                                    <label for="switch_secondary_single">副面板</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="link-title">标题*</label>
+                                <input type="text" id="link-title" name="title" placeholder="例如：Google" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="link-url">URL*</label>
+                                <input type="url" id="link-url" name="url" placeholder="https://google.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="link-category">分类</label>
+                                <input type="text" id="link-category" name="category" placeholder="例如：搜索引擎">
+                            </div>
+                            <div class="form-group">
+                                <label for="link-icon">图标 URL</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="link-icon" name="icon" placeholder="输入或上传图标">
+                                    <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
+                                </div>
+                            </div>
+                            <div class="form-group span-two">
+                                <label for="link-description">描述</label>
+                                <textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea>
+                            </div>
+                        </form>
+                    </div>
 
-                    <label for="custom-css">自定义 CSS</label>
-                    <textarea id="custom-css" name="customCSS">{{.CustomCSS}}</textarea>
-
-                    <label for="external-js">外部 JS (逗号分隔)</label>
-                    <input type="text" id="external-js" name="externalJS" value="{{range .ExternalJS}}{{.}},{{end}}">
-                </form>
+                    <div id="bulk-add-tab" class="tab-content">
+                        <form id="bulk-add-form">
+                             <div class="form-group">
+                                <label>目标面板</label>
+                                <div class="switch-field">
+                                    <input type="radio" id="switch_primary_bulk" name="switch_panel_bulk" value="primary" checked/>
+                                    <label for="switch_primary_bulk">主面板</label>
+                                    <input type="radio" id="switch_secondary_bulk" name="switch_panel_bulk" value="secondary" />
+                                    <label for="switch_secondary_bulk">副面板</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bulk-links">批量链接 (一行一个)</label>
+                                <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
+                                <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button class="cancel-button">取消</button>
-                <button class="submit-button" id="settings-save-button">保存</button>
+                <button class="btn btn-secondary cancel-button">取消</button>
+                <button class="btn btn-primary" id="save-link-button">保存</button>
             </div>
         </div>
     </div>
+
+<div id="settings-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>网站设置</h2>
+            <span class="close-button"><i data-feather="x"></i></span>
+        </div>
+        <div class="modal-body">
+            <form id="settings-form">
+                <div class="tab-switcher">
+                    <button type="button" class="tab-button active" data-tab="general-settings-tab">常规</button>
+                    <button type="button" class="tab-button" data-tab="style-settings-tab">样式</button>
+                    <button type="button" class="tab-button" data-tab="advanced-settings-tab">高级</button>
+                </div>
+
+                <div class="tab-content-container">
+                    <!-- General Settings -->
+                    <div id="general-settings-tab" class="tab-content active">
+                        <div class="form-grid" style="margin-top: 1.5rem;">
+                            <div class="form-group">
+                                <label for="site-name">站点名称</label>
+                                <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="site-icon">站点图标 URL</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="site-icon" name="siteIcon" placeholder="输入或上传站点图标的 URL">
+                                    <button type="button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="site-title">网站标题</label>
+                                <input type="text" id="site-title" name="siteTitle" value="{{.SiteTitle}}" placeholder="显示在主页的标题">
+                            </div>
+                            <div class="form-group">
+                                <label for="avatar-url">头像 URL</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="输入或上传头像的 URL">
+                                    <button type="button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Style Settings -->
+                    <div id="style-settings-tab" class="tab-content">
+                        <div class="form-grid" style="margin-top: 1.5rem;">
+                            <div class="form-group span-two">
+                                <label for="background-url">背景图片 URL</label>
+                                 <div class="input-with-button">
+                                    <input type="text" id="background-url" name="backgroundURL" placeholder="输入背景图片链接地址">
+                                    <button type="button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
+                                </div>
+                            </div>
+                            <div class="form-group span-two slider-group">
+                                <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
+                                <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
+                            </div>
+                            <div class="form-group span-two slider-group">
+                                <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
+                                <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Advanced Settings -->
+                    <div id="advanced-settings-tab" class="tab-content">
+                         <div class="form-grid" style="margin-top: 1.5rem;">
+                            <div class="form-group span-two">
+                                <label for="custom-css">自定义 CSS</label>
+                                <textarea id="custom-css" name="customCSS" rows="10" placeholder="在此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
+                            </div>
+                            <div class="form-group span-two">
+                                <label for="external-js">外部 JS (回车换行)</label>
+                                <textarea id="external-js" name="externalJS" rows="10" placeholder="例如：https://example.com/script.js&#10;https://another.com/script.js">{{range .ExternalJS}}{{.}}\n{{end}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary cancel-button">取消</button>
+            <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
+        </div>
+    </div>
+</div>
 
     {{range .ExternalJS}}<script src="{{.}}"></script>{{end}}
     <script>{{.JS | safeJS}}</script>

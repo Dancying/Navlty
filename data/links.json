@@ -2,141 +2,141 @@
   {
     "title": "Notion",
     "url": "https://notion.so",
-    "desc": "常用",
-    "icon_url": "i-notion",
-    "is_primary": true
+    "desc": "Connected workspace where better, faster work happens.",
+    "icon_url": "logos:notion",
+    "panel": "primary"
   },
   {
     "title": "GitHub",
     "url": "https://github.com",
-    "desc": "核心",
-    "icon_url": "i-github",
-    "is_primary": true
+    "desc": "Where the world builds software and hosts open source projects.",
+    "icon_url": "mdi:github",
+    "panel": "primary"
   },
   {
     "title": "Figma",
     "url": "https://figma.com",
-    "desc": "核心",
-    "icon_url": "i-figma",
-    "is_primary": true
+    "desc": "The collaborative interface design tool for teams.",
+    "icon_url": "logos:figma",
+    "panel": "primary"
   },
   {
     "title": "ChatGPT",
     "url": "https://chatgpt.com",
-    "desc": "常用",
-    "icon_url": "i-bot",
-    "is_primary": true
+    "desc": "Conversational AI model by OpenAI for various tasks.",
+    "icon_url": "simple-icons:openai",
+    "panel": "primary"
   },
   {
     "title": "Vercel",
     "url": "https://vercel.com",
-    "desc": "开发",
-    "icon_url": "i-vercel",
-    "is_primary": true
+    "desc": "Develop, preview, and ship at the edge for frontend developers.",
+    "icon_url": "logos:vercel-icon",
+    "panel": "primary"
   },
   {
     "title": "Dribbble",
     "url": "https://dribbble.com",
-    "desc": "设计",
-    "icon_url": "i-dribbble",
-    "is_primary": true
+    "desc": "The world's leading community for creatives to share work.",
+    "icon_url": "uiw:dribbble",
+    "panel": "primary"
   },
   {
     "title": "Stack Overflow",
     "url": "https://stackoverflow.com",
-    "desc": "开发",
-    "icon_url": "i-stack",
-    "is_primary": true
+    "desc": "The largest online community for developers to learn and share.",
+    "icon_url": "mdi:stack-overflow",
+    "panel": "primary"
   },
   {
     "title": "Unsplash",
     "url": "https://unsplash.com",
-    "desc": "设计",
-    "icon_url": "i-unsplash",
-    "is_primary": true
+    "desc": "Beautiful, free images and photos that you can download and use.",
+    "icon_url": "fa6-brands:unsplash",
+    "panel": "primary"
   },
   {
     "title": "DeepL",
     "url": "https://deepl.com",
-    "desc": "常用",
-    "icon_url": "i-translate",
-    "is_primary": true
+    "desc": "The world's most accurate translator using neural networks.",
+    "icon_url": "ri:translate-2",
+    "panel": "primary"
   },
   {
     "title": "Trello",
     "url": "https://trello.com",
-    "desc": "工作",
-    "icon_url": "i-trello",
-    "is_primary": true
+    "desc": "Track tasks and projects with flexible boards and lists.",
+    "icon_url": "logos:trello",
+    "panel": "primary"
   },
   {
-    "title": "MDN Web",
+    "title": "MDN Web Docs",
     "url": "https://developer.mozilla.org",
-    "desc": "开发",
-    "icon_url": "i-mdn",
-    "is_primary": true
+    "desc": "Resources for developers, by developers.",
+    "icon_url": "simple-icons:mdnwebdocs",
+    "panel": "primary"
   },
   {
     "title": "Iconfont",
     "url": "https://iconfont.cn",
-    "desc": "设计",
-    "icon_url": "i-iconfont",
-    "is_primary": true
+    "desc": "Vector icon library provided by Alibaba.",
+    "icon_url": "ant-design:iconfont-outlined",
+    "panel": "primary"
   },
   {
     "title": "Slack",
     "url": "https://slack.com",
-    "desc": "工作",
-    "icon_url": "i-slack",
-    "is_primary": true
+    "desc": "Team communication tool that brings all your work into one place.",
+    "icon_url": "logos:slack-icon",
+    "panel": "primary"
   },
   {
     "title": "Redis",
     "url": "https://redis.io",
-    "desc": "后端",
-    "icon_url": "i-redis",
-    "is_primary": true
+    "desc": "In-memory data structure store, used as a database and cache.",
+    "icon_url": "logos:redis",
+    "panel": "primary"
   },
   {
     "title": "Behance",
     "url": "https://behance.net",
-    "desc": "设计",
-    "icon_url": "i-behance",
-    "is_primary": true
+    "desc": "The world's largest creative network for showcasing work.",
+    "icon_url": "fa6-brands:behance",
+    "panel": "primary"
   },
   {
-    "title": "Youtube",
+    "title": "YouTube",
     "url": "https://youtube.com",
-    "desc": "生活",
-    "icon_url": "i-video",
-    "is_primary": true
+    "desc": "Watch and share videos with friends, family, and the world.",
+    "icon_url": "logos:youtube-icon",
+    "panel": "primary"
   },
   {
     "title": "Medium",
     "url": "https://medium.com",
-    "desc": "阅读",
-    "icon_url": "i-medium",
-    "is_primary": true
+    "desc": "Where good ideas find you through quality storytelling.",
+    "icon_url": "bi:medium",
+    "panel": "primary"
   },
   {
     "title": "Product Hunt",
     "url": "https://producthunt.com",
-    "desc": "工具",
-    "icon_url": "i-ph",
-    "is_primary": true
+    "desc": "The best new products in tech, every day.",
+    "icon_url": "ph:product-hunt-logo-fill",
+    "panel": "primary"
   },
   {
     "title": "Canva",
     "url": "https://canva.com",
-    "desc": "设计",
-    "icon_url": "i-canva",
-    "is_primary": true
+    "desc": "Create professional designs with easy-to-use templates.",
+    "icon_url": "logos:canva",
+    "panel": "primary"
   },
   {
     "title": "LeetCode",
     "url": "https://leetcode.com",
-    "desc": "开发",
-    "icon_url": "i-code",
-    "is_primary": true
+    "desc": "Platform for practicing coding skills and technical interviews.",
+    "icon_url": "simple-icons:leetcode",
+    "panel": "primary"
   }
 ]

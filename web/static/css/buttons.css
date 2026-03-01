@@ -1,60 +1,62 @@
 /* static/css/buttons.css */
 
-.icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
+.button-container {
     display: flex;
-    align-items: center;
+    gap: 0.75rem;
+}
+
+.icon-button {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
     justify-content: center;
-    transition: background-color 0.2s;
+    align-items: center;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .icon-button:hover {
-    background-color: rgba(0,0,0,0.05);
+    background-color: #f2f2f2;
 }
 
 .icon-button i {
-    width: 24px;
-    height: 24px;
-    color: #333;
+    width: 20px;
+    height: 20px;
 }
 
-.button-container {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.cancel-button,
-.submit-button {
+.btn {
     padding: 0.875rem 1.5rem;
     font-size: 1rem;
     border-radius: 8px;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
     font-weight: 500;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    text-align: center;
 }
 
-.cancel-button {
-    background-color: #f0f0f0;
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
     color: #333;
 }
 
-.cancel-button:hover {
-    background-color: #e0e0e0;
+.btn-secondary:hover {
+    background-color: #dae0e5;
 }
 
-.submit-button {
-    color: #fff;
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-    border: none;
-}
-
-.submit-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+.modal-footer .btn {
+    min-width: 100px;
 }

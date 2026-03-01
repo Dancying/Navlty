@@ -84,7 +84,7 @@ func LoadData() error {
 	return nil
 }
 
-// loadStaticAssets reads all files from a directory with a given suffix and concatenates them.
+// loadStaticAssets reads all files from a directory with a given suffix and and concatenates them.
 func loadStaticAssets(dir, suffix string) (string, error) {
 	var builder strings.Builder
 	files, err := ioutil.ReadDir(dir)

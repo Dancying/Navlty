@@ -14,14 +14,14 @@
     ];
     workspace = {
       onCreate = {
-        default.openFiles = [ "cmd/main.go" ];
+        default.openFiles = [ "main.go" ];
       };
     };
     previews = {
       enable = true;
       previews = {
         web = {
-          command = [ "go" "run" "cmd/main.go" ];
+          command = [ "go" "run" "main.go" ];
           manager = "web";
         };
       };

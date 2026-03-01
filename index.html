@@ -31,7 +31,6 @@
         }
         {{.CSS | safeCSS}}
     </style>
-    <link rel="stylesheet" href="/static/css/slider.css">
     {{if .CustomCSS}}<style id="custom-css-style">{{.CustomCSS | safeCSS}}</style>{{end}}
 </head>
 <body>
@@ -59,7 +58,7 @@
                     <div class="card-container">
                         {{range $links}}
                         <a href="{{.URL}}" target="_blank" class="card">
-                            {{if hasPrefix .IconURL "/static/"}}
+                            {{if isURLOrBase64 .IconURL}}
                                 <img src="{{.IconURL}}" class="icon"/>
                             {{else}}
                                 <i data-feather="{{.IconURL}}" class="icon"></i>
@@ -80,7 +79,7 @@
                     <div class="card-container">
                         {{range $links}}
                         <a href="{{.URL}}" target="_blank" class="card">
-                            {{if hasPrefix .IconURL "/static/"}}
+                           {{if isURLOrBase64 .IconURL}}
                                 <img src="{{.IconURL}}" class="icon"/>
                             {{else}}
                                 <i data-feather="{{.IconURL}}" class="icon"></i>
@@ -113,15 +112,6 @@
                 <div class="tab-content-container">
                     <div id="single-link-tab" class="tab-content active">
                          <form id="add-link-form" class="form-grid">
-                            <div class="form-group span-two">
-                                <label>目标面板</label>
-                                <div class="switch-field">
-                                    <input type="radio" id="switch_primary_single" name="switch_panel_single" value="primary" checked/>
-                                    <label for="switch_primary_single">主面板</label>
-                                    <input type="radio" id="switch_secondary_single" name="switch_panel_single" value="secondary" />
-                                    <label for="switch_secondary_single">副面板</label>
-                                </div>
-                            </div>
                             <div class="form-group">
                                 <label for="link-title">标题*</label>
                                 <input type="text" id="link-title" name="title" placeholder="Google" required>
@@ -137,7 +127,7 @@
                             <div class="form-group">
                                 <label for="link-icon">图标</label>
                                 <div class="input-with-button">
-                                    <input type="text" id="link-icon" name="icon" placeholder="输入图标链接地址或直接上传">
+                                    <input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64">
                                     <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -152,15 +142,6 @@
                     <div id="bulk-add-tab" class="tab-content">
                         <form id="bulk-add-form">
                              <div class="form-group">
-                                <label>目标面板</label>
-                                <div class="switch-field">
-                                    <input type="radio" id="switch_primary_bulk" name="switch_panel_bulk" value="primary" checked/>
-                                    <label for="switch_primary_bulk">主面板</label>
-                                    <input type="radio" id="switch_secondary_bulk" name="switch_panel_bulk" value="secondary" />
-                                    <label for="switch_secondary_bulk">副面板</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label for="bulk-links">批量链接</label>
                                 <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
                                 <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
@@ -201,7 +182,7 @@
                             <div class="form-group">
                                 <label for="site-icon">站点图标</label>
                                 <div class="input-with-button">
-                                    <input type="text" id="site-icon" name="siteIcon" placeholder="输入图标链接地址或直接上传">
+                                    <input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64">
                                     <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -213,7 +194,7 @@
                             <div class="form-group">
                                 <label for="avatar-url">网站头像</label>
                                 <div class="input-with-button">
-                                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="输入头像链接地址或直接上传">
+                                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="Feather 图标名、URL 或 Base64">
                                     <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -226,7 +207,7 @@
                             <div class="form-group span-two">
                                 <label for="background-url">背景图片</label>
                                  <div class="input-with-button">
-                                    <input type="text" id="background-url" name="backgroundURL" placeholder="输入背景图片链接地址或直接上传">
+                                    <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
                                     <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
                                 </div>

@@ -100,10 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isValid) return;
 
+        const panel = document.getElementById('primary-panel').classList.contains('active') ? 'primary' : 'secondary';
+
         const newLink = {
             title: titleInput.value,
             url: urlInput.value,
-            panel: document.querySelector('input[name="switch_panel_single"]:checked').value,
+            panel: panel,
             category: document.getElementById('link-category').value || '默认',
             desc: document.getElementById('link-description').value,
             icon_url: document.getElementById('link-icon').value,
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const panel = document.querySelector('input[name="switch_panel_bulk"]:checked').value;
+        const panel = document.getElementById('primary-panel').classList.contains('active') ? 'primary' : 'secondary';
         const newLinks = lines.map(line => {
             const [title, url, category, icon, description] = line.split('|').map(part => part.trim());
             if (!title || !url) return null;

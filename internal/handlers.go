@@ -20,9 +20,11 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 
 	templatePath := "index.html"
 	t, err := template.New("index.html").Funcs(template.FuncMap{
-		"safeCSS":   func(s string) template.CSS { return template.CSS(s) },
-		"safeJS":    func(s string) template.JS { return template.JS(s) },
-		"hasPrefix": strings.HasPrefix,
+		"safeCSS": func(s string) template.CSS { return template.CSS(s) },
+		"safeJS":  func(s string) template.JS { return template.JS(s) },
+		"isURLOrBase64": func(s string) bool {
+			return strings.HasPrefix(s, "http") || strings.HasPrefix(s, "data:image")
+		},
 	}).ParseFiles(templatePath)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error parsing template: %v", err), http.StatusInternalServerError)
@@ -68,19 +70,19 @@ func getSettings(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveSettings(w http.ResponseWriter, r *http.Request) {
-    var newSettings Config
-    if err := json.NewDecoder(r.Body).Decode(&newSettings); err != nil {
-        http.Error(w, "Error decoding request body: "+err.Error(), http.StatusBadRequest)
-        return
-    }
+	var newSettings Config
+	if err := json.NewDecoder(r.Body).Decode(&newSettings); err != nil {
+		http.Error(w, "Error decoding request body: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
-    if err := SaveSettings(&newSettings); err != nil {
-        http.Error(w, "Error saving settings: "+err.Error(), http.StatusInternalServerError)
-        return
-    }
+	if err := SaveSettings(&newSettings); err != nil {
+		http.Error(w, "Error saving settings: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }
 
 // HandleBulkAddLinks handles the bulk addition of new links.

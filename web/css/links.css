@@ -71,7 +71,7 @@ a.card:hover {
 .card .desc {
     font-size: 0.9rem;
     color: #333;
-    margin-top: 4px; /* Adjust as needed */
+    margin: 0px;
     white-space: nowrap;
 }
 
@@ -91,7 +91,7 @@ a.card:hover {
 
 /* Styles for sub-navigation pages */
 .sub-nav .card {
-    height: 48px; /* Set fixed height to 48px */
+    height: 56px; /* Set fixed height to 48px */
 }
 
 .sub-nav .card .desc {

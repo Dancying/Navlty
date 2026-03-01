@@ -64,7 +64,17 @@ document.addEventListener('DOMContentLoaded', function() {
         favicon.href = settings.siteIcon || '/favicon.ico';
 
         // Update styles
-        document.documentElement.style.setProperty('--background-url', `url(${settings.backgroundURL || ''})`);
+        if (settings.backgroundURL) {
+            const img = new Image();
+            img.onload = () => {
+                document.documentElement.style.setProperty('--background-url', `url(${settings.backgroundURL})`);
+                document.documentElement.style.setProperty('--background-opacity', 1);
+            };
+            img.src = settings.backgroundURL;
+        } else {
+            document.documentElement.style.setProperty('--background-opacity', 0);
+        }
+
         document.documentElement.style.setProperty('--background-blur', `${settings.backgroundBlur || 0}px`);
         document.documentElement.style.setProperty('--cards-per-row', settings.cardsPerRow || 4);
 
@@ -317,6 +327,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('upload-background-button').addEventListener('click', () => document.getElementById('background-file-input').click());
         document.getElementById('background-file-input').addEventListener('change', () => fileToBase64(document.getElementById('background-file-input'), 'background-url'));
+
+        // Slider value display
+        settingsModal.querySelectorAll('.slider-group .slider').forEach(slider => {
+            const display = document.getElementById(slider.id + '-value');
+            if (display) {
+                slider.addEventListener('input', () => {
+                    display.textContent = slider.value;
+                });
+            }
+        });
     }
     
     // --- Initial Load ---

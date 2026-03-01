@@ -10,10 +10,12 @@
             --cards-per-row: {{.CardsPerRow}};
             --background-url: "";
             --background-blur: 0;
+            --background-opacity: 0;
         }
         body { 
             margin: 0; 
             position: relative;
+            background-color: #f0f2f5;
         }
         main {
             padding-bottom: 8rem;
@@ -28,6 +30,8 @@
             background-position: center;
             background-attachment: fixed;
             filter: blur(var(--background-blur));
+            opacity: var(--background-opacity);
+            transition: opacity 0.5s ease-in-out;
         }
         {{.CSS | safeCSS}}
     </style>
@@ -227,11 +231,11 @@
                          <div class="form-grid" style="margin-top: 1.5rem;">
                             <div class="form-group span-two">
                                 <label for="custom-css">外部 CSS</label>
-                                <textarea id="custom-css" name="customCSS" rows="10" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
+                                <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
                             </div>
                             <div class="form-group span-two">
                                 <label for="external-js">外部 JS</label>
-                                <textarea id="external-js" name="externalJS" rows="10" placeholder="https://example.com/script.js
+                                <textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js
 https://another.com/script.js">{{.ExternalJSStr}}</textarea>
                             </div>
                         </div>

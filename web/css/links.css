@@ -81,14 +81,11 @@ a.card:hover {
 }
 
 @keyframes scroll {
-    0% {
+    from {
         transform: translateX(0);
     }
-    50% {
+    to {
         transform: translateX(calc(50px - 100%));
-    }
-    100% {
-        transform: translateX(0);
     }
 }
 

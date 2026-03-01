@@ -1,8 +1,34 @@
 /* static/css/header.css */
+
+.container {
+    width: 84%;
+    margin: 0 auto;
+}
+
+.header-background {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 1000;
+    background-color: rgba(229, 231, 235, 0.65); /* A clearer light gray with more transparency */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
 .header {
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
 }
 
 .header .avatar {
@@ -18,31 +44,4 @@
     font-size: 2rem;
     font-weight: 600;
     margin: 0 0 0 1rem;
-}
-
-.header .controls {
-    margin-left: auto;
-}
-
-.header .toggle-button {
-    background-color: #e7f3ff;
-    color: #007aff;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-}
-
-.header .toggle-button:hover {
-    background-color: #dbeeff;
-}
-
-.header .toggle-button i {
-    width: 20px; /* Adjust icon size as needed */
-    height: 20px;
 }

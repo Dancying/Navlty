@@ -1,60 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.SiteTitle}}</title>
-    <link rel="stylesheet" href="/static/css/links.css">
-    <link rel="stylesheet" href="/static/css/header.css">
-    <link rel="stylesheet" href="/static/css/buttons.css">
     <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body { margin: 0; }
+        {{.CSS | safeCSS}}
+    </style>
+    {{if .CustomCSS}}<style>{{.CustomCSS | safeCSS}}</style>{{end}}
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <img src="{{.AvatarURL}}" alt="Avatar" class="avatar">
-            <h1 class="site-title">{{.SiteTitle}}</h1>
-            <div class="controls">
-                <button id="toggle-panel-button" class="toggle-button">
-                    <i data-feather="grid"></i>
-                </button>
-            </div>
-        </header>
+    <div class="header-background">
+        <div class="container">
+            <header class="header">
+                <div class="header-left">
+                    {{if .AvatarURL}}<img src="{{.AvatarURL}}" alt="Avatar" class="avatar">{{end}}
+                    <h1 class="site-title">{{.SiteTitle}}</h1>
+                </div>
+                <div class="button-container">
+                    <button id="toggle-panel-button" class="icon-button"><i data-feather="repeat"></i></button>
+                    <button id="add-button" class="icon-button"><i data-feather="plus"></i></button>
+                    <button id="settings-button" class="icon-button"><i data-feather="settings"></i></button>
+                </div>
+            </header>
+        </div>
+    </div>
 
+    <div class="container">
         <main>
             <div id="primary-panel" class="panel active">
-                <div class="grid primary-grid">
-                    {{range .PrimaryLinks}}
-                    <a href="{{.URL}}" target="_blank" class="card">
-                        <img src="https://icon.horse/icon/{{.URL}}" alt="{{.Title}} icon" class="icon">
-                        <div class="content">
-                            <h3 class="title">{{.Title}}</h3>
-                            <p class="desc">{{.Desc}}</p>
-                        </div>
-                    </a>
-                    {{end}}
-                </div>
+                {{range $category, $links := .PrimaryLinks}}
+                    <h2 class="category-title">{{$category}}</h2>
+                    <div class="grid primary-grid">
+                        {{range $links}}
+                        <a href="{{.URL}}" target="_blank" class="card">
+                            <img src="{{.IconURL}}" alt="{{.Title}} icon" class="icon">
+                            <div class="content">
+                                <h3 class="title">{{.Title}}</h3>
+                                <p class="desc">{{.Desc}}</p>
+                            </div>
+                        </a>
+                        {{end}}
+                    </div>
+                {{end}}
             </div>
 
-            <div id="secondary-panel" class="panel">
-                <div class="grid secondary-grid">
-                    {{range .SecondaryLinks}}
-                    <a href="{{.URL}}" target="_blank" class="card">
-                         <img src="https://icon.horse/icon/{{.URL}}" alt="{{.Title}} icon" class="icon">
-                        <div class="content">
-                            <h3 class="title">{{.Title}}</h3>
-                            <p class="desc">{{.Desc}}</p> <!-- Added description here -->
-                        </div>
-                    </a>
-                    {{end}}
-                </div>
+            <div id="secondary-panel" class="panel sub-nav">
+                 {{range $category, $links := .SecondaryLinks}}
+                    <h2 class="category-title">{{$category}}</h2>
+                    <div class="grid secondary-grid">
+                        {{range $links}}
+                        <a href="{{.URL}}" target="_blank" class="card">
+                            <img src="{{.IconURL}}" alt="{{.Title}} icon" class="icon">
+                            <div class="content">
+                                <h3 class="title">{{.Title}}</h3>
+                                <p class="desc">{{.Desc}}</p>
+                            </div>
+                        </a>
+                        {{end}}
+                    </div>
+                {{end}}
             </div>
         </main>
     </div>
 
-    <script src="/static/js/script.js"></script>
-    <script>
-      feather.replace()
-    </script>
+    <!-- Modals -->
+    <div id="add-modal" class="modal">...</div>
+    <div id="settings-modal" class="modal">...</div>
+
+    {{range .ExternalJS}}<script src="{{.}}"></script>{{end}}
+    <script>{{.JS | safeJS}}</script>
+    <script>feather.replace();</script>
 </body>
 </html>

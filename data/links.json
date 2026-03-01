@@ -1,0 +1,142 @@
+[
+  {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "常用",
+    "icon_url": "i-notion",
+    "is_primary": true
+  },
+  {
+    "title": "GitHub",
+    "url": "https://github.com",
+    "desc": "核心",
+    "icon_url": "i-github",
+    "is_primary": true
+  },
+  {
+    "title": "Figma",
+    "url": "https://figma.com",
+    "desc": "核心",
+    "icon_url": "i-figma",
+    "is_primary": true
+  },
+  {
+    "title": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "desc": "常用",
+    "icon_url": "i-bot",
+    "is_primary": true
+  },
+  {
+    "title": "Vercel",
+    "url": "https://vercel.com",
+    "desc": "开发",
+    "icon_url": "i-vercel",
+    "is_primary": true
+  },
+  {
+    "title": "Dribbble",
+    "url": "https://dribbble.com",
+    "desc": "设计",
+    "icon_url": "i-dribbble",
+    "is_primary": true
+  },
+  {
+    "title": "Stack Overflow",
+    "url": "https://stackoverflow.com",
+    "desc": "开发",
+    "icon_url": "i-stack",
+    "is_primary": true
+  },
+  {
+    "title": "Unsplash",
+    "url": "https://unsplash.com",
+    "desc": "设计",
+    "icon_url": "i-unsplash",
+    "is_primary": true
+  },
+  {
+    "title": "DeepL",
+    "url": "https://deepl.com",
+    "desc": "常用",
+    "icon_url": "i-translate",
+    "is_primary": true
+  },
+  {
+    "title": "Trello",
+    "url": "https://trello.com",
+    "desc": "工作",
+    "icon_url": "i-trello",
+    "is_primary": true
+  },
+  {
+    "title": "MDN Web",
+    "url": "https://developer.mozilla.org",
+    "desc": "开发",
+    "icon_url": "i-mdn",
+    "is_primary": true
+  },
+  {
+    "title": "Iconfont",
+    "url": "https://iconfont.cn",
+    "desc": "设计",
+    "icon_url": "i-iconfont",
+    "is_primary": true
+  },
+  {
+    "title": "Slack",
+    "url": "https://slack.com",
+    "desc": "工作",
+    "icon_url": "i-slack",
+    "is_primary": true
+  },
+  {
+    "title": "Redis",
+    "url": "https://redis.io",
+    "desc": "后端",
+    "icon_url": "i-redis",
+    "is_primary": true
+  },
+  {
+    "title": "Behance",
+    "url": "https://behance.net",
+    "desc": "设计",
+    "icon_url": "i-behance",
+    "is_primary": true
+  },
+  {
+    "title": "Youtube",
+    "url": "https://youtube.com",
+    "desc": "生活",
+    "icon_url": "i-video",
+    "is_primary": true
+  },
+  {
+    "title": "Medium",
+    "url": "https://medium.com",
+    "desc": "阅读",
+    "icon_url": "i-medium",
+    "is_primary": true
+  },
+  {
+    "title": "Product Hunt",
+    "url": "https://producthunt.com",
+    "desc": "工具",
+    "icon_url": "i-ph",
+    "is_primary": true
+  },
+  {
+    "title": "Canva",
+    "url": "https://canva.com",
+    "desc": "设计",
+    "icon_url": "i-canva",
+    "is_primary": true
+  },
+  {
+    "title": "LeetCode",
+    "url": "https://leetcode.com",
+    "desc": "开发",
+    "icon_url": "i-code",
+    "is_primary": true
+  }
+]

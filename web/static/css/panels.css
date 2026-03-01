@@ -1,0 +1,23 @@
+/* static/css/panels.css */
+
+.panel {
+    display: none;
+    padding: 1rem;
+}
+
+.panel.active {
+    display: block;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.primary-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.secondary-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}

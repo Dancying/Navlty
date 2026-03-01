@@ -1,20 +1,82 @@
-/* static/css/base.css */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #FAFAFA; /* A lighter, cleaner background */
-    color: #111;
-    margin: 0;
-    padding: 2rem;
+/* static/css/link-card.css */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    padding: 1rem 1.5rem;
     display: flex;
-    justify-content: center;
+    align-items: center; /* This ensures vertical alignment */
+    transition: transform 0.2s, box-shadow 0.2s;
+    max-width: 320px; /* Set a max-width for the cards */
+    text-decoration: none; /* Remove underline from card links */
+    color: inherit; /* Inherit text color */
 }
 
-.container {
-    width: 700px; /* A fixed, centered width for a more focused layout */
-    max-width: 100%;
+a.card:hover {
+    text-decoration: none; /* Ensure underline doesn't appear on hover */
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 15px;
+}
+
+.card .content {
+    display: flex;
+    flex-direction: column;
+}
+
+.card .title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.card .desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.2rem 0 0;
+}
+
+/* Styles for sub-navigation pages */
+.sub-nav .card {
+    height: 30px; /* Reduced height for sub-navigation cards */
+    width: 120px;  /* Reduced width for sub-navigation cards */
+}
+
+.sub-nav .card .content {
+    justify-content: center; /* Center title vertically */
+}
+
+.sub-nav .card .desc {
+    display: none; /* Hide description on sub-navigation pages */
+}
+
+.sub-nav .card .icon {
+    width: 24px; /* Adjust icon size for smaller cards */
+    height: 24px;
+    margin-right: 10px;
+}
+
+/* Panel switching logic */
+.panel {
+    display: none;
+}
+
+.panel.active {
+    display: block;
 }

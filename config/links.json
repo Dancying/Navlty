@@ -1,0 +1,242 @@
+[
+  {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "全能型笔记与项目管理工具，支持数据库协作。",
+    "iconURL": "i-notion"
+  },
+  {
+    "title": "GitHub",
+    "url": "https://github.com",
+    "desc": "全球最大的开源代码托管及协作平台。",
+    "iconURL": "i-github"
+  },
+  {
+    "title": "Figma",
+    "url": "https://figma.com",
+    "desc": "基于浏览器的协作式 UI 界面设计工具。",
+    "iconURL": "i-figma"
+  },
+  {
+    "title": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "desc": "OpenAI 开发的强大人工智能对话模型。",
+    "iconURL": "i-bot"
+  },
+  {
+    "title": "Vercel",
+    "url": "https://vercel.com",
+    "desc": "最快的前端部署平台，完美支持 Next.js。",
+    "iconURL": "i-vercel"
+  },
+  {
+    "title": "Dribbble",
+    "url": "https://dribbble.com",
+    "desc": "全球顶尖设计师展示作品的社交平台。",
+    "iconURL": "i-dribbble"
+  },
+  {
+    "title": "Stack Overflow",
+    "url": "https://stackoverflow.com",
+    "desc": "程序员解决 Bug 和技术交流的必选社区。",
+    "iconURL": "i-stack"
+  },
+  {
+    "title": "Unsplash",
+    "url": "https://unsplash.com",
+    "desc": "高品质免费无版权图片摄影素材库。",
+    "iconURL": "i-unsplash"
+  },
+  {
+    "title": "DeepL",
+    "url": "https://deepl.com",
+    "desc": "号称全球最准确的 AI 翻译神器。",
+    "iconURL": "i-translate"
+  },
+  {
+    "title": "Trello",
+    "url": "https://trello.com",
+    "desc": "看板式任务管理，让工作进度一目了然。",
+    "iconURL": "i-trello"
+  },
+  {
+    "title": "MDN Web",
+    "url": "https://developer.mozilla.org",
+    "desc": "权威的 Web 开发技术文档及标准指南。",
+    "iconURL": "i-mdn"
+  },
+  {
+    "title": "Iconfont",
+    "url": "https://iconfont.cn",
+    "desc": "阿里巴巴矢量图标库，前端开发必备。",
+    "iconURL": "i-iconfont"
+  },
+  {
+    "title": "Slack",
+    "url": "https://slack.com",
+    "desc": "企业级团队沟通平台，集成多种插件。",
+    "iconURL": "i-slack"
+  },
+  {
+    "title": "Redis",
+    "url": "https://redis.io",
+    "desc": "高性能内存键值数据库，常用于缓存。",
+    "iconURL": "i-redis"
+  },
+  {
+    "title": "Behance",
+    "url": "https://behance.net",
+    "desc": "Adobe 旗下的综合性创意作品展示平台。",
+    "iconURL": "i-behance"
+  },
+  {
+    "title": "Youtube",
+    "url": "https://youtube.com",
+    "desc": "全球最大的视频分享平台与搜索引擎。",
+    "iconURL": "i-video"
+  },
+  {
+    "title": "Medium",
+    "url": "https://medium.com",
+    "desc": "高质量的内容创作与知识分享社区。",
+    "iconURL": "i-medium"
+  },
+  {
+    "title": "Product Hunt",
+    "url": "https://producthunt.com",
+    "desc": "每日发布全球最新、最酷的科技产品。",
+    "iconURL": "i-ph"
+  },
+  {
+    "title": "Canva",
+    "url": "https://canva.com",
+    "desc": "在线平面设计工具，内置海量模板。",
+    "iconURL": "i-canva"
+  },
+  {
+    "title": "LeetCode",
+    "url": "https://leetcode.com",
+    "desc": "全球领先的算法练习与编程技术面试平台。",
+    "iconURL": "i-code"
+  },
+  {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "全能型笔记与项目管理工具，支持数据库协作。",
+    "iconURL": "i-notion"
+  },
+  {
+    "title": "GitHub",
+    "url": "https://github.com",
+    "desc": "全球最大的开源代码托管及协作平台。",
+    "iconURL": "i-github"
+  },
+  {
+    "title": "Figma",
+    "url": "https://figma.com",
+    "desc": "基于浏览器的协作式 UI 界面设计工具。",
+    "iconURL": "i-figma"
+  },
+  {
+    "title": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "desc": "OpenAI 开发的强大人工智能对话模型。",
+    "iconURL": "i-bot"
+  },
+  {
+    "title": "Vercel",
+    "url": "https://vercel.com",
+    "desc": "最快的前端部署平台，完美支持 Next.js。",
+    "iconURL": "i-vercel"
+  },
+  {
+    "title": "Dribbble",
+    "url": "https://dribbble.com",
+    "desc": "全球顶尖设计师展示作品的社交平台。",
+    "iconURL": "i-dribbble"
+  },
+  {
+    "title": "Stack Overflow",
+    "url": "https://stackoverflow.com",
+    "desc": "程序员解决 Bug 和技术交流的必选社区。",
+    "iconURL": "i-stack"
+  },
+  {
+    "title": "Unsplash",
+    "url": "https://unsplash.com",
+    "desc": "高品质免费无版权图片摄影素材库。",
+    "iconURL": "i-unsplash"
+  },
+  {
+    "title": "DeepL",
+    "url": "https://deepl.com",
+    "desc": "号称全球最准确的 AI 翻译神器。",
+    "iconURL": "i-translate"
+  },
+  {
+    "title": "Trello",
+    "url": "https://trello.com",
+    "desc": "看板式任务管理，让工作进度一目了然。",
+    "iconURL": "i-trello"
+  },
+  {
+    "title": "MDN Web",
+    "url": "https://developer.mozilla.org",
+    "desc": "权威的 Web 开发技术文档及标准指南。",
+    "iconURL": "i-mdn"
+  },
+  {
+    "title": "Iconfont",
+    "url": "https://iconfont.cn",
+    "desc": "阿里巴巴矢量图标库，前端开发必备。",
+    "iconURL": "i-iconfont"
+  },
+  {
+    "title": "Slack",
+    "url": "https://slack.com",
+    "desc": "企业级团队沟通平台，集成多种插件。",
+    "iconURL": "i-slack"
+  },
+  {
+    "title": "Redis",
+    "url": "https://redis.io",
+    "desc": "高性能内存键值数据库，常用于缓存。",
+    "iconURL": "i-redis"
+  },
+  {
+    "title": "Behance",
+    "url": "https://behance.net",
+    "desc": "Adobe 旗下的综合性创意作品展示平台。",
+    "iconURL": "i-behance"
+  },
+  {
+    "title": "Youtube",
+    "url": "https://youtube.com",
+    "desc": "全球最大的视频分享平台与搜索引擎。",
+    "iconURL": "i-video"
+  },
+  {
+    "title": "Medium",
+    "url": "https://medium.com",
+    "desc": "高质量的内容创作与知识分享社区。",
+    "iconURL": "i-medium"
+  },
+  {
+    "title": "Product Hunt",
+    "url": "https://producthunt.com",
+    "desc": "每日发布全球最新、最酷的科技产品。",
+    "iconURL": "i-ph"
+  },
+  {
+    "title": "Canva",
+    "url": "https://canva.com",
+    "desc": "在线平面设计工具，内置海量模板。",
+    "iconURL": "i-canva"
+  },
+  {
+    "title": "LeetCode",
+    "url": "https://leetcode.com",
+    "desc": "全球领先的算法练习与编程技术面试平台。",
+    "iconURL": "i-code"
+  }
+]

@@ -1,67 +1,60 @@
-/* static/css/panels.css */
-.panel {
-    display: none;
-    animation: fadeIn 0.5s;
-}
+/* static/css/buttons.css */
 
-.panel.active {
-    display: block;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Single column list view */
-    gap: 0.75rem; /* Space between cards */
-}
-
-.card {
-    background-color: #ffffff;
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    padding: 1rem;
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    justify-content: center;
+    transition: background-color 0.2s;
 }
 
-.card:hover {
-    border-color: #c7c7c7;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.icon-button:hover {
+    background-color: rgba(0,0,0,0.05);
 }
 
-.card .icon {
-    width: 32px;
-    height: 32px;
-    margin-right: 1rem;
-    flex-shrink: 0;
+.icon-button i {
+    width: 24px;
+    height: 24px;
+    color: #333;
 }
 
-.card .content {
+.button-container {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    gap: 0.5rem;
 }
 
-.card .title {
+.cancel-button,
+.submit-button {
+    padding: 0.875rem 1.5rem;
     font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
     font-weight: 500;
-    color: #111;
-    margin: 0 0 0.15rem 0;
 }
 
-.card .desc {
-    font-size: 0.875rem;
-    color: #666;
-    margin: 0;
-    display: block; /* Ensure description is always visible */
+.cancel-button {
+    background-color: #f0f0f0;
+    color: #333;
 }
 
-/* Hide description if it's empty to maintain alignment */
-.card .desc:empty {
-    display: none;
+.cancel-button:hover {
+    background-color: #e0e0e0;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.submit-button {
+    color: #fff;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    border: none;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
 }

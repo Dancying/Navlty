@@ -124,20 +124,20 @@
                             </div>
                             <div class="form-group">
                                 <label for="link-title">标题*</label>
-                                <input type="text" id="link-title" name="title" placeholder="例如：Google" required>
+                                <input type="text" id="link-title" name="title" placeholder="Google" required>
                             </div>
                             <div class="form-group">
-                                <label for="link-url">URL*</label>
+                                <label for="link-url">链接*</label>
                                 <input type="url" id="link-url" name="url" placeholder="https://google.com" required>
                             </div>
                             <div class="form-group">
                                 <label for="link-category">分类</label>
-                                <input type="text" id="link-category" name="category" placeholder="例如：搜索引擎">
+                                <input type="text" id="link-category" name="category" placeholder="搜索引擎">
                             </div>
                             <div class="form-group">
-                                <label for="link-icon">图标 URL</label>
+                                <label for="link-icon">图标</label>
                                 <div class="input-with-button">
-                                    <input type="text" id="link-icon" name="icon" placeholder="输入或上传图标">
+                                    <input type="text" id="link-icon" name="icon" placeholder="输入图标链接地址或直接上传">
                                     <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -161,7 +161,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="bulk-links">批量链接 (一行一个)</label>
+                                <label for="bulk-links">批量链接</label>
                                 <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
                                 <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
                             </div>
@@ -201,7 +201,7 @@
                             <div class="form-group">
                                 <label for="site-icon">站点图标</label>
                                 <div class="input-with-button">
-                                    <input type="text" id="site-icon" name="siteIcon" placeholder="输入或上传站点图标的 URL">
+                                    <input type="text" id="site-icon" name="siteIcon" placeholder="输入图标链接地址或直接上传">
                                     <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -211,9 +211,9 @@
                                 <input type="text" id="site-title" name="siteTitle" value="{{.SiteTitle}}" placeholder="显示在主页的标题">
                             </div>
                             <div class="form-group">
-                                <label for="avatar-url">头像 URL</label>
+                                <label for="avatar-url">网站头像</label>
                                 <div class="input-with-button">
-                                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="输入或上传头像的 URL">
+                                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="输入头像链接地址或直接上传">
                                     <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -224,9 +224,9 @@
                     <div id="style-settings-tab" class="tab-content">
                         <div class="form-grid" style="margin-top: 1.5rem;">
                             <div class="form-group span-two">
-                                <label for="background-url">背景图片 URL</label>
+                                <label for="background-url">背景图片</label>
                                  <div class="input-with-button">
-                                    <input type="text" id="background-url" name="backgroundURL" placeholder="输入背景图片链接地址">
+                                    <input type="text" id="background-url" name="backgroundURL" placeholder="输入背景图片链接地址或直接上传">
                                     <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
@@ -245,12 +245,13 @@
                     <div id="advanced-settings-tab" class="tab-content">
                          <div class="form-grid" style="margin-top: 1.5rem;">
                             <div class="form-group span-two">
-                                <label for="custom-css">自定义 CSS</label>
-                                <textarea id="custom-css" name="customCSS" rows="10" placeholder="在此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
+                                <label for="custom-css">外部 CSS</label>
+                                <textarea id="custom-css" name="customCSS" rows="10" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
                             </div>
                             <div class="form-group span-two">
-                                <label for="external-js">外部 JS (回车换行)</label>
-                                <textarea id="external-js" name="externalJS" rows="10" placeholder="例如：https://example.com/script.js&#10;https://another.com/script.js">{{.ExternalJSStr}}</textarea>
+                                <label for="external-js">外部 JS</label>
+                                <textarea id="external-js" name="externalJS" rows="10" placeholder="https://example.com/script.js
+https://another.com/script.js">{{.ExternalJSStr}}</textarea>
                             </div>
                         </div>
                     </div>

@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -19,7 +18,7 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templatePath := filepath.Join("web", "templates", "index.html")
+	templatePath := "index.html"
 	t, err := template.New("index.html").Funcs(template.FuncMap{
 		"safeCSS":   func(s string) template.CSS { return template.CSS(s) },
 		"safeJS":    func(s string) template.JS { return template.JS(s) },

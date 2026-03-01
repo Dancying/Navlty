@@ -123,11 +123,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleBulkLinks() {
-        const lines = document.getElementById('bulk-links').value.split('\n').filter(line => line.trim() !== '');
+        const bulkLinksInput = document.getElementById('bulk-links');
+        bulkLinksInput.classList.remove('input-error');
+
+        const lines = bulkLinksInput.value.split('\n').filter(line => line.trim() !== '');
         if (lines.length === 0) {
-            alert('请输入至少一个链接。');
+            bulkLinksInput.classList.add('input-error');
             return;
         }
+
         const panel = document.querySelector('input[name="switch_panel_bulk"]:checked').value;
         const newLinks = lines.map(line => {
             const [title, url, category, icon, description] = line.split('|').map(part => part.trim());

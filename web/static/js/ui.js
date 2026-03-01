@@ -21,6 +21,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     };
 
+    // --- Text Overflow Check ---
+    function checkDescriptionOverflow() {
+        document.querySelectorAll('.card').forEach(card => {
+            const desc = card.querySelector('.desc');
+            // Reset the class first
+            card.classList.remove('scrolling-desc');
+            // Check if the content is actually overflowing
+            if (desc && desc.scrollWidth > desc.clientWidth) {
+                card.classList.add('scrolling-desc');
+            }
+        });
+    }
+
     // --- Apply Settings Logic ---
     function applySettings(settings) {
         // Update site name and title
@@ -62,6 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(customCSSStyle);
         }
         customCSSStyle.innerHTML = settings.customCSS || '';
+        
+        // Re-check overflow after applying settings that might change layout
+        checkDescriptionOverflow();
     }
 
     // --- Handler Functions ---
@@ -302,13 +318,4 @@ document.addEventListener('DOMContentLoaded', function() {
         applySettings(settings);
         checkDescriptionOverflow();
     });
-
-    function checkDescriptionOverflow() {
-        document.querySelectorAll('.card').forEach(card => {
-            const desc = card.querySelector('.desc');
-            if (desc.scrollWidth > desc.clientWidth) {
-                card.classList.add('scrolling-desc');
-            }
-        });
-    }
 });

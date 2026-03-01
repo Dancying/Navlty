@@ -1,25 +1,35 @@
 /* static/css/link-card.css */
 
 .card-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid; /* Base grid container */
     gap: 1.5rem;
 }
+
+/* Rule for the Primary Panel: Strictly obeys the --cards-per-row from settings */
+#primary-panel .card-container {
+    grid-template-columns: repeat(var(--cards-per-row, 4), 1fr);
+}
+
+/* Rule for the Secondary Panel: Creates a grid of fixed-width cards that wraps */
+#secondary-panel .card-container {
+    /* Uses auto-fill to keep card widths consistent, as requested */
+    grid-template-columns: repeat(auto-fill, 200px);
+}
+
 
 .card {
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
     padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
+    display: flex;       /* This flex is for the card's internal content (icon + text) */
+    align-items: center; /* It vertically centers the icon and text block */
     transition: transform 0.2s, box-shadow 0.2s;
     height: 80px;
     text-decoration: none;
     color: inherit;
-    overflow: hidden;
-    flex: 1 1 calc(100% / var(--cards-per-row, 4) - 1.5rem);
     box-sizing: border-box;
+    min-width: 0; /* CRITICAL FIX: Prevents card from expanding to fit its oversized content */
 }
 
 a.card:hover {
@@ -31,7 +41,7 @@ a.card:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.card.scrolling-desc:hover .desc {
+.card.scrolling-desc:hover .desc span {
     animation: scroll 10s linear infinite;
 }
 
@@ -45,7 +55,7 @@ a.card:hover {
 
 .card .content {
     overflow: hidden;
-    min-width: 0; 
+    min-width: 0;
 }
 
 .card .title {
@@ -63,8 +73,10 @@ a.card:hover {
     color: #333;
     margin-top: 4px; /* Adjust as needed */
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
+}
+
+.card .desc span {
+    display: inline-block;
     transform: translateX(0);
 }
 
@@ -72,16 +84,17 @@ a.card:hover {
     0% {
         transform: translateX(0);
     }
+    50% {
+        transform: translateX(calc(50px - 100%));
+    }
     100% {
-        transform: translateX(-100%);
+        transform: translateX(0);
     }
 }
 
 /* Styles for sub-navigation pages */
 .sub-nav .card {
     height: 48px; /* Set fixed height to 48px */
-    flex: 1 1 250px; /* Allow growing from a base size */
-    max-width: 200px; /* But prevent growing too wide */
 }
 
 .sub-nav .card .desc {
@@ -93,6 +106,13 @@ a.card:hover {
     height: 24px;
     margin-right: 10px;
 }
+
+.sub-nav .card .content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
 
 /* Panel switching logic */
 .panel {

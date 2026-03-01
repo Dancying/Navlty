@@ -38,6 +38,8 @@
     object-fit: cover;
     border: 3px solid #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: transparent; /* Prevent flash of white on reload */
+    font-size: 0; /* Hide broken image icon in some browsers */
 }
 
 .header .site-title {

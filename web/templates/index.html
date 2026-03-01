@@ -3,24 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.SiteTitle}}</title>
+    <title>{{.SiteName}}</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
         :root {
             --cards-per-row: {{.CardsPerRow}};
+            --background-url: "";
+            --background-blur: 0;
         }
-        body { margin: 0; }
+        body { 
+            margin: 0; 
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background-image: var(--background-url);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(var(--background-blur));
+        }
         {{.CSS | safeCSS}}
     </style>
     <link rel="stylesheet" href="/static/css/slider.css">
-    {{if .CustomCSS}}<style>{{.CustomCSS | safeCSS}}</style>{{end}}
+    {{if .CustomCSS}}<style id="custom-css-style">{{.CustomCSS | safeCSS}}</style>{{end}}
 </head>
 <body>
     <div class="header-background">
         <div class="container">
             <header class="header">
                 <div class="header-left">
-                    {{if .AvatarURL}}<img src="{{.AvatarURL}}" alt="Avatar" class="avatar">{{end}}
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;"{{end}}>
                     <h1 class="site-title">{{.SiteTitle}}</h1>
                 </div>
                 <div class="button-container">
@@ -180,10 +196,10 @@
                                 <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
                             </div>
                             <div class="form-group">
-                                <label for="site-icon">站点图标 URL</label>
+                                <label for="site-icon">站点图标</label>
                                 <div class="input-with-button">
                                     <input type="text" id="site-icon" name="siteIcon" placeholder="输入或上传站点图标的 URL">
-                                    <button type="button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
                             </div>
@@ -195,7 +211,7 @@
                                 <label for="avatar-url">头像 URL</label>
                                 <div class="input-with-button">
                                     <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="输入或上传头像的 URL">
-                                    <button type="button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
                             </div>
@@ -208,7 +224,7 @@
                                 <label for="background-url">背景图片 URL</label>
                                  <div class="input-with-button">
                                     <input type="text" id="background-url" name="backgroundURL" placeholder="输入背景图片链接地址">
-                                    <button type="button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                    <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                     <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
                                 </div>
                             </div>

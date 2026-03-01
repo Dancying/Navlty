@@ -5,12 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 // RenderPage renders the main HTML page.
@@ -71,18 +69,19 @@ func getSettings(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveSettings(w http.ResponseWriter, r *http.Request) {
-	var newSettings Config
-	if err := json.NewDecoder(r.Body).Decode(&newSettings); err != nil {
-		http.Error(w, "Error decoding request body: "+err.Error(), http.StatusBadRequest)
-		return
-	}
+    var newSettings Config
+    if err := json.NewDecoder(r.Body).Decode(&newSettings); err != nil {
+        http.Error(w, "Error decoding request body: "+err.Error(), http.StatusBadRequest)
+        return
+    }
 
-	if err := SaveSettings(&newSettings); err != nil {
-		http.Error(w, "Error saving settings: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
+    if err := SaveSettings(&newSettings); err != nil {
+        http.Error(w, "Error saving settings: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
 
-	w.WriteHeader(http.StatusOK)
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }
 
 // HandleBulkAddLinks handles the bulk addition of new links.
@@ -112,54 +111,4 @@ func HandleBulkAddLinks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-}
-
-// HandleIconUpload handles file uploads for icons.
-func HandleIconUpload(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	if err := r.ParseMultipartForm(10 << 20); err != nil { // 10 MB limit
-		http.Error(w, "Error parsing multipart form", http.StatusInternalServerError)
-		return
-	}
-
-	file, handler, err := r.FormFile("icon")
-	if err != nil {
-		http.Error(w, "Error retrieving the file", http.StatusInternalServerError)
-		return
-	}
-	defer file.Close()
-
-	uploadDir := filepath.Join("web", "static", "uploads")
-	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
-		if err := os.MkdirAll(uploadDir, 0755); err != nil {
-			http.Error(w, "Error creating upload directory", http.StatusInternalServerError)
-			return
-		}
-	}
-
-	filename := fmt.Sprintf("%d_%s", time.Now().UnixNano(), filepath.Base(handler.Filename))
-	dstPath := filepath.Join(uploadDir, filename)
-
-	dst, err := os.Create(dstPath)
-	if err != nil {
-		http.Error(w, "Error creating the file", http.StatusInternalServerError)
-		return
-	}
-	defer dst.Close()
-
-	if _, err := io.Copy(dst, file); err != nil {
-		http.Error(w, "Error copying the file", http.StatusInternalServerError)
-		return
-	}
-
-	url := filepath.ToSlash(filepath.Join("/static", "uploads", filename))
-
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(map[string]string{"url": url}); err != nil {
-		http.Error(w, "Error encoding response", http.StatusInternalServerError)
-	}
 }

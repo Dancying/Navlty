@@ -40,11 +40,11 @@ type Link struct {
 }
 
 const (
-	configDir      = "config"
-	settingsFile   = "config.json"
-	linksFile      = "links.json"
-	staticCSSDir   = "web/css"
-	staticJSDir    = "web/js"
+	configDir    = "config"
+	settingsFile = "config.json"
+	linksFile    = "links.json"
+	staticCSSDir = "web/css"
+	staticJSDir  = "web/js"
 )
 
 // LoadSettings reads and unmarshals the config.json file.

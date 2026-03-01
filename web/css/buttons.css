@@ -3,6 +3,8 @@
 .button-container {
     display: flex;
     gap: 0.75rem;
+    align-items: center;
+    position: relative;
 }
 
 .icon-button {
@@ -17,6 +19,8 @@
     cursor: pointer;
     color: #333;
     transition: background-color 0.2s, color 0.2s;
+    position: relative;
+    z-index: 2;
 }
 
 .icon-button:hover {

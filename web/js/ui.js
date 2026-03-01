@@ -275,12 +275,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            document.querySelectorAll('.modal.active').forEach(modal => modal.classList.remove('active'));
-        }
-    });
-
     document.getElementById('toggle-panel-button')?.addEventListener('click', () => {
         document.getElementById('primary-panel')?.classList.toggle('active');
         document.getElementById('secondary-panel')?.classList.toggle('active');
@@ -338,6 +332,94 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // --- Search Logic ---
+    const searchWrapper = document.getElementById('search-wrapper');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+
+    const showSearch = () => {
+        searchWrapper.classList.add('active');
+        searchInput.focus();
+    };
+
+    const hideSearch = () => {
+        searchWrapper.classList.remove('active');
+        searchInput.value = '';
+        searchInput.blur(); // Remove focus from the input
+        clearSearch();
+    };
+
+    searchButton.addEventListener('click', () => {
+        if (searchWrapper.classList.contains('active')) {
+            hideSearch();
+        } else {
+            showSearch();
+        }
+    });
+
+    searchInput.addEventListener('input', performSearch);
+
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase();
+        if (searchTerm.trim() === '') {
+            clearSearch();
+            return;
+        }
+
+        const activePanel = document.querySelector('.panel.active');
+        const isPrimary = activePanel.id === 'primary-panel';
+
+        activePanel.querySelectorAll('.card-container').forEach(container => {
+            let categoryHasVisibleCards = false;
+            container.querySelectorAll('.card').forEach(card => {
+                const title = card.querySelector('.title').textContent.toLowerCase();
+                const url = card.href.toLowerCase();
+                const desc = isPrimary ? (card.querySelector('.desc span')?.textContent.toLowerCase() || '') : '';
+
+                const isMatch = title.includes(searchTerm) || url.includes(searchTerm) || (isPrimary && desc.includes(searchTerm));
+                
+                card.style.display = isMatch ? '' : 'none';
+                if (isMatch) {
+                    categoryHasVisibleCards = true;
+                }
+            });
+
+            const categoryTitle = container.previousElementSibling;
+            if (categoryTitle && categoryTitle.classList.contains('category-title')) {
+                categoryTitle.style.display = categoryHasVisibleCards ? '' : 'none';
+            }
+        });
+    }
+
+    function clearSearch() {
+        document.querySelectorAll('.panel.active .card').forEach(card => {
+            card.style.display = '';
+        });
+        document.querySelectorAll('.panel.active .category-title').forEach(title => {
+            title.style.display = '';
+        });
+    }
+
+    // --- Global Keydown Listener ---
+    window.addEventListener('keydown', (event) => {
+        // Escape key for modals and search
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(modal => modal.classList.remove('active'));
+            if (searchWrapper.classList.contains('active')) {
+                hideSearch();
+            }
+        }
+
+        // Slash key to open search
+        if (event.key === '/') {
+            const activeElement = document.activeElement.tagName.toLowerCase();
+            if (activeElement !== 'input' && activeElement !== 'textarea') {
+                event.preventDefault();
+                showSearch();
+            }
+        }
+    });
     
     // --- Initial Load ---
     fetch('/api/settings').then(r => r.json()).then(settings => {

@@ -1,6 +1,14 @@
 {
- "siteTitle": "Navlty Dashboard",
- "avatarURL": "",
- "customCSS": "",
- "externalJS": null
+  "siteName": "1123",
+  "siteIcon": "",
+  "siteTitle": "Navlty Dashboard",
+  "avatarURL": "7788",
+  "backgroundURL": "",
+  "backgroundBlur": 12,
+  "cardsPerRow": 8,
+  "customCSS": "",
+  "externalJS": [
+    "111",
+    "222"
+  ]
 }

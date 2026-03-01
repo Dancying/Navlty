@@ -12,15 +12,17 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
     padding: 1rem 1.5rem;
     display: flex;
-    align-items: center; /* This ensures vertical alignment */
+    align-items: center;
     transition: transform 0.2s, box-shadow 0.2s;
-    max-width: 320px; /* Set a max-width for the cards */
-    text-decoration: none; /* Remove underline from card links */
-    color: inherit; /* Inherit text color */
+    width: 280px;
+    height: 100px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
 }
 
 a.card:hover {
-    text-decoration: none; /* Ensure underline doesn't appear on hover */
+    text-decoration: none;
 }
 
 
@@ -33,11 +35,14 @@ a.card:hover {
     width: 32px;
     height: 32px;
     margin-right: 15px;
+    flex-shrink: 0;
 }
 
 .card .content {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    width: 100%;
 }
 
 .card .title {
@@ -50,7 +55,24 @@ a.card:hover {
     font-size: 0.9rem;
     color: #666;
     margin: 0.2rem 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
+.card.is-overflowing:hover .desc {
+    animation: scroll-text 3s ease-in-out alternate infinite;
+}
+
+@keyframes scroll-text {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(calc(185px - 100%));
+    }
+}
+
 
 /* Styles for sub-navigation pages */
 .sub-nav .card {

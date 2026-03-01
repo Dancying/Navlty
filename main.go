@@ -8,16 +8,13 @@ import (
 )
 
 func main() {
-	// Initial load of data
-	if err := internal.LoadData(); err != nil {
-		log.Fatalf("Failed to load data: %v", err)
-	}
+	// No initial data load needed, as data is loaded on each request.
 
 	// Setup HTTP server
 	http.HandleFunc("/", internal.RenderPage)
-	http.HandleFunc("/api/save", internal.SaveData)
+	http.HandleFunc("/api/settings", internal.HandleSettings) // New route for settings
     http.HandleFunc("/api/links/bulk", internal.HandleBulkAddLinks)
-    http.HandleFunc("/api/upload/icon", internal.HandleIconUpload) // New route
+    http.HandleFunc("/api/upload/icon", internal.HandleIconUpload)
 
 	// Serve static files
 	fs := http.FileServer(http.Dir("web/static"))

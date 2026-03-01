@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const openModal = function(modal) {
         if (modal) {
+            // Calculate scrollbar width and apply padding
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            const bodyHasScrollbar = document.body.scrollHeight > window.innerHeight;
+
+            if (bodyHasScrollbar) {
+                document.body.style.paddingRight = `${scrollbarWidth}px`;
+                const headerBackground = document.querySelector('.header-background');
+                if (headerBackground) {
+                    headerBackground.style.paddingRight = `${scrollbarWidth}px`;
+                }
+            }
+            
             modal.style.display = 'block';
             centerModal(modal);
             modal.classList.add('show');
@@ -26,9 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeModal = function(modal) {
         if (modal) {
             modal.classList.remove('show');
+
+            // Remove padding and class after transition
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.classList.remove('modal-open');
+                document.body.style.paddingRight = '';
+                const headerBackground = document.querySelector('.header-background');
+                if (headerBackground) {
+                    headerBackground.style.paddingRight = '';
+                }
             }, 200);
         }
     };

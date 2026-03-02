@@ -1,63 +1,69 @@
-/* static/css/link-card.css */
+/* web/css/links.css */
 
+/* 链接卡片的网格容器 */
 .card-container {
-    display: grid; /* Base grid container */
+    display: grid;
     gap: 1.5rem;
 }
 
-/* Rule for the Primary Panel: Strictly obeys the --cards-per-row from settings */
+/* 主面板（#primary-panel）中的链接卡片容器 */
 #primary-panel .card-container {
     grid-template-columns: repeat(var(--cards-per-row, 4), 1fr);
 }
 
-/* Rule for the Secondary Panel: Creates a grid of fixed-width cards that wraps */
+/* 次要面板（#secondary-panel）中的链接卡片容器 */
 #secondary-panel .card-container {
-    /* Uses auto-fill to keep card widths consistent, as requested */
     grid-template-columns: repeat(auto-fill, 200px);
 }
 
-
+/* 链接卡片的基本样式 */
 .card {
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
     padding: 1rem 1.5rem;
-    display: flex;       /* This flex is for the card's internal content (icon + text) */
-    align-items: center; /* It vertically centers the icon and text block */
+    display: flex;
+    align-items: center;
     transition: transform 0.2s, box-shadow 0.2s;
     height: 80px;
     text-decoration: none;
     color: inherit;
     box-sizing: border-box;
-    min-width: 0; /* CRITICAL FIX: Prevents card from expanding to fit its oversized content */
+    min-width: 0;
 }
 
+/* 链接卡片（作为<a>标签时）的悬浮效果 */
 a.card:hover {
     text-decoration: none;
 }
 
+/* 链接卡片悬浮时的变换和阴影效果 */
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* 当链接卡片有.scrolling-desc类时，鼠标悬浮在其上时，其描述文字的滚动动画 */
 .card.scrolling-desc:hover .desc span {
     animation: scroll 10s linear infinite;
 }
 
+/* 链接卡片中的图标 */
 .card .icon {
     width: 48px;
     height: 48px;
     margin-right: 15px;
     flex-shrink: 0;
-    color: #00a1f1; /* Sky blue color */
+    color: #00a1f1;
 }
 
+/* 链接卡片中的内容区域 */
 .card .content {
     overflow: hidden;
     min-width: 0;
 }
 
+/* 链接卡片中的标题 */
 .card .title {
     font-weight: 600;
     font-size: 1.1rem;
@@ -65,9 +71,10 @@ a.card:hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #00a1f1; /* Sky blue color */
+    color: #00a1f1;
 }
 
+/* 链接卡片中的描述 */
 .card .desc {
     font-size: 0.9rem;
     color: #333;
@@ -75,11 +82,13 @@ a.card:hover {
     white-space: nowrap;
 }
 
+/* 链接卡片中描述的文本容器 */
 .card .desc span {
     display: inline-block;
     transform: translateX(0);
 }
 
+/* 描述文本的横向滚动动画 */
 @keyframes scroll {
     from {
         transform: translateX(0);
@@ -89,21 +98,24 @@ a.card:hover {
     }
 }
 
-/* Styles for sub-navigation pages */
+/* 次要面板（.sub-nav）中链接卡片的特殊样式 */
 .sub-nav .card {
-    height: 56px; /* Set fixed height to 48px */
+    height: 56px;
 }
 
+/* 次要面板（.sub-nav）中链接卡片的描述（不显示） */
 .sub-nav .card .desc {
     display: none;
 }
 
+/* 次要面板（.sub-nav）中链接卡片的图标 */
 .sub-nav .card .icon {
     width: 24px;
     height: 24px;
     margin-right: 10px;
 }
 
+/* 次要面板（.sub-nav）中链接卡片的内容区域 */
 .sub-nav .card .content {
     display: flex;
     align-items: center;
@@ -111,11 +123,12 @@ a.card:hover {
 }
 
 
-/* Panel switching logic */
+/* 面板容器（例如 #primary-panel 和 #secondary-panel） */
 .panel {
     display: none;
 }
 
+/* 当前激活的面板 */
 .panel.active {
     display: block;
 }

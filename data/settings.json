@@ -5,7 +5,7 @@
   "avatarURL": "",
   "backgroundURL": "",
   "backgroundBlur": 8,
-  "cardsPerRow": 1,
+  "cardsPerRow": 3,
   "customCSS": "",
-  "externalJS": null
+  "externalJS": []
 }

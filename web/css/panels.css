@@ -1,23 +1,122 @@
-/* static/css/panels.css */
+/* web/css/panels.css */
 
+/* 主面板（#primary-panel）和次要面板（#secondary-panel）的容器 */
 .panel {
     display: none;
     padding: 1rem;
 }
 
+/* 当前激活的面板（主面板或次要面板） */
 .panel.active {
     display: block;
 }
 
+/* 通用的网格布局（未使用） */
 .grid {
     display: grid;
     gap: 1rem;
 }
 
+/* 主网格布局（未使用，实际由 #primary-panel .card-container 定义） */
 .primary-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
+/* 次要网格布局（未使用，实际由 #secondary-panel .card-container 定义） */
 .secondary-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+/* 页面主要内容的居中容器 */
+.container {
+    width: 84%;
+    margin: 0 auto;
+}
+
+/* 页面顶部的粘性页眉背景 */
+.header-background {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 1000;
+    background-color: rgba(229, 231, 235, 0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+/* 页眉内容的容器，位于 .header-background 内 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* 页眉左侧区域，包含头像和网站标题 */
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+/* 页眉中的网站头像 */
+.header .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    font-size: 0;
+}
+
+/* 页眉中的网站主标题 */
+.header .site-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0 1rem;
+}
+
+/* 页眉右侧的搜索框容器，点击后展开 */
+.search-wrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    transition: width 0.3s ease-in-out;
+}
+
+/* 搜索输入框，默认隐藏 */
+.search-input {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+    padding: 0 45px 0 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* 展开状态下的搜索框容器 */
+.search-wrapper.active {
+    width: 250px;
+}
+
+/* 展开状态下的搜索输入框，变为可见 */
+.search-wrapper.active .search-input {
+    opacity: 1;
+}
+
+/* 搜索按钮，位于搜索框内 */
+#search-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
 }

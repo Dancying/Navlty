@@ -14,5 +14,245 @@
     "icon_url": "https://api.iconify.design/logos/github-icon.svg",
     "panel": "primary",
     "category": "Demo"
+  },
+  {
+    "title": "React",
+    "url": "https://react.dev",
+    "desc": "A JavaScript library for building user interfaces.",
+    "icon_url": "code",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Vue.js",
+    "url": "https://vuejs.org",
+    "desc": "The Progressive JavaScript Framework.",
+    "icon_url": "code",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Next.js",
+    "url": "https://nextjs.org",
+    "desc": "The React Framework for the Web.",
+    "icon_url": "cpu",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "TypeScript",
+    "url": "https://www.typescriptlang.org",
+    "desc": "JavaScript with syntax for types.",
+    "icon_url": "type",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Tailwind CSS",
+    "url": "https://tailwindcss.com",
+    "desc": "Rapidly build modern websites without ever leaving your HTML.",
+    "icon_url": "layout",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Vite",
+    "url": "https://vitejs.dev",
+    "desc": "Next generation frontend tooling.",
+    "icon_url": "zap",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Node.js",
+    "url": "https://nodejs.org",
+    "desc": "JavaScript runtime built on Chrome's V8 engine.",
+    "icon_url": "server",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "pnpm",
+    "url": "https://pnpm.io",
+    "desc": "Fast, disk space efficient package manager.",
+    "icon_url": "package",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Adob​​e Color",
+    "url": "https://color.adobe.com",
+    "desc": "Create color palettes with the color wheel or images.",
+    "icon_url": "dropper",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Pinterest",
+    "url": "https://pinterest.com",
+    "desc": "Discover recipes, home ideas, style inspiration and other ideas.",
+    "icon_url": "image",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Pexels",
+    "url": "https://pexels.com",
+    "desc": "The best free stock photos, royalty free images \u0026 videos.",
+    "icon_url": "camera",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Flaticon",
+    "url": "https://flaticon.com",
+    "desc": "Download Free Icons and Stickers for your projects.",
+    "icon_url": "grid",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Muzli",
+    "url": "https://muz.li",
+    "desc": "Designers' Secret Source for inspiration.",
+    "icon_url": "eye",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Mobbin",
+    "url": "https://mobbin.com",
+    "desc": "Discover the best mobile and web design patterns.",
+    "icon_url": "smartphone",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Framer",
+    "url": "https://framer.com",
+    "desc": "Design and ship your dream site. Zero code, maximum speed.",
+    "icon_url": "layers",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Claude",
+    "url": "https://claude.ai",
+    "desc": "Next-generation AI assistant by Anthropic.",
+    "icon_url": "message-square",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Gemini",
+    "url": "https://gemini.google.com",
+    "desc": "Google's largest and most capable AI model.",
+    "icon_url": "star",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Midjourney",
+    "url": "https://midjourney.com",
+    "desc": "An independent research lab exploring new mediums of thought.",
+    "icon_url": "aperture",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Hugging Face",
+    "url": "https://huggingface.co",
+    "desc": "The AI community building the future.",
+    "icon_url": "smile",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Perplexity",
+    "url": "https://perplexity.ai",
+    "desc": "A conversational AI search engine that delivers answers.",
+    "icon_url": "search",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Copilot",
+    "url": "https://github.com/features/copilot",
+    "desc": "Your AI pair programmer, powered by GitHub and OpenAI.",
+    "icon_url": "terminal",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Mistral AI",
+    "url": "https://mistral.ai",
+    "desc": "Frontier AI in your hands with open-weight models.",
+    "icon_url": "activity",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Spotify",
+    "url": "https://spotify.com",
+    "desc": "Digital music service that gives you access to millions of songs.",
+    "icon_url": "music",
+    "panel": "secondary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Netflix",
+    "url": "https://netflix.com",
+    "desc": "Watch TV shows and movies online or stream right to your smart TV.",
+    "icon_url": "tv",
+    "panel": "secondary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Twitch",
+    "url": "https://twitch.tv",
+    "desc": "The world's leading live streaming platform for gamers.",
+    "icon_url": "video",
+    "panel": "secondary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Steam",
+    "url": "https://store.steampowered.com",
+    "desc": "The ultimate destination for playing, discussing, and creating games.",
+    "icon_url": "play",
+    "panel": "secondary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Notion Calendar",
+    "url": "https://notion.so/product/calendar",
+    "desc": "The calendar for your work and life.",
+    "icon_url": "calendar",
+    "panel": "secondary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Obsidian",
+    "url": "https://obsidian.md",
+    "desc": "A second brain, for you, forever.",
+    "icon_url": "file-text",
+    "panel": "secondary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Cron",
+    "url": "https://cron.com",
+    "desc": "Next-generation calendar for professionals and teams.",
+    "icon_url": "clock",
+    "panel": "secondary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Arc Browser",
+    "url": "https://arc.net",
+    "desc": "The browser that helps you organize your internet.",
+    "icon_url": "compass",
+    "panel": "secondary",
+    "category": "Productivity"
   }
 ]

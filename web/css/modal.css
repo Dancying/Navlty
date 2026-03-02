@@ -97,7 +97,7 @@ body.modal-open {
     color: #333;
 }
 
-/* Toast 消息（例如“保存成功”）的容器 */
+/* Toast 消息的容器 - 顶部居中 */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -107,36 +107,48 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
 }
 
-/* Toast 消息的基本样式 */
+/* Toast 消息的现代化样式 */
 .toast {
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    color: #1f2937;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    min-width: 280px;
+    max-width: 400px;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    transform: translateY(-20px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-50px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 当 Toast 消息具有 .show 类时的动画效果 */
+/* Toast 图标样式 */
+.toast-icon {
+    margin-right: 12px;
+}
+
+/* Toast 显示时的动画效果 */
 .toast.show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* 成功类型的 Toast 消息（绿色背景） */
-.toast.success {
-    background-color: #04cf6a;
+/* 成功类型的 Toast */
+.toast.success .toast-icon {
+    color: #10b981;
 }
 
-/* 错误类型的 Toast 消息（红色背景） */
-.toast.error {
-    background-color: #dc3545;
+/* 错误类型的 Toast */
+.toast.error .toast-icon {
+    color: #ef4444;
 }
+
 
 /* 表单的网格布局容器，例如“添加链接”和“网站设置”中的表单 */
 .form-grid {
@@ -395,7 +407,7 @@ body.modal-open {
     color: #333;
 }
 
-/* 次要操作按钮在鼠标悬浮时的样式 */
+/* 次要操作按钮在鼠标悬仿时的样式 */
 .btn-secondary:hover {
     background-color: #dae0e5;
 }

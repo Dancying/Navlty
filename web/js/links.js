@@ -60,7 +60,7 @@ App.links = (function() {
             panel: panel,
             category: document.getElementById('link-category').value || '默认',
             desc: document.getElementById('link-description').value,
-            icon_url: document.getElementById('link-icon').value,
+            icon_url: document.getElementById('link-icon').value || 'globe',
         };
 
         submitLinks([newLink]);
@@ -82,7 +82,7 @@ App.links = (function() {
             // 格式: 标题|链接|分类|图标|描述
             const [title, url, category, icon, description] = line.split('|').map(part => part.trim());
             if (!title || !url) return null;
-            return { title, url, panel, category: category || '默认', icon_url: icon, desc: description };
+            return { title, url, panel, category: category || '默认', icon_url: icon || 'globe', desc: description };
         }).filter(link => link !== null);
 
         if (newLinks.length === 0) {

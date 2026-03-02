@@ -254,5 +254,29 @@
     "icon_url": "compass",
     "panel": "secondary",
     "category": "Productivity"
+  },
+  {
+    "title": "111",
+    "url": "222",
+    "desc": "",
+    "icon_url": "",
+    "panel": "primary",
+    "category": "默认"
+  },
+  {
+    "title": "222",
+    "url": "333",
+    "desc": "",
+    "icon_url": "globe",
+    "panel": "primary",
+    "category": "默认"
+  },
+  {
+    "title": "Test",
+    "url": "111",
+    "desc": "",
+    "icon_url": "globe",
+    "panel": "primary",
+    "category": "默认"
   }
 ]

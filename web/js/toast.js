@@ -26,9 +26,23 @@ App.toast = (function() {
         // 创建 toast 元素
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
-        toast.textContent = message;
+
+        // 根据类型选择图标
+        const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+
+        // 设置 Toast 的 HTML 内容，包含图标和消息
+        toast.innerHTML = `
+            <i class="toast-icon" data-feather="${icon}"></i>
+            <span>${message}</span>
+        `;
 
         toastContainer.appendChild(toast);
+
+        // 替换新添加的 feather 图标
+        feather.replace({
+            width: '22px',
+            height: '22px'
+        });
 
         // 动画：淡入
         setTimeout(() => {
@@ -38,6 +52,7 @@ App.toast = (function() {
         // 动画：3秒后淡出并移除
         setTimeout(() => {
             toast.classList.remove('show');
+            // 在动画结束后再移除元素
             toast.addEventListener('transitionend', () => toast.remove());
         }, 3000);
     }

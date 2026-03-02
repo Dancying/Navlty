@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Google",
+    "url": "https://www.google.com",
+    "desc": "The world's most popular search engine.",
+    "icon_url": "https://api.iconify.design/logos/google-icon.svg",
+    "panel": "primary",
+    "category": "Demo"
+  },
+  {
+    "title": "GitHub",
+    "url": "https://www.github.com",
+    "desc": "Platform for software development and version control.",
+    "icon_url": "https://api.iconify.design/logos/github-icon.svg",
+    "panel": "primary",
+    "category": "Demo"
+  }
+]

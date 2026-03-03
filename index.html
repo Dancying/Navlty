@@ -41,10 +41,10 @@
     <div class="container">
         <main>
             <div id="primary-panel" class="panel active">
-                {{range $category, $links := .PrimaryLinks}}
-                    <h2 class="category-title">{{$category}}</h2>
+                {{range .PrimaryLinks}}
+                    <h2 class="category-title">{{.Name}}</h2>
                     <div class="card-container">
-                        {{range $links}}
+                        {{range .Links}}
                         <a href="{{.URL}}" target="_blank" class="card">
                             {{if isURLOrBase64 .IconURL}}
                                 <img src="{{.IconURL}}" class="icon"/>
@@ -64,10 +64,10 @@
             </div>
 
             <div id="secondary-panel" class="panel sub-nav">
-                 {{range $category, $links := .SecondaryLinks}}
-                    <h2 class="category-title">{{$category}}</h2>
+                 {{range .SecondaryLinks}}
+                    <h2 class="category-title">{{.Name}}</h2>
                     <div class="card-container">
-                        {{range $links}}
+                        {{range .Links}}
                         <a href="{{.URL}}" target="_blank" class="card">
                            {{if isURLOrBase64 .IconURL}}
                                 <img src="{{.IconURL}}" class="icon"/>

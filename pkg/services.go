@@ -26,23 +26,44 @@ func LoadPageData() *PageData {
 	return pageData
 }
 
-// processLinks 加载链接并将其分类到不同的面板。
-func processLinks() (map[string][]Link, map[string][]Link) {
+// processLinks 加载链接并按 JSON 文件中的顺序归类到面板。
+func processLinks() ([]LinkCategory, []LinkCategory) {
 	links := LoadLinks()
-	primaryLinks := make(map[string][]Link)
-	secondaryLinks := make(map[string][]Link)
+
+	var primaryCategories []LinkCategory
+	var secondaryCategories []LinkCategory
+	primaryCategoryIndex := make(map[string]int)
+	secondaryCategoryIndex := make(map[string]int)
 
 	for _, link := range links {
 		if link.Category == "" {
 			link.Category = "Uncategorized"
 		}
+
 		if link.Panel == "primary" {
-			primaryLinks[link.Category] = append(primaryLinks[link.Category], link)
+			if index, ok := primaryCategoryIndex[link.Category]; ok {
+				primaryCategories[index].Links = append(primaryCategories[index].Links, link)
+			} else {
+				primaryCategoryIndex[link.Category] = len(primaryCategories)
+				primaryCategories = append(primaryCategories, LinkCategory{
+					Name:  link.Category,
+					Links: []Link{link},
+				})
+			}
 		} else {
-			secondaryLinks[link.Category] = append(secondaryLinks[link.Category], link)
+			if index, ok := secondaryCategoryIndex[link.Category]; ok {
+				secondaryCategories[index].Links = append(secondaryCategories[index].Links, link)
+			} else {
+				secondaryCategoryIndex[link.Category] = len(secondaryCategories)
+				secondaryCategories = append(secondaryCategories, LinkCategory{
+					Name:  link.Category,
+					Links: []Link{link},
+				})
+			}
 		}
 	}
-	return primaryLinks, secondaryLinks
+
+	return primaryCategories, secondaryCategories
 }
 
 // LoadSettings 读取设置，如果文件不存在则创建一个默认文件。

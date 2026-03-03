@@ -1,10 +1,10 @@
 {
-  "siteName": "Navlty - A lightweight dashboard",
+  "siteName": "Navlty - A Lightweight Dashboard",
   "siteIcon": "",
-  "siteTitle": "Navlty Dashboard 111",
+  "siteTitle": "Navlty Dashboard",
   "avatarURL": "",
   "backgroundURL": "",
-  "backgroundBlur": 9,
+  "backgroundBlur": 8,
   "cardsPerRow": 4,
   "customCSS": "",
   "externalJS": []

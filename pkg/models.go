@@ -13,12 +13,18 @@ type Settings struct {
 	ExternalJS     []string `json:"externalJS"`
 }
 
+// LinkCategory 定义了链接的分类。
+type LinkCategory struct {
+	Name  string
+	Links []Link
+}
+
 // PageData 包含了页面渲染所需的全部数据。
 type PageData struct {
 	Settings
 	ExternalJSStr  string
-	PrimaryLinks   map[string][]Link
-	SecondaryLinks map[string][]Link
+	PrimaryLinks   []LinkCategory
+	SecondaryLinks []LinkCategory
 	CSS            string
 	JS             string
 }

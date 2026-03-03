@@ -1,33 +1,337 @@
 [
   {
-    "title": "GitHub",
-    "url": "https://www.github.com",
-    "desc": "Platform for software development and version control.",
-    "icon_url": "https://api.iconify.design/logos/github-icon.svg",
-    "panel": "primary",
-    "category": "Demo11123"
-  },
-  {
     "title": "Google",
     "url": "https://www.google.com",
     "desc": "The world's most popular search engine.",
     "icon_url": "https://api.iconify.design/logos/google-icon.svg",
     "panel": "primary",
-    "category": "Demo11123"
+    "category": "Demo"
+  },
+  {
+    "title": "GitHub",
+    "url": "https://www.github.com",
+    "desc": "Platform for software development and version control.",
+    "icon_url": "https://api.iconify.design/logos/github-icon.svg",
+    "panel": "primary",
+    "category": "Demo"
+  },
+  {
+    "title": "React",
+    "url": "https://react.dev",
+    "desc": "A JavaScript library for building user interfaces.",
+    "icon_url": "https://api.iconify.design/logos:react.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Vue.js",
+    "url": "https://vuejs.org",
+    "desc": "The Progressive JavaScript Framework.",
+    "icon_url": "https://api.iconify.design/logos:vue.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Next.js",
+    "url": "https://nextjs.org",
+    "desc": "The React Framework for the Web.",
+    "icon_url": "https://api.iconify.design/logos:nextjs-icon.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "TypeScript",
+    "url": "https://www.typescriptlang.org",
+    "desc": "JavaScript with syntax for types.",
+    "icon_url": "https://api.iconify.design/logos:typescript-icon.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Tailwind CSS",
+    "url": "https://tailwindcss.com",
+    "desc": "Rapidly build modern websites without ever leaving your HTML.",
+    "icon_url": "https://api.iconify.design/logos:tailwindcss-icon.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Vite",
+    "url": "https://vitejs.dev",
+    "desc": "Next generation frontend tooling.",
+    "icon_url": "https://api.iconify.design/logos:vitejs.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Node.js",
+    "url": "https://nodejs.org",
+    "desc": "JavaScript runtime built on Chrome's V8 engine.",
+    "icon_url": "https://api.iconify.design/logos:nodejs-icon.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "pnpm",
+    "url": "https://pnpm.io",
+    "desc": "Fast, disk space efficient package manager.",
+    "icon_url": "https://api.iconify.design/logos:pnpm.svg",
+    "panel": "primary",
+    "category": "Development"
+  },
+  {
+    "title": "Adobe Color",
+    "url": "https://color.adobe.com",
+    "desc": "Create color palettes with the color wheel or images.",
+    "icon_url": "https://api.iconify.design/logos:adobe-color.svg",
+    "panel": "primary",
+    "category": "Design"
   },
   {
     "title": "Pinterest",
     "url": "https://pinterest.com",
     "desc": "Discover recipes, home ideas, style inspiration and other ideas.",
-    "icon_url": "image",
+    "icon_url": "https://api.iconify.design/logos:pinterest.svg",
     "panel": "primary",
-    "category": "Demo11123"
+    "category": "Design"
+  },
+  {
+    "title": "Pexels",
+    "url": "https://pexels.com",
+    "desc": "The best free stock photos, royalty free images \u0026 videos.",
+    "icon_url": "https://api.iconify.design/logos:pexels.svg",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "Flaticon",
+    "url": "https://flaticon.com",
+    "desc": "Download Free Icons and Stickers for your projects.",
+    "icon_url": "https://api.iconify.design/simple-icons:flaticon.svg",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "Muzli",
+    "url": "https://muz.li",
+    "desc": "Designers' Secret Source for inspiration.",
+    "icon_url": "https://api.iconify.design/tabler:app-window.svg",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "Mobbin",
+    "url": "https://mobbin.com",
+    "desc": "Discover the best mobile and web design patterns.",
+    "icon_url": "https://api.iconify.design/akar-icons:iphone.svg",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "Framer",
+    "url": "https://framer.com",
+    "desc": "Design and ship your dream site. Zero code, maximum speed.",
+    "icon_url": "https://api.iconify.design/logos:framer.svg",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "Claude",
+    "url": "https://claude.ai",
+    "desc": "Next-generation AI assistant by Anthropic.",
+    "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Gemini",
+    "url": "https://gemini.google.com",
+    "desc": "Google's largest and most capable AI model.",
+    "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Midjourney",
+    "url": "https://midjourney.com",
+    "desc": "An independent research lab exploring new mediums of thought.",
+    "icon_url": "https://api.iconify.design/simple-icons:midjourney.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Hugging Face",
+    "url": "https://huggingface.co",
+    "desc": "The AI community building the future.",
+    "icon_url": "https://api.iconify.design/logos:hugging-face.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Perplexity",
+    "url": "https://perplexity.ai",
+    "desc": "A conversational AI search engine that delivers answers.",
+    "icon_url": "https://api.iconify.design/logos:perplexity-icon.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Copilot",
+    "url": "https://github.com/features/copilot",
+    "desc": "Your AI pair programmer, powered by GitHub and OpenAI.",
+    "icon_url": "https://api.iconify.design/logos:github-copilot.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Mistral AI",
+    "url": "https://mistral.ai",
+    "desc": "Frontier AI in your hands with open-weight models.",
+    "icon_url": "https://api.iconify.design/logos:mistral-ai-icon.svg",
+    "panel": "primary",
+    "category": "AI"
+  },
+  {
+    "title": "Spotify",
+    "url": "https://spotify.com",
+    "desc": "Digital music service that gives you access to millions of songs.",
+    "icon_url": "https://api.iconify.design/logos:spotify-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Netflix",
+    "url": "https://netflix.com",
+    "desc": "Watch TV shows and movies online.",
+    "icon_url": "https://api.iconify.design/logos:netflix-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Twitch",
+    "url": "https://twitch.tv",
+    "desc": "The world's leading live streaming platform for gamers.",
+    "icon_url": "https://api.iconify.design/logos:twitch.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Steam",
+    "url": "https://store.steampowered.com",
+    "desc": "The ultimate destination for playing games.",
+    "icon_url": "https://api.iconify.design/logos:steam.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "The calendar for your work and life.",
+    "icon_url": "https://api.iconify.design/logos:notion-icon.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Obsidian",
+    "url": "https://obsidian.md",
+    "desc": "A second brain, for you, forever.",
+    "icon_url": "https://api.iconify.design/logos:obsidian-icon.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Cron",
+    "url": "https://cron.com",
+    "desc": "Next-generation calendar for professionals.",
+    "icon_url": "https://api.iconify.design/logos:cron-icon.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Arc",
+    "url": "https://arc.net",
+    "desc": "The browser that helps you organize your internet.",
+    "icon_url": "https://api.iconify.design/logos:arc.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "React",
+    "url": "https://react.dev",
+    "desc": "A JavaScript library for building user interfaces.",
+    "icon_url": "code",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Vue.js",
+    "url": "https://vuejs.org",
+    "desc": "The Progressive JavaScript Framework.",
+    "icon_url": "code",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Next.js",
+    "url": "https://nextjs.org",
+    "desc": "The React Framework for the Web.",
+    "icon_url": "cpu",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "TypeScript",
+    "url": "https://www.typescriptlang.org",
+    "desc": "JavaScript with syntax for types.",
+    "icon_url": "type",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Tailwind CSS",
+    "url": "https://tailwindcss.com",
+    "desc": "Rapidly build modern websites without ever leaving your HTML.",
+    "icon_url": "layout",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Vite",
+    "url": "https://vitejs.dev",
+    "desc": "Next generation frontend tooling.",
+    "icon_url": "zap",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "Node.js",
+    "url": "https://nodejs.org",
+    "desc": "JavaScript runtime built on Chrome's V8 engine.",
+    "icon_url": "server",
+    "panel": "secondary",
+    "category": "Development"
+  },
+  {
+    "title": "pnpm",
+    "url": "https://pnpm.io",
+    "desc": "Fast, disk space efficient package manager.",
+    "icon_url": "package",
+    "panel": "secondary",
+    "category": "Development"
   },
   {
     "title": "Adob​​e Color",
     "url": "https://color.adobe.com",
     "desc": "Create color palettes with the color wheel or images.",
     "icon_url": "dropper",
+    "panel": "secondary",
+    "category": "Design"
+  },
+  {
+    "title": "Pinterest",
+    "url": "https://pinterest.com",
+    "desc": "Discover recipes, home ideas, style inspiration and other ideas.",
+    "icon_url": "image",
     "panel": "secondary",
     "category": "Design"
   },
@@ -164,7 +468,7 @@
     "url": "https://notion.so/product/calendar",
     "desc": "The calendar for your work and life.",
     "icon_url": "calendar",
-    "panel": "primary",
+    "panel": "secondary",
     "category": "Productivity"
   },
   {
@@ -172,7 +476,7 @@
     "url": "https://obsidian.md",
     "desc": "A second brain, for you, forever.",
     "icon_url": "file-text",
-    "panel": "primary",
+    "panel": "secondary",
     "category": "Productivity"
   },
   {
@@ -180,7 +484,7 @@
     "url": "https://cron.com",
     "desc": "Next-generation calendar for professionals and teams.",
     "icon_url": "clock",
-    "panel": "primary",
+    "panel": "secondary",
     "category": "Productivity"
   },
   {
@@ -188,71 +492,7 @@
     "url": "https://arc.net",
     "desc": "The browser that helps you organize your internet.",
     "icon_url": "compass",
-    "panel": "primary",
+    "panel": "secondary",
     "category": "Productivity"
-  },
-  {
-    "title": "111",
-    "url": "222",
-    "desc": "",
-    "icon_url": "",
-    "panel": "primary",
-    "category": "默认111122222"
-  },
-  {
-    "title": "222",
-    "url": "333",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "默认111122222"
-  },
-  {
-    "title": "Test",
-    "url": "111",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "默认111122222"
-  },
-  {
-    "title": "1212",
-    "url": "1212",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "默认"
-  },
-  {
-    "title": "33",
-    "url": "22",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "Uncategorized"
-  },
-  {
-    "title": "111",
-    "url": "22211",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "Uncategorized"
-  },
-  {
-    "title": "11",
-    "url": "11",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "222"
-  },
-  {
-    "title": "66",
-    "url": "77",
-    "desc": "",
-    "icon_url": "globe",
-    "panel": "primary",
-    "category": "66"
   }
 ]

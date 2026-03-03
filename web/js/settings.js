@@ -50,7 +50,7 @@ App.settings = (function() {
             })
             .catch(error => {
                 console.error('Error loading settings:', error);
-                App.toast.show('加载失败', 'error');
+                App.toast.show('配置加载失败', 'error');
             });
     }
 
@@ -81,12 +81,12 @@ App.settings = (function() {
         .then(response => response.json())
         .then(data => {
             if (data.status !== 'success') throw new Error(data.message || '保存失败');
-            App.toast.show('保存成功', 'success');
+            App.toast.show('配置保存成功', 'success');
             // 实时将新设置应用到页面
             apply(settings);
         })
         .catch(error => {
-            App.toast.show('保存失败', 'error');
+            App.toast.show('配置保存失败', 'error');
             console.error('Error:', error);
         });
     }

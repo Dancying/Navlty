@@ -5,21 +5,21 @@ window.App = window.App || {};
 // 链接管理模块
 App.manage = (function() {
 
-    // --- 状态变量 ---
+    // 模块内状态变量
     let currentLinks = [];
-    let dom = {}; // 缓存 DOM 元素的引用
-    let draggedInfo = null; // 用于跟踪被拖动元素的信息
-    let placeholder = null; // 用于显示放置位置的占位符
+    let dom = {};
+    let draggedInfo = null;
+    let placeholder = null;
+    let dragEndTime = 0;
+    let openCategories = new Set();
 
-    // --- 初始化 ---
+    // 初始化模块，缓存DOM并绑定事件
     function init() {
-        // 缓存 DOM 节点
         dom.modal = document.getElementById('management-modal');
         dom.openButton = document.getElementById('management-button');
         dom.saveButton = document.getElementById('management-save-button');
         dom.container = document.getElementById('link-management-container');
         
-        // 确保关键元素存在
         if (!dom.modal || !dom.openButton || !dom.saveButton || !dom.container) {
             console.error('Management modal elements are missing from the DOM.');
             return;
@@ -30,82 +30,72 @@ App.manage = (function() {
             closeButton.addEventListener('click', closeModal);
         }
 
-        // 绑定核心事件
         dom.openButton.addEventListener('click', openModal);
         dom.saveButton.addEventListener('click', saveChanges);
-
-        // 全局拖动结束事件，用于清理
         document.addEventListener('dragend', handleDragEnd);
     }
 
-    // --- 模态框控制 ---
+    // 打开管理模态框
     function openModal() {
         document.body.classList.add('modal-open');
         dom.modal.style.display = 'block';
-        // 使用专用的 body ID，让 CSS 可以精确定位
         dom.modal.querySelector('.modal-body').id = 'link-management-body';
         loadAndRender();
     }
 
+    // 关闭管理模态框
     function closeModal() {
         document.body.classList.remove('modal-open');
         dom.modal.style.display = 'none';
-        dom.modal.querySelector('.modal-body').id = ''; // 移除 ID
+        dom.modal.querySelector('.modal-body').id = '';
+        openCategories.clear();
     }
 
-    // --- 核心渲染逻辑 ---
+    // 从后端加载链接数据并渲染整个面板
     async function loadAndRender() {
         try {
             const response = await fetch('/api/links');
             if (!response.ok) throw new Error('Failed to fetch links.');
             const linksData = await response.json();
-            // 确保数据不为 null 或 undefined
             currentLinks = linksData || [];
             renderPanels();
         } catch (error) {
             console.error('Error loading links:', error);
-            App.toast.show('无法加载链接', 'error');
+            App.toast.show('链接加载失败', 'error');
             dom.container.innerHTML = `<p style="color: red; text-align: center;">加载链接失败。</p>`;
         }
     }
 
+    // 渲染主面板和副面板
     function renderPanels() {
         dom.container.innerHTML = '';
-
         const primaryLinks = currentLinks.filter(link => link.panel === 'primary');
         const secondaryLinks = currentLinks.filter(link => link.panel === 'secondary');
-
         const primaryPanel = createPanel('主面板', 'primary', primaryLinks);
         const secondaryPanel = createPanel('副面板', 'secondary', secondaryLinks);
-
         dom.container.appendChild(primaryPanel);
         dom.container.appendChild(secondaryPanel);
-
         feather.replace();
     }
     
+    // 创建单个面板（主面板或副面板）
     function createPanel(title, panelName, links) {
         const panel = document.createElement('div');
         panel.className = 'management-panel';
         panel.dataset.panelName = panelName;
-
         const panelTitle = document.createElement('h3');
         panelTitle.className = 'management-panel-title';
         panelTitle.textContent = title;
-        
-        // 创建滚动容器
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'management-panel-content-wrapper';
-
         panel.appendChild(panelTitle);
         panel.appendChild(contentWrapper);
         
-        // 关键改动：保持数组顺序，而不是字母排序
         const categories = [];
         const categoryMap = new Map();
 
         links.forEach(link => {
-            const categoryName = link.category || '未分类';
+            const categoryName = link.category || 'Uncategorized';
             if (!categoryMap.has(categoryName)) {
                 categoryMap.set(categoryName, []);
                 categories.push(categoryName);
@@ -119,14 +109,13 @@ App.manage = (function() {
             contentWrapper.appendChild(categoryGroup);
         });
 
-        // 为滚动容器（内容包装器）添加拖放事件
         contentWrapper.addEventListener('dragover', handleDragOver);
         contentWrapper.addEventListener('dragleave', handleDragLeave);
         contentWrapper.addEventListener('drop', handleDrop);
-
         return panel;
     }
 
+    // 创建单个分类（包含标题和链接列表）
     function createCategory(categoryName, links, panelName) {
         const group = document.createElement('div');
         group.className = 'management-category-group';
@@ -134,34 +123,30 @@ App.manage = (function() {
 
         const header = createCategoryHeader(categoryName, panelName);
         const linkList = createLinkList(links);
+
+        if (openCategories.has(categoryName)) {
+            header.classList.add('open');
+            setTimeout(() => {
+                linkList.style.maxHeight = linkList.scrollHeight + 'px';
+            }, 0);
+        }
         
         group.appendChild(header);
         group.appendChild(linkList);
-
-        // 为分类组本身也添加事件，以便可以将链接拖入空分类
         group.addEventListener('dragover', handleDragOver);
         group.addEventListener('dragleave', handleDragLeave);
         group.addEventListener('drop', handleDrop);
-
         return group;
     }
 
+    // 创建分类的头部（包含标题、图标和操作按钮）
     function createCategoryHeader(categoryName, panelName) {
         const header = document.createElement('div');
         header.className = 'management-category-header';
         header.draggable = true;
-        // 添加 data- 属性以在拖动时识别
         header.dataset.type = 'category';
         header.dataset.categoryName = categoryName;
         header.dataset.panelName = panelName;
-
-        header.addEventListener('click', () => {
-            const linkList = header.nextElementSibling;
-            if (linkList) {
-                header.classList.toggle('open');
-                linkList.style.maxHeight = header.classList.contains('open') ? linkList.scrollHeight + "px" : null;
-            }
-        });
         header.addEventListener('dragstart', handleDragStart);
 
         const titleContainer = document.createElement('div');
@@ -173,6 +158,25 @@ App.manage = (function() {
         title.textContent = categoryName;
         titleContainer.appendChild(title);
 
+        titleContainer.addEventListener('click', () => {
+            if (Date.now() - dragEndTime < 100) return;
+
+            const linkList = header.nextElementSibling;
+            if (!linkList || !linkList.classList.contains('management-link-list')) return;
+            
+            const isOpening = !header.classList.contains('open');
+            header.classList.toggle('open', isOpening);
+            
+            // 根据状态即时展开或收起列表
+            if (isOpening) {
+                openCategories.add(categoryName);
+                linkList.style.maxHeight = linkList.scrollHeight + 'px';
+            } else {
+                openCategories.delete(categoryName);
+                linkList.style.maxHeight = '0px';
+            }
+        });
+
         const actions = document.createElement('div');
         actions.className = 'management-category-actions';
         
@@ -180,7 +184,7 @@ App.manage = (function() {
         editButton.title = '修改分类名';
         editButton.innerHTML = '<i data-feather="edit-2"></i>';
         editButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // 防止触发展开/折叠
+            e.stopPropagation();
             if(header.querySelector('.management-category-title')) {
                 editCategoryName(header.querySelector('.management-category-title'), categoryName);
             }
@@ -191,33 +195,36 @@ App.manage = (function() {
         deleteButton.innerHTML = '<i data-feather="trash-2"></i>';
         deleteButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            deleteCategory(categoryName); // 移除了 confirm
+            deleteCategory(categoryName);
         });
         
         actions.appendChild(editButton);
         actions.appendChild(deleteButton);
-
         header.appendChild(titleContainer);
         header.appendChild(actions);
         return header;
     }
 
+    // 创建链接列表的 UL 元素
     function createLinkList(links) {
         const list = document.createElement('ul');
         list.className = 'management-link-list';
+        list.style.overflow = 'hidden';
+        list.style.maxHeight = '0px';
+
         links.forEach(link => {
             list.appendChild(createLinkItem(link));
         });
         return list;
     }
 
+    // 创建单个链接项 LI 元素
     function createLinkItem(link) {
         const item = document.createElement('li');
         item.className = 'management-link-item';
         item.draggable = true;
         item.dataset.type = 'link';
         item.dataset.linkUrl = link.url;
-
         item.addEventListener('dragstart', handleDragStart);
 
         const title = document.createElement('span');
@@ -230,7 +237,6 @@ App.manage = (function() {
         const deleteButton = document.createElement('button');
         deleteButton.title = '删除链接';
         deleteButton.innerHTML = '<i data-feather="x"></i>';
-        // 修复：使用 addEventListener
         deleteButton.addEventListener('click', (e) => {
             e.stopPropagation();
             deleteLink(link.url);
@@ -242,14 +248,18 @@ App.manage = (function() {
         return item;
     }
 
-    // --- 拖放事件处理 ---
-    
+    // 计算拖动时元素应插入的位置
     function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('[draggable="true"]:not(.dragging)')];
+        const children = [...container.children];
 
-        return draggableElements.reduce((closest, child) => {
+        return children.reduce((closest, child) => {
+            if (child.classList.contains('drop-placeholder') || child.classList.contains('dragging')) {
+                return closest;
+            }
+
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
+
             if (offset < 0 && offset > closest.offset) {
                 return { offset: offset, element: child };
             } else {
@@ -258,6 +268,7 @@ App.manage = (function() {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
     
+    // 创建用于拖放的占位符元素
     function createPlaceholder(type) {
         if (placeholder) placeholder.remove();
         placeholder = document.createElement('div');
@@ -267,14 +278,15 @@ App.manage = (function() {
         }
     }
 
+    // 处理拖动开始事件
     function handleDragStart(e) {
         e.stopPropagation();
         const target = e.target;
         draggedInfo = {
             type: target.dataset.type,
-            element: target
+            element: target,
+            sourceList: target.parentNode
         };
-        // 统一从 data- 属性获取数据
         if (draggedInfo.type === 'link') {
             draggedInfo.url = target.dataset.linkUrl;
         } else if (draggedInfo.type === 'category') {
@@ -283,72 +295,83 @@ App.manage = (function() {
         }
 
         e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', draggedInfo.type); // 必需项
-
+        e.dataTransfer.setData('text/plain', draggedInfo.type);
         setTimeout(() => target.classList.add('dragging'), 0);
         createPlaceholder(draggedInfo.type);
     }
     
+    // 处理拖动经过事件
     function handleDragOver(e) {
         e.preventDefault();
         e.stopPropagation();
-
         const dropTarget = e.currentTarget;
-        let container;
+        dropTarget.classList.add('drag-over');
+        let container = null;
 
         if (draggedInfo.type === 'link') {
-            // 链接可以拖入分类组或链接列表
-            container = dropTarget.querySelector('.management-link-list') || dropTarget;
-        } else { // category
-            // 分类只能拖入面板的内容包装器
+            const group = dropTarget.closest('.management-category-group');
+            if (group) {
+                const header = group.querySelector('.management-category-header');
+                if (header.classList.contains('open') || e.target.closest('.management-category-header')) {
+                    container = group.querySelector('.management-link-list');
+                }
+            }
+        } else {
             container = dropTarget.closest('.management-panel-content-wrapper');
         }
 
-        if (!container) return;
-        
-        const afterElement = getDragAfterElement(container, e.clientY);
-        if (afterElement) {
-            container.insertBefore(placeholder, afterElement);
-        } else {
-            container.appendChild(placeholder);
+        if (container && placeholder) {
+            const afterElement = getDragAfterElement(container, e.clientY);
+            if (afterElement) {
+                container.insertBefore(placeholder, afterElement);
+            } else {
+                container.appendChild(placeholder);
+            }
+        } else if (placeholder) {
+            placeholder.remove();
         }
-
-        dropTarget.classList.add('drag-over');
     }
 
+    // 处理拖动离开事件
     function handleDragLeave(e) {
         e.currentTarget.classList.remove('drag-over');
     }
 
+    // 处理拖放事件，这是核心拖放逻辑
     function handleDrop(e) {
         e.preventDefault();
         e.stopPropagation();
         if (!draggedInfo) return;
 
-        const dropTarget = e.currentTarget;
-        dropTarget.classList.remove('drag-over');
-        
-        // 目标信息
-        const targetPanelEl = dropTarget.closest('.management-panel');
-        const targetCategoryGroupEl = dropTarget.closest('.management-category-group');
-        
-        const targetPanel = targetPanelEl ? targetPanelEl.dataset.panelName : null;
-        let targetCategory = targetCategoryGroupEl ? targetCategoryGroupEl.dataset.categoryName : null;
+        e.currentTarget.classList.remove('drag-over');
+        const finalTargetCategoryGroup = placeholder ? placeholder.closest('.management-category-group') : null;
 
-        // --- 核心数据操作 ---
-        
-        // 1. 找到并移除被拖动的元素(们)
-        let movedItems = [];
-        let fromIndex = -1;
+        // 验证拖放目标是否有效
         if (draggedInfo.type === 'link') {
-            fromIndex = currentLinks.findIndex(l => l.url === draggedInfo.url);
-            if (fromIndex > -1) {
-                movedItems = currentLinks.splice(fromIndex, 1);
+            let isValidDrop = false;
+            if (finalTargetCategoryGroup) {
+                const header = finalTargetCategoryGroup.querySelector('.management-category-header');
+                if (header.classList.contains('open') || e.target.closest('.management-category-header')) {
+                    isValidDrop = true;
+                }
             }
-        } else { // category
+            if (!isValidDrop) return;
+        }
+
+        if (!placeholder || !placeholder.parentNode) return;
+        
+        const targetPanelEl = e.currentTarget.closest('.management-panel');
+        const targetPanel = targetPanelEl ? targetPanelEl.dataset.panelName : null;
+
+        // 更新数据
+        let movedItems = [];
+        if (draggedInfo.type === 'link') {
+            const fromIndex = currentLinks.findIndex(l => l.url === draggedInfo.url);
+            if (fromIndex > -1) movedItems = currentLinks.splice(fromIndex, 1);
+        } else { 
             const categoryLinks = [];
             currentLinks = currentLinks.filter(l => {
-                if (l.category === draggedInfo.categoryName) {
+                if ((l.category || 'Uncategorized') === draggedInfo.categoryName) {
                     categoryLinks.push(l);
                     return false;
                 }
@@ -357,38 +380,32 @@ App.manage = (function() {
             movedItems = categoryLinks;
         }
 
-        if (movedItems.length === 0) {
-            renderPanels(); // 出错则复原
-            return;
-        }
+        if (movedItems.length === 0) return;
         
-        // 2. 确定插入位置
         let toIndex = -1;
-        if (placeholder && placeholder.parentNode) {
-            const nextSibling = placeholder.nextElementSibling;
-            if (nextSibling) {
-                const nextSiblingUrl = nextSibling.dataset.linkUrl;
-                const nextSiblingCategory = nextSibling.dataset.categoryName;
-                if(nextSiblingUrl) { // 插入到链接前
-                    toIndex = currentLinks.findIndex(l => l.url === nextSiblingUrl);
-                } else if(nextSiblingCategory) { // 插入到分类前
-                    toIndex = currentLinks.findIndex(l => l.category === nextSiblingCategory);
-                }
+        const nextSibling = placeholder.nextElementSibling;
+        if (nextSibling) {
+            const nextSiblingUrl = nextSibling.dataset.linkUrl;
+            const nextSiblingCategory = nextSibling.dataset.categoryName;
+            if(nextSiblingUrl) {
+                toIndex = currentLinks.findIndex(l => l.url === nextSiblingUrl);
+            } else if(nextSiblingCategory) {
+                toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextSiblingCategory);
             }
         }
         
-        // 如果没有找到 `toIndex`，意味着要添加到列表末尾
         if (toIndex === -1) {
-             if (targetCategory) { // 添加到分类的末尾
+            const newCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : null;
+             if (newCategoryName) { 
                  let lastLinkOfCategory = -1;
                  for(let i = currentLinks.length - 1; i >= 0; i--) {
-                     if (currentLinks[i].category === targetCategory) {
+                     if ((currentLinks[i].category || 'Uncategorized') === newCategoryName) {
                          lastLinkOfCategory = i;
                          break;
                      }
                  }
                  toIndex = lastLinkOfCategory > -1 ? lastLinkOfCategory + 1 : currentLinks.length;
-             } else if (targetPanel) { // 添加到面板的末尾
+             } else if (targetPanel) {
                  let lastLinkOfPanel = -1;
                  for(let i = currentLinks.length - 1; i >= 0; i--) {
                      if (currentLinks[i].panel === targetPanel) {
@@ -398,29 +415,35 @@ App.manage = (function() {
                  }
                  toIndex = lastLinkOfPanel > -1 ? lastLinkOfPanel + 1 : currentLinks.length;
              } else {
-                 toIndex = currentLinks.length; // 默认添加到总列表末尾
+                 toIndex = currentLinks.length;
              }
         }
         
-        // 3. 更新被移动项的属性
+        const finalTargetCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : '未分类';
+
         movedItems.forEach(item => {
             if (targetPanel) item.panel = targetPanel;
-            // 如果目标是分类组，则使用该分类名；否则如果是拖动链接，保持其原分类名
-            if (targetCategory) {
-                item.category = targetCategory;
-            } else if (draggedInfo.type === 'link') {
-                 // 如果链接被拖到一个面板的根区域，但不是一个具体的分类里
-                 // 保持其原有的分类名，只切换面板
-            }
+            if (draggedInfo.type === 'link') item.category = finalTargetCategoryName;
         });
         
-        // 4. 将元素插入到新位置
         currentLinks.splice(toIndex, 0, ...movedItems);
         
-        // 5. 重新渲染
-        renderPanels();
+        // 直接移动 DOM 节点以避免重新渲染
+        const elementToMove = draggedInfo.type === 'category' ? draggedInfo.element.closest('.management-category-group') : draggedInfo.element;
+
+        if (elementToMove) {
+            const destinationList = placeholder.parentNode;
+            destinationList.replaceChild(elementToMove, placeholder);
+            
+            updateListHeight(draggedInfo.sourceList);
+            if (draggedInfo.sourceList !== destinationList) {
+                updateListHeight(destinationList);
+            }
+        }
+        placeholder = null;
     }
     
+    // 处理拖动结束事件，用于清理
     function handleDragEnd() {
         if (draggedInfo && draggedInfo.element) {
             draggedInfo.element.classList.remove('dragging');
@@ -431,9 +454,20 @@ App.manage = (function() {
         }
         document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
         draggedInfo = null;
+        dragEndTime = Date.now();
     }
 
-    // --- 其他交互函数 ---
+    // 同步更新列表高度
+    function updateListHeight(list) {
+        if (!list || !list.classList.contains('management-link-list')) return;
+
+        const header = list.previousElementSibling;
+        if (header && header.classList.contains('open')) {
+            list.style.maxHeight = list.scrollHeight + 'px';
+        }
+    }
+
+    // 处理分类名称的编辑操作
     function editCategoryName(titleElement, oldCategoryName) {
         if (titleElement.querySelector('input')) return;
 
@@ -448,35 +482,45 @@ App.manage = (function() {
         const save = () => {
             const newCategoryName = input.value.trim();
             if (newCategoryName && newCategoryName !== oldCategoryName) {
+                if (openCategories.has(oldCategoryName)) {
+                    openCategories.delete(oldCategoryName);
+                    openCategories.add(newCategoryName);
+                }
                 currentLinks.forEach(link => {
-                    if (link.category === oldCategoryName) {
+                    if ((link.category || '未分类') === oldCategoryName) {
                         link.category = newCategoryName;
                     }
                 });
             }
-            renderPanels(); // 重新渲染以反映更改
+            renderPanels();
         };
 
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') input.blur();
-            if (e.key === 'Escape') renderPanels(); // 按 Esc 撤销更改并重新渲染
+            if (e.key === 'Escape') renderPanels();
         });
     }
     
-    // 移除确认框
+    // 删除整个分类
     function deleteCategory(categoryName) {
-        currentLinks = currentLinks.filter(link => (link.category || '未分类') !== categoryName);
+        openCategories.delete(categoryName);
+        currentLinks = currentLinks.filter(link => (link.category || 'Uncategorized') !== categoryName);
         renderPanels();
     }
 
-    // 修复后的删除链接函数
+    // 删除单个链接
     function deleteLink(url) {
+        const linkItem = dom.container.querySelector(`.management-link-item[data-link-url='${url}']`);
+        if (linkItem) {
+            const list = linkItem.parentNode;
+            linkItem.remove();
+            updateListHeight(list);
+        }
         currentLinks = currentLinks.filter(link => link.url !== url);
-        renderPanels();
     }
     
-    // 移除自动刷新
+    // 保存所有更改到后端
     async function saveChanges() {
         try {
             const response = await fetch('/api/links', {
@@ -488,18 +532,17 @@ App.manage = (function() {
                 const errorData = await response.text();
                 throw new Error(errorData || 'Failed to save changes.');
             }
-            App.toast.show('链接已成功更新!', 'success');
-            closeModal(); // 保存成功后关闭模态框
-            // 可以在这里触发一个自定义事件，让其他模块响应更新
-            // document.dispatchEvent(new CustomEvent('links-updated'));
+            App.toast.show('链接保存成功', 'success');
+            closeModal();
+            document.dispatchEvent(new CustomEvent('links-updated'));
         } catch (error) {
             console.error('Error saving changes:', error);
-            App.toast.show(`保存失败: ${error.message}`, 'error');
+            App.toast.show(`链接保存失败: ${error.message}`, 'error');
         }
     }
 
+    // 暴露 init 方法
     return {
         init,
-        deleteLink // 暴露 deleteLink 以便修复后的按钮能够调用
     };
 })();

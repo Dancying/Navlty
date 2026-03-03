@@ -51,6 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error("Failed to initialize app settings:", error);
-            App.toast.show('应用初始化失败', 'error');
+            App.toast.show('页面加载失败', 'error');
         });
 });

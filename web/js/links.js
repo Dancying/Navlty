@@ -86,7 +86,7 @@ App.links = (function() {
         }).filter(link => link !== null);
 
         if (newLinks.length === 0) {
-            App.toast.show('没有有效的链接可添加', 'error');
+            App.toast.show('链接格式无效', 'error');
             return;
         }
 
@@ -106,10 +106,10 @@ App.links = (function() {
         })
         .then(response => {
             if (!response.ok) throw new Error('服务器响应错误');
-            App.toast.show('保存成功', 'success');
+            App.toast.show('链接保存成功', 'success');
         })
         .catch(error => {
-            App.toast.show('保存失败', 'error');
+            App.toast.show('链接保存失败', 'error');
             console.error('Error:', error);
         });
     }

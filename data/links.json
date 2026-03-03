@@ -5,7 +5,7 @@
     "desc": "A second brain, for you, forever.",
     "icon_url": "https://api.iconify.design/logos:obsidian-icon.svg",
     "panel": "primary",
-    "category": "Development111"
+    "category": "Development1111111111111111111111111111"
   },
   {
     "title": "Tailwind CSS",
@@ -13,6 +13,62 @@
     "desc": "Rapidly build modern websites without ever leaving your HTML.",
     "icon_url": "https://api.iconify.design/logos:tailwindcss-icon.svg",
     "panel": "primary",
-    "category": "Development111"
+    "category": "Development1111111111111111111111111111"
+  },
+  {
+    "title": "Spotify111111111111",
+    "url": "https://spotify.com",
+    "desc": "Digital music service that gives you access to millions of songs.",
+    "icon_url": "https://api.iconify.design/logos:spotify-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Copilot",
+    "url": "https://github.com/features/copilot",
+    "desc": "Your AI pair programmer, powered by GitHub and OpenAI.",
+    "icon_url": "https://api.iconify.design/logos:github-copilot.svg",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Mistral AI",
+    "url": "https://mistral.ai",
+    "desc": "Frontier AI in your hands with open-weight models.",
+    "icon_url": "https://api.iconify.design/logos:mistral-ai-icon.svg",
+    "panel": "secondary",
+    "category": "AI"
+  },
+  {
+    "title": "Spotify",
+    "url": "https://spotify.com",
+    "desc": "Digital music service that gives you access to millions of songs.",
+    "icon_url": "https://api.iconify.design/logos:spotify-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Spotify",
+    "url": "https://spotify.com",
+    "desc": "Digital music service that gives you access to millions of songs.",
+    "icon_url": "https://api.iconify.design/logos:spotify-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Obsidian",
+    "url": "https://obsidian.md",
+    "desc": "A second brain, for you, forever.",
+    "icon_url": "https://api.iconify.design/logos:obsidian-icon.svg",
+    "panel": "primary",
+    "category": "Development1111111111111111111111111111"
+  },
+  {
+    "title": "Tailwind CSS",
+    "url": "https://tailwindcss.com",
+    "desc": "Rapidly build modern websites without ever leaving your HTML.",
+    "icon_url": "https://api.iconify.design/logos:tailwindcss-icon.svg",
+    "panel": "primary",
+    "category": "Development1111111111111111111111111111"
   }
 ]

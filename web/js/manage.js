@@ -179,10 +179,10 @@ App.manage = (function() {
 
         const actions = document.createElement('div');
         actions.className = 'management-category-actions';
-        
+
         const editButton = document.createElement('button');
-        editButton.title = '修改分类名';
-        editButton.innerHTML = '<i data-feather="edit-2"></i>';
+        editButton.title = '修改分类名称';
+        editButton.innerHTML = '<i data-feather="edit"></i>';
         editButton.addEventListener('click', (e) => {
             e.stopPropagation();
             if(header.querySelector('.management-category-title')) {
@@ -190,15 +190,33 @@ App.manage = (function() {
             }
         });
 
+        const copyButton = document.createElement('button');
+        copyButton.title = '复制分类链接';
+        copyButton.innerHTML = '<i data-feather="copy"></i>';
+        copyButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const linksToCopy = currentLinks.filter(link => (link.category || 'Uncategorized') === categoryName);
+            const formattedLinks = linksToCopy.map(l => {
+                return `${l.title}|${l.url}|${l.category || 'Uncategorized'}|${l.icon_url || 'globe'}|${l.desc || ''}`;
+            }).join('\n');
+
+            navigator.clipboard.writeText(formattedLinks).then(() => {
+                App.toast.show('链接复制成功', 'success');
+            }, () => {
+                App.toast.show('链接复制失败', 'error');
+            });
+        });
+
         const deleteButton = document.createElement('button');
-        deleteButton.title = '删除分类';
+        deleteButton.title = '删除分类数据';
         deleteButton.innerHTML = '<i data-feather="trash-2"></i>';
         deleteButton.addEventListener('click', (e) => {
             e.stopPropagation();
             deleteCategory(categoryName);
         });
-        
+
         actions.appendChild(editButton);
+        actions.appendChild(copyButton);
         actions.appendChild(deleteButton);
         header.appendChild(titleContainer);
         header.appendChild(actions);
@@ -233,15 +251,41 @@ App.manage = (function() {
 
         const actions = document.createElement('div');
         actions.className = 'management-link-actions';
+                
+        const editButton = document.createElement('button');
+        editButton.title = '编辑链接名称';
+        editButton.innerHTML = '<i data-feather="edit"></i>';
+        editButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const titleElement = item.querySelector('.management-link-title');
+            if (titleElement) {
+                editLinkTitle(titleElement, link.url);
+            }
+        });
+
+        const copyButton = document.createElement('button');
+        copyButton.title = '复制链接数据';
+        copyButton.innerHTML = '<i data-feather="copy"></i>';
+        copyButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${link.desc || ''}`;
+            navigator.clipboard.writeText(formattedLink).then(() => {
+                App.toast.show('链接复制成功', 'success');
+            }, () => {
+                App.toast.show('链接复制失败', 'error');
+            });
+        });
 
         const deleteButton = document.createElement('button');
-        deleteButton.title = '删除链接';
+        deleteButton.title = '删除链接数据';
         deleteButton.innerHTML = '<i data-feather="x"></i>';
         deleteButton.addEventListener('click', (e) => {
             e.stopPropagation();
             deleteLink(link.url);
         });
 
+        actions.appendChild(editButton);
+        actions.appendChild(copyButton);
         actions.appendChild(deleteButton);
         item.appendChild(title);
         item.appendChild(actions);
@@ -467,6 +511,36 @@ App.manage = (function() {
         }
     }
 
+    // 处理链接标题的编辑操作
+    function editLinkTitle(titleElement, linkUrl) {
+        if (titleElement.querySelector('input')) return;
+
+        const linkToEdit = currentLinks.find(l => l.url === linkUrl);
+        if (!linkToEdit) return;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'management-link-input';
+        input.value = linkToEdit.title;
+        
+        titleElement.replaceWith(input);
+        input.focus();
+
+        const save = () => {
+            const newTitle = input.value.trim();
+            if (newTitle && newTitle !== linkToEdit.title) {
+                linkToEdit.title = newTitle;
+            }
+            renderPanels();
+        };
+
+        input.addEventListener('blur', save);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') input.blur();
+            if (e.key === 'Escape') renderPanels();
+        });
+    }
+
     // 处理分类名称的编辑操作
     function editCategoryName(titleElement, oldCategoryName) {
         if (titleElement.querySelector('input')) return;
@@ -511,7 +585,7 @@ App.manage = (function() {
 
     // 删除单个链接
     function deleteLink(url) {
-        const linkItem = dom.container.querySelector(`.management-link-item[data-link-url='${url}']`);
+        const linkItem = dom.container.querySelector(`.management-link-item[data-link-url="${url}"]`);
         if (linkItem) {
             const list = linkItem.parentNode;
             linkItem.remove();

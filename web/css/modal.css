@@ -133,3 +133,199 @@ body.modal-open {
 .modal-footer .btn {
     min-width: 100px;
 }
+
+/* --- 全新的双栏可折叠链接管理布局 --- */
+
+/* 锁定链接管理模态框的主体，启用 flex 布局以进行内部滚动控制 */
+div#management-modal > .modal-content > div#link-management-body.modal-body {
+    padding: 0; /* 移除 padding，交由内部容器管理 */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#link-management-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    flex-grow: 1;
+    min-height: 0;
+    padding: 2rem; /* 将原 .modal-body 的 padding 移到这里 */
+}
+
+.management-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+}
+
+.management-panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* 新增：用于分类列表的滚动容器 */
+.management-panel-content-wrapper {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 2px 5px 2px 2px; /* 避免滚动条过于贴近 */
+}
+
+.management-category-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.management-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    cursor: grab;
+    user-select: none;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s;
+}
+
+.management-category-header:hover {
+    background-color: #f1f1f1;
+}
+
+.management-category-header.open {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.category-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-grow: 1;
+    min-width: 0; /* 防止长标题溢出 */
+}
+
+.category-chevron {
+    transition: transform 0.3s;
+}
+
+.management-category-header.open .category-chevron {
+    transform: rotate(90deg);
+}
+
+.management-category-title {
+    font-weight: 600;
+    color: #444;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.management-category-input {
+    font: inherit;
+    font-weight: 600;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+}
+
+.management-category-actions,
+.management-link-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.management-category-actions button,
+.management-link-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aab;
+    padding: 0.3rem;
+    border-radius: 4px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.management-category-actions button:hover,
+.management-link-actions button:hover {
+    color: #333;
+    background-color: #e9ecef;
+}
+
+.management-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.management-link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    transition: background-color 0.2s;
+    cursor: grab;
+    border-top: 1px solid #f0f0f0;
+}
+.management-link-item:first-child {
+    border-top: none;
+}
+
+.management-link-item:hover {
+    background-color: #f6f6f6;
+}
+
+.management-link-title {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* --- 拖拽样式 --- */
+.dragging {
+    opacity: 0.4;
+    background: #d3eaff !important;
+    border: 1px dashed #999;
+}
+
+.drag-over {
+    background-color: #f0f8ff !important;
+}
+
+.management-panel-content-wrapper.drag-over {
+     box-shadow: inset 0 0 0 2px #007bff;
+}
+
+/* 用于指示精确放置位置的占位符 */
+.drop-placeholder {
+    height: 10px;
+    background: #cce5ff;
+    list-style: none;
+    margin: -5px 1rem 0;
+    border-radius: 5px;
+    padding: 0;
+    transition: all 0.1s ease;
+}
+
+.drop-placeholder.category-placeholder {
+    height: 40px;
+    margin: -10px 0 10px 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    #link-management-container {
+        grid-template-columns: 1fr;
+    }
+}

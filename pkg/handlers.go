@@ -47,6 +47,32 @@ func HandleSettings(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// HandleLinks 根据 HTTP 方法处理链接相关的请求。
+func HandleLinks(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		// 对于 GET 请求，加载链接并以 JSON 格式返回
+		links := LoadLinks()
+		respondWithJSON(w, http.StatusOK, links)
+	case http.MethodPost:
+		// 对于 POST 请求，解码请求体并保存链接
+		var links []Link
+		if err := json.NewDecoder(r.Body).Decode(&links); err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid data format: "+err.Error())
+			return
+		}
+
+		if err := SaveLinks(links); err != nil {
+			respondWithError(w, http.StatusInternalServerError, "Failed to save links: "+err.Error())
+			return
+		}
+
+		respondWithJSON(w, http.StatusOK, map[string]string{"message": "Links updated successfully"})
+	default:
+		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
+	}
+}
+
 // HandleBulkAddLinks 处理批量添加新链接的请求。
 func HandleBulkAddLinks(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {

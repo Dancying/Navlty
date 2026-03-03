@@ -31,6 +31,7 @@
                     </div>
                     <button id="toggle-panel-button" class="icon-button"><i data-feather="repeat"></i></button>
                     <button id="add-button" class="icon-button" data-modal-target="addLinkModal"><i data-feather="plus"></i></button>
+                    <button id="management-button" class="icon-button" data-modal-target="management-modal"><i data-feather="list"></i></button>
                     <button id="settings-button" class="icon-button" data-modal-target="settings-modal"><i data-feather="settings"></i></button>
                 </div>
             </header>
@@ -144,94 +145,113 @@
         </div>
     </div>
 
-<div id="settings-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>网站设置</h2>
-            <span class="close-button"><i data-feather="x"></i></span>
-        </div>
-        <div class="modal-body">
-            <form id="settings-form">
-                <div class="tab-switcher">
-                    <button type="button" class="tab-button active" data-tab="general-settings-tab">常规</button>
-                    <button type="button" class="tab-button" data-tab="style-settings-tab">样式</button>
-                    <button type="button" class="tab-button" data-tab="advanced-settings-tab">高级</button>
+    <!-- Link Management Modal -->
+    <div id="management-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>链接管理</h2>
+                <span class="close-button"><i data-feather="x"></i></span>
+            </div>
+            <div class="modal-body" id="link-management-body">
+                <div id="link-management-container" class="link-management-grid">
+                    <!-- JS will populate this content -->
                 </div>
-
-                <div class="tab-content-container">
-                    <!-- General Settings -->
-                    <div id="general-settings-tab" class="tab-content active">
-                        <div class="form-grid" style="margin-top: 1.5rem;">
-                            <div class="form-group">
-                                <label for="site-name">站点名称</label>
-                                <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
-                            </div>
-                            <div class="form-group">
-                                <label for="site-icon">站点图标</label>
-                                <div class="input-with-button">
-                                    <input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64">
-                                    <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                    <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="site-title">网站标题</label>
-                                <input type="text" id="site-title" name="siteTitle" value="{{.SiteTitle}}" placeholder="显示在主页的标题">
-                            </div>
-                            <div class="form-group">
-                                <label for="avatar-url">网站头像</label>
-                                <div class="input-with-button">
-                                    <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="Feather 图标名、URL 或 Base64">
-                                    <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                    <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Style Settings -->
-                    <div id="style-settings-tab" class="tab-content">
-                        <div class="form-grid" style="margin-top: 1.5rem;">
-                            <div class="form-group span-two">
-                                <label for="background-url">背景图片</label>
-                                 <div class="input-with-button">
-                                    <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
-                                    <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                    <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
-                                </div>
-                            </div>
-                            <div class="form-group span-two slider-group">
-                                <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
-                                <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
-                            </div>
-                            <div class="form-group span-two slider-group">
-                                <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
-                                <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Advanced Settings -->
-                    <div id="advanced-settings-tab" class="tab-content">
-                         <div class="form-grid" style="margin-top: 1.5rem;">
-                            <div class="form-group span-two">
-                                <label for="custom-css">外部 CSS</label>
-                                <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
-                            </div>
-                            <div class="form-group span-two">
-                                <label for="external-js">外部 JS</label>
-                                <textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js
-https://another.com/script.js">{{.ExternalJSStr}}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary cancel-button">取消</button>
-            <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancel-button">取消</button>
+                <button type="button" class="btn btn-primary" id="management-save-button">保存</button>
+            </div>
         </div>
     </div>
-</div>
+
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>网站设置</h2>
+                <span class="close-button"><i data-feather="x"></i></span>
+            </div>
+            <div class="modal-body">
+                <form id="settings-form">
+                    <div class="tab-switcher">
+                        <button type="button" class="tab-button active" data-tab="general-settings-tab">常规</button>
+                        <button type="button" class="tab-button" data-tab="style-settings-tab">样式</button>
+                        <button type="button" class="tab-button" data-tab="advanced-settings-tab">高级</button>
+                    </div>
+
+                    <div class="tab-content-container">
+                        <!-- General Settings -->
+                        <div id="general-settings-tab" class="tab-content active">
+                            <div class="form-grid" style="margin-top: 1.5rem;">
+                                <div class="form-group">
+                                    <label for="site-name">站点名称</label>
+                                    <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
+                                </div>
+                                <div class="form-group">
+                                    <label for="site-icon">站点图标</label>
+                                    <div class="input-with-button">
+                                        <input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64">
+                                        <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                        <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="site-title">网站标题</label>
+                                    <input type="text" id="site-title" name="siteTitle" value="{{.SiteTitle}}" placeholder="显示在主页的标题">
+                                </div>
+                                <div class="form-group">
+                                    <label for="avatar-url">网站头像</label>
+                                    <div class="input-with-button">
+                                        <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="Feather 图标名、URL 或 Base64">
+                                        <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                        <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Style Settings -->
+                        <div id="style-settings-tab" class="tab-content">
+                            <div class="form-grid" style="margin-top: 1.5rem;">
+                                <div class="form-group span-two">
+                                    <label for="background-url">背景图片</label>
+                                     <div class="input-with-button">
+                                        <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
+                                        <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                        <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="form-group span-two slider-group">
+                                    <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
+                                    <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
+                                </div>
+                                <div class="form-group span-two slider-group">
+                                    <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
+                                    <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Advanced Settings -->
+                        <div id="advanced-settings-tab" class="tab-content">
+                             <div class="form-grid" style="margin-top: 1.5rem;">
+                                <div class="form-group span-two">
+                                    <label for="custom-css">外部 CSS</label>
+                                    <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
+                                </div>
+                                <div class="form-group span-two">
+                                    <label for="external-js">外部 JS</label>
+                                    <textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js
+https://another.com/script.js">{{.ExternalJSStr}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancel-button">取消</button>
+                <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
+            </div>
+        </div>
+    </div>
 
     {{range .ExternalJS}}<script src="{{.}}"></script>{{end}}
     <script>{{.JS | safeJS}}</script>

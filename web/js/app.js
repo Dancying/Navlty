@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     App.search.init();
     App.links.init();
     App.settings.init();
+    App.manage.init();
 
     // --- 全局事件监听 ---
 

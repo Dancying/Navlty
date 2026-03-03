@@ -1,97 +1,33 @@
 [
   {
-    "title": "Google",
-    "url": "https://www.google.com",
-    "desc": "The world's most popular search engine.",
-    "icon_url": "https://api.iconify.design/logos/google-icon.svg",
-    "panel": "primary",
-    "category": "Demo"
-  },
-  {
     "title": "GitHub",
     "url": "https://www.github.com",
     "desc": "Platform for software development and version control.",
     "icon_url": "https://api.iconify.design/logos/github-icon.svg",
     "panel": "primary",
-    "category": "Demo"
+    "category": "Demo11123"
   },
   {
-    "title": "React",
-    "url": "https://react.dev",
-    "desc": "A JavaScript library for building user interfaces.",
-    "icon_url": "code",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "Vue.js",
-    "url": "https://vuejs.org",
-    "desc": "The Progressive JavaScript Framework.",
-    "icon_url": "code",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "Next.js",
-    "url": "https://nextjs.org",
-    "desc": "The React Framework for the Web.",
-    "icon_url": "cpu",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "TypeScript",
-    "url": "https://www.typescriptlang.org",
-    "desc": "JavaScript with syntax for types.",
-    "icon_url": "type",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "Tailwind CSS",
-    "url": "https://tailwindcss.com",
-    "desc": "Rapidly build modern websites without ever leaving your HTML.",
-    "icon_url": "layout",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "Vite",
-    "url": "https://vitejs.dev",
-    "desc": "Next generation frontend tooling.",
-    "icon_url": "zap",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "Node.js",
-    "url": "https://nodejs.org",
-    "desc": "JavaScript runtime built on Chrome's V8 engine.",
-    "icon_url": "server",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "pnpm",
-    "url": "https://pnpm.io",
-    "desc": "Fast, disk space efficient package manager.",
-    "icon_url": "package",
-    "panel": "secondary",
-    "category": "Development"
-  },
-  {
-    "title": "Adob​​e Color",
-    "url": "https://color.adobe.com",
-    "desc": "Create color palettes with the color wheel or images.",
-    "icon_url": "dropper",
-    "panel": "secondary",
-    "category": "Design"
+    "title": "Google",
+    "url": "https://www.google.com",
+    "desc": "The world's most popular search engine.",
+    "icon_url": "https://api.iconify.design/logos/google-icon.svg",
+    "panel": "primary",
+    "category": "Demo11123"
   },
   {
     "title": "Pinterest",
     "url": "https://pinterest.com",
     "desc": "Discover recipes, home ideas, style inspiration and other ideas.",
     "icon_url": "image",
+    "panel": "primary",
+    "category": "Demo11123"
+  },
+  {
+    "title": "Adob​​e Color",
+    "url": "https://color.adobe.com",
+    "desc": "Create color palettes with the color wheel or images.",
+    "icon_url": "dropper",
     "panel": "secondary",
     "category": "Design"
   },
@@ -228,7 +164,7 @@
     "url": "https://notion.so/product/calendar",
     "desc": "The calendar for your work and life.",
     "icon_url": "calendar",
-    "panel": "secondary",
+    "panel": "primary",
     "category": "Productivity"
   },
   {
@@ -236,7 +172,7 @@
     "url": "https://obsidian.md",
     "desc": "A second brain, for you, forever.",
     "icon_url": "file-text",
-    "panel": "secondary",
+    "panel": "primary",
     "category": "Productivity"
   },
   {
@@ -244,7 +180,7 @@
     "url": "https://cron.com",
     "desc": "Next-generation calendar for professionals and teams.",
     "icon_url": "clock",
-    "panel": "secondary",
+    "panel": "primary",
     "category": "Productivity"
   },
   {
@@ -252,7 +188,7 @@
     "url": "https://arc.net",
     "desc": "The browser that helps you organize your internet.",
     "icon_url": "compass",
-    "panel": "secondary",
+    "panel": "primary",
     "category": "Productivity"
   },
   {
@@ -261,7 +197,7 @@
     "desc": "",
     "icon_url": "",
     "panel": "primary",
-    "category": "默认"
+    "category": "默认111122222"
   },
   {
     "title": "222",
@@ -269,7 +205,7 @@
     "desc": "",
     "icon_url": "globe",
     "panel": "primary",
-    "category": "默认"
+    "category": "默认111122222"
   },
   {
     "title": "Test",
@@ -277,6 +213,6 @@
     "desc": "",
     "icon_url": "globe",
     "panel": "primary",
-    "category": "默认"
+    "category": "默认111122222"
   }
 ]

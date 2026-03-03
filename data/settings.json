@@ -4,8 +4,8 @@
   "siteTitle": "Navlty Dashboard 111",
   "avatarURL": "",
   "backgroundURL": "",
-  "backgroundBlur": 8,
-  "cardsPerRow": 5,
+  "backgroundBlur": 9,
+  "cardsPerRow": 8,
   "customCSS": "",
   "externalJS": []
 }

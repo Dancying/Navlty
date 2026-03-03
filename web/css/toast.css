@@ -1,0 +1,51 @@
+/* Toast 消息的容器 */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Toast 消息的样式 */
+.toast {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    color: #1f2937;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    min-width: 280px;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Toast 图标样式 */
+.toast-icon {
+    margin-right: 12px;
+}
+
+/* Toast 显示时的动画 */
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 成功类型的 Toast */
+.toast.success .toast-icon {
+    color: #10b981;
+}
+
+/* 错误类型的 Toast */
+.toast.error .toast-icon {
+    color: #ef4444;
+}

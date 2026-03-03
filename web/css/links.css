@@ -1,17 +1,15 @@
-/* web/css/links.css */
-
 /* 链接卡片的网格容器 */
 .card-container {
     display: grid;
     gap: 1.5rem;
 }
 
-/* 主面板（#primary-panel）中的链接卡片容器 */
+/* 主面板中的链接卡片容器 */
 #primary-panel .card-container {
     grid-template-columns: repeat(var(--cards-per-row, 4), 1fr);
 }
 
-/* 次要面板（#secondary-panel）中的链接卡片容器 */
+/* 次要面板中的链接卡片容器 */
 #secondary-panel .card-container {
     grid-template-columns: repeat(auto-fill, 200px);
 }
@@ -32,23 +30,18 @@
     min-width: 0;
 }
 
-/* 链接卡片（作为<a>标签时）的悬浮效果 */
-a.card:hover {
-    text-decoration: none;
-}
-
 /* 链接卡片悬浮时的变换和阴影效果 */
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* 当链接卡片有.scrolling-desc类时，鼠标悬浮在其上时，其描述文字的滚动动画 */
+/* 悬浮时卡片描述文字的滚动动画 */
 .card.scrolling-desc:hover .desc span {
     animation: scroll 10s linear infinite;
 }
 
-/* 链接卡片中的图标 */
+/* 卡片图标样式 */
 .card .icon {
     width: 48px;
     height: 48px;
@@ -57,13 +50,13 @@ a.card:hover {
     color: #00a1f1;
 }
 
-/* 链接卡片中的内容区域 */
+/* 卡片内容区域 */
 .card .content {
     overflow: hidden;
     min-width: 0;
 }
 
-/* 链接卡片中的标题 */
+/* 卡片标题样式 */
 .card .title {
     font-weight: 600;
     font-size: 1.1rem;
@@ -74,7 +67,7 @@ a.card:hover {
     color: #00a1f1;
 }
 
-/* 链接卡片中的描述 */
+/* 卡片描述样式 */
 .card .desc {
     font-size: 0.9rem;
     color: #333;
@@ -82,7 +75,7 @@ a.card:hover {
     white-space: nowrap;
 }
 
-/* 链接卡片中描述的文本容器 */
+/* 卡片描述的文本容器 */
 .card .desc span {
     display: inline-block;
     transform: translateX(0);
@@ -98,37 +91,26 @@ a.card:hover {
     }
 }
 
-/* 次要面板（.sub-nav）中链接卡片的特殊样式 */
+/* 次要面板中链接卡片的特殊样式 */
 .sub-nav .card {
     height: 56px;
 }
 
-/* 次要面板（.sub-nav）中链接卡片的描述（不显示） */
+/* 次要面板中链接卡片的描述 (不显示) */
 .sub-nav .card .desc {
     display: none;
 }
 
-/* 次要面板（.sub-nav）中链接卡片的图标 */
+/* 次要面板中链接卡片的图标 */
 .sub-nav .card .icon {
     width: 24px;
     height: 24px;
     margin-right: 10px;
 }
 
-/* 次要面板（.sub-nav）中链接卡片的内容区域 */
+/* 次要面板中链接卡片的内容区域 */
 .sub-nav .card .content {
     display: flex;
     align-items: center;
     height: 100%;
-}
-
-
-/* 面板容器（例如 #primary-panel 和 #secondary-panel） */
-.panel {
-    display: none;
-}
-
-/* 当前激活的面板 */
-.panel.active {
-    display: block;
 }

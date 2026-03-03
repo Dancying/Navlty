@@ -12,27 +12,6 @@
             --background-blur: 0;
             --background-opacity: 0;
         }
-        body { 
-            margin: 0; 
-            position: relative;
-            background-color: #f0f2f5;
-        }
-        main {
-            padding-bottom: 8rem;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1;
-            background-image: var(--background-url);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            filter: blur(var(--background-blur));
-            opacity: var(--background-opacity);
-            transition: opacity 0.5s ease-in-out;
-        }
         {{.CSS | safeCSS}}
     </style>
     {{if .CustomCSS}}<style id="custom-css-style">{{.CustomCSS | safeCSS}}</style>{{end}}
@@ -47,7 +26,7 @@
                 </div>
                 <div class="button-container">
                     <div class="search-wrapper" id="search-wrapper">
-                        <input type="text" id="search-input" class="search-input" placeholder="搜索...">
+                        <input type="text" id="search-input" class="search-input" placeholder="按 / 搜索，按 Esc 退出">
                         <button id="search-button" class="icon-button"><i data-feather="search"></i></button>
                     </div>
                     <button id="toggle-panel-button" class="icon-button"><i data-feather="repeat"></i></button>

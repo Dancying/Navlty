@@ -52,14 +52,14 @@ func LoadSettings() *Settings {
 		if os.IsNotExist(err) {
 			log.Println("info: settings.json not found, creating with default values")
 			defaultSettings := &Settings{
-				SiteName:       "Navlty - A lightweight dashboard",
+				SiteName:       "Navlty - A Lightweight Dashboard",
 				SiteTitle:      "Navlty Dashboard",
 				CardsPerRow:    2,
 				BackgroundBlur: 8,
 			}
 			if err := SaveSettings(defaultSettings); err != nil {
 				log.Printf("error: failed to save default settings: %v", err)
-				return defaultSettings // 返回内存中的默认值
+				return defaultSettings
 			}
 			return defaultSettings
 		}
@@ -99,7 +99,7 @@ func LoadLinks() []Link {
 			}
 			if err := SaveLinks(defaultLinks); err != nil {
 				log.Printf("error: failed to save default links: %v", err)
-				return defaultLinks // 返回内存中的默认值
+				return defaultLinks
 			}
 			return defaultLinks
 		}

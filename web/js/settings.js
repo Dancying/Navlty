@@ -153,6 +153,5 @@ App.settings = (function() {
             });
     }
 
-    // 暴露公共方法
     return { init, loadAndShow, apply, initialLoad };
 })();

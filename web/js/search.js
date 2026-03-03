@@ -99,6 +99,5 @@ App.search = (function() {
         });
     }
 
-    // 暴露公共方法
     return { init, showSearch, hideSearch, toggleSearch };
 })();

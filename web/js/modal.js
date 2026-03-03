@@ -60,7 +60,7 @@ App.modal = (function() {
 
         modal.style.display = 'block';
         center(modal);
-        setTimeout(() => modal.classList.add('show'), 10); // 短暂延迟以触发 CSS 过渡效果
+        setTimeout(() => modal.classList.add('show'), 10);
         document.body.classList.add('modal-open');
     }
 
@@ -128,6 +128,5 @@ App.modal = (function() {
         });
     }
 
-    // 暴露公共方法
     return { init, open, close };
 })();

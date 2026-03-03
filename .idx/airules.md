@@ -15,6 +15,14 @@ This project is a Go application designed to be a starting point for building fe
 - **Concurrency:** Use goroutines and channels for concurrent AI requests where appropriate.
 - **Error Handling:** Handle errors explicitly when interacting with the AI SDK.
 
+### Frontend & Comments
+- **Frontend Resource Inlining:** This project uses Go code to dynamically embed CSS and JavaScript files directly into the HTML. Therefore, do **not** add `<link>` or `<script>` tags to any HTML files to reference external resources. The Go backend handles resource injection.
+- **Commenting Style:**
+    - **Language:** All comments must be in Chinese.
+    - **Format:** Use single-line comments (`//` for Go, `/* ... */` for CSS). Do not use consecutive comment lines.
+    - **Position:** Comments must be on their own line, placed directly **above** the code they describe (e.g., above a function name, CSS selector, or key logic block).
+    - **No Inline Comments:** Do not add comments at the end of a line of code.
+
 ### Tooling
 - **`go fmt`:** Always format your code with `go fmt`.
 - **`go mod`:** Use Go modules for dependency management.

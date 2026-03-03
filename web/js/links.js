@@ -58,7 +58,7 @@ App.links = (function() {
             title: titleInput.value,
             url: urlInput.value,
             panel: panel,
-            category: document.getElementById('link-category').value || '默认',
+            category: document.getElementById('link-category').value || 'Uncategorized',
             desc: document.getElementById('link-description').value,
             icon_url: document.getElementById('link-icon').value || 'globe',
         };
@@ -82,7 +82,7 @@ App.links = (function() {
             // 格式: 标题|链接|分类|图标|描述
             const [title, url, category, icon, description] = line.split('|').map(part => part.trim());
             if (!title || !url) return null;
-            return { title, url, panel, category: category || '默认', icon_url: icon || 'globe', desc: description };
+            return { title, url, panel, category: category || 'Uncategorized', icon_url: icon || 'globe', desc: description };
         }).filter(link => link !== null);
 
         if (newLinks.length === 0) {
@@ -107,7 +107,6 @@ App.links = (function() {
         .then(response => {
             if (!response.ok) throw new Error('服务器响应错误');
             App.toast.show('保存成功', 'success');
-            // 可在此处添加刷新页面的逻辑
         })
         .catch(error => {
             App.toast.show('保存失败', 'error');
@@ -115,6 +114,5 @@ App.links = (function() {
         });
     }
 
-    // 暴露公共方法
     return { init };
 })();

@@ -498,7 +498,6 @@ App.manage = (function() {
         }
     }
 
-    // --- 公共接口 ---
     return {
         init,
         deleteLink // 暴露 deleteLink 以便修复后的按钮能够调用

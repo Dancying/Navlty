@@ -57,7 +57,6 @@ App.toast = (function() {
         }, 3000);
     }
 
-    // 暴露公共方法
     return {
         init,
         show

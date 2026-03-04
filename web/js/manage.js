@@ -14,6 +14,8 @@ App.manage = (function () {
     let placeholder = null;
     let ghost = null;
     let offsetX = 0, offsetY = 0;
+    let startX = 0, startY = 0;
+    const DRAG_THRESHOLD = 15;
 
     // 初始化模块，缓存DOM并绑定事件
     function init() {
@@ -298,7 +300,9 @@ App.manage = (function () {
         const target = element;
         const rect = target.getBoundingClientRect();
         const pointer = e.type === 'touchstart' ? e.touches[0] : e;
-        
+
+        startX = pointer.clientX;
+        startY = pointer.clientY;
         offsetX = pointer.clientX - rect.left;
         offsetY = pointer.clientY - rect.top;
 
@@ -322,32 +326,40 @@ App.manage = (function () {
         document.addEventListener('mouseup', onPointerUp);
         document.addEventListener('touchend', onPointerUp);
     }
-    
+
     // 步骤 2: 拖动过程 (鼠标或手指移动)
     function onPointerMove(e) {
         if (!draggedInfo) return;
-        e.preventDefault();
+
+        const pointer = e.type === 'touchmove' ? e.touches[0] : e;
 
         if (!isDragging) {
-            isDragging = true;
-            draggedInfo.originalElement.classList.add('dragging');
-            createPlaceholder(draggedInfo.type);
-            createGhost();
+            const dx = Math.abs(pointer.clientX - startX);
+            const dy = Math.abs(pointer.clientY - startY);
+
+            if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
+                isDragging = true;
+                draggedInfo.originalElement.classList.add('dragging');
+                createPlaceholder(draggedInfo.type);
+                createGhost();
+            }
         }
-        
-        const pointer = e.type === 'touchmove' ? e.touches[0] : e;
-        
-        if (ghost) {
-            ghost.style.transform = `translate(${pointer.clientX - offsetX}px, ${pointer.clientY - offsetY}px)`;
+
+        if (isDragging) {
+            e.preventDefault();
+
+            if (ghost) {
+                ghost.style.transform = `translate(${pointer.clientX - offsetX}px, ${pointer.clientY - offsetY}px)`;
+            }
+
+            updatePlaceholderPosition(pointer);
         }
-        
-        updatePlaceholderPosition(pointer);
     }
 
     // 步骤 2.1: 更新占位符位置
     function updatePlaceholderPosition(pointer) {
         if (!placeholder) return;
-        
+
         const elementBelow = document.elementFromPoint(pointer.clientX, pointer.clientY);
         if (!elementBelow) return;
 
@@ -362,14 +374,14 @@ App.manage = (function () {
         if (draggedInfo.isCategory) {
             container = dropTarget.closest('.management-panel-content-wrapper');
         } else {
-             const categoryGroup = dropTarget.closest('.management-category-group');
-             if (categoryGroup && categoryGroup.querySelector('.management-category-header').classList.contains('open')) {
-                 container = categoryGroup.querySelector('.management-link-list');
-             } else {
-                 container = null;
-             }
+            const categoryGroup = dropTarget.closest('.management-category-group');
+            if (categoryGroup && categoryGroup.querySelector('.management-category-header').classList.contains('open')) {
+                container = categoryGroup.querySelector('.management-link-list');
+            } else {
+                container = null;
+            }
         }
-        
+
         if (container) {
             scrollContainer = findScrollableParent(container);
             const afterElement = getDragAfterElement(container, pointer.clientY, scrollContainer);
@@ -398,7 +410,7 @@ App.manage = (function () {
         if (placeholder && placeholder.parentNode) {
             dropAndReposition();
         }
-        
+
         if (draggedInfo && draggedInfo.originalElement) {
             draggedInfo.originalElement.classList.remove('dragging');
         }
@@ -440,15 +452,15 @@ App.manage = (function () {
         }
 
         if (movedItems.length === 0) return;
-        
+
         let toIndex = -1;
         const nextSibling = placeholder.nextElementSibling;
         if (nextSibling && !nextSibling.classList.contains('dragging')) {
             const nextSiblingUrl = nextSibling.dataset.linkUrl;
             const nextSiblingCategoryName = nextSibling.dataset.categoryName;
-            
+
             if (draggedInfo.isCategory && nextSiblingCategoryName) {
-                 toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextSiblingCategoryName);
+                toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextSiblingCategoryName);
             } else if (!draggedInfo.isCategory && nextSiblingUrl) {
                 toIndex = currentLinks.findIndex(l => l.url === nextSiblingUrl);
             }
@@ -456,31 +468,31 @@ App.manage = (function () {
 
         if (toIndex === -1) {
             if (draggedInfo.isCategory) {
-                 const lastCategoryInPanel = Array.from(targetContainer.children).filter(el => el.matches('.management-category-group:not(.dragging)')).pop();
-                 if (lastCategoryInPanel) {
-                     const lastCategoryName = lastCategoryInPanel.dataset.categoryName;
-                     let lastLinkIndex = -1;
-                     for(let i = currentLinks.length - 1; i >= 0; i--) {
-                         if ((currentLinks[i].category || 'Uncategorized') === lastCategoryName) {
-                             lastLinkIndex = i;
-                             break;
-                         }
-                     }
-                     toIndex = lastLinkIndex + 1;
-                 } else {
-                     toIndex = currentLinks.length;
-                 }
-            } else { 
-                const categoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : null;
-                if(categoryName) {
+                const lastCategoryInPanel = Array.from(targetContainer.children).filter(el => el.matches('.management-category-group:not(.dragging)')).pop();
+                if (lastCategoryInPanel) {
+                    const lastCategoryName = lastCategoryInPanel.dataset.categoryName;
                     let lastLinkIndex = -1;
-                     for(let i = currentLinks.length - 1; i >= 0; i--) {
-                         if ((currentLinks[i].category || 'Uncategorized') === categoryName) {
-                             lastLinkIndex = i;
-                             break;
-                         }
-                     }
-                     toIndex = lastLinkIndex + 1;
+                    for (let i = currentLinks.length - 1; i >= 0; i--) {
+                        if ((currentLinks[i].category || 'Uncategorized') === lastCategoryName) {
+                            lastLinkIndex = i;
+                            break;
+                        }
+                    }
+                    toIndex = lastLinkIndex + 1;
+                } else {
+                    toIndex = currentLinks.length;
+                }
+            } else {
+                const categoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : null;
+                if (categoryName) {
+                    let lastLinkIndex = -1;
+                    for (let i = currentLinks.length - 1; i >= 0; i--) {
+                        if ((currentLinks[i].category || 'Uncategorized') === categoryName) {
+                            lastLinkIndex = i;
+                            break;
+                        }
+                    }
+                    toIndex = lastLinkIndex + 1;
                 } else {
                     toIndex = currentLinks.length;
                 }
@@ -493,14 +505,14 @@ App.manage = (function () {
         movedItems.forEach(item => {
             if (targetPanel) item.panel = targetPanel;
             if (!draggedInfo.isCategory) {
-                 item.category = finalTargetCategoryName;
+                item.category = finalTargetCategoryName;
             } else {
-                 item.category = item.category || 'Uncategorized';
+                item.category = item.category || 'Uncategorized';
             }
         });
 
         currentLinks.splice(toIndex, 0, ...movedItems);
-        renderPanels(); 
+        renderPanels();
     }
 
     // 动态查找第一个可滚动的父元素
@@ -516,7 +528,7 @@ App.manage = (function () {
         }
         return document.getElementById('link-management-body') || document.body;
     }
-    
+
     // 计算拖动时元素应插入的位置
     function getDragAfterElement(container, y, scrollContainer) {
         const children = [...container.children];
@@ -547,7 +559,7 @@ App.manage = (function () {
             placeholder.classList.add('category-placeholder');
         }
     }
-    
+
     // 创建“幽灵”元素
     function createGhost() {
         if (ghost) ghost.remove();
@@ -559,7 +571,7 @@ App.manage = (function () {
         ghost.style.height = `${rect.height}px`;
         document.body.appendChild(ghost);
     }
-    
+
     // 处理链接标题的编辑操作
     function editLinkTitle(titleElement, linkUrl) {
         if (titleElement.querySelector('input')) return;

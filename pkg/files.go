@@ -6,6 +6,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/tdewolff/minify/v2"
+	"github.com/tdewolff/minify/v2/css"
+	"github.com/tdewolff/minify/v2/html"
+	"github.com/tdewolff/minify/v2/js"
+	jsonminify "github.com/tdewolff/minify/v2/json"
 )
 
 const (
@@ -13,6 +19,17 @@ const (
 	cssDirectory  = "web/css"
 	jsDirectory   = "web/js"
 )
+
+var m *minify.M
+
+// 包初始化时，设置压缩器
+func init() {
+	m = minify.New()
+	m.AddFunc("text/css", css.Minify)
+	m.AddFunc("application/javascript", js.Minify)
+	m.AddFunc("application/json", jsonminify.Minify)
+	m.AddFunc("text/html", html.Minify)
+}
 
 // loadJSONData 读取并解码一个 JSON 文件，如果文件不存在则返回错误。
 func loadJSONData(fileName string, v interface{}) error {
@@ -43,13 +60,23 @@ func saveJSONData(fileName string, v interface{}) error {
 	return os.WriteFile(path, file, 0644)
 }
 
-// loadStaticAssets 将一个目录中所有匹配后缀的文件内容合并成一个字符串。
+// loadStaticAssets 将一个目录中所有匹配后缀的文件内容合并并压缩成一个字符串。
 func loadStaticAssets(dir, suffix string) string {
 	var builder strings.Builder
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		log.Printf("warning: could not read directory %s: %v", dir, err)
 		return ""
+	}
+
+	var mime string
+	switch suffix {
+	case ".css":
+		mime = "text/css"
+	case ".js":
+		mime = "application/javascript"
+	default:
+		mime = "application/octet-stream"
 	}
 
 	for _, file := range files {
@@ -59,7 +86,14 @@ func loadStaticAssets(dir, suffix string) string {
 				log.Printf("warning: could not read file %s: %v", file.Name(), err)
 				continue
 			}
-			builder.Write(content)
+
+			minifiedContent, err := m.Bytes(mime, content)
+			if err != nil {
+				log.Printf("warning: could not minify file %s: %v", file.Name(), err)
+				builder.Write(content)
+			} else {
+				builder.Write(minifiedContent)
+			}
 			builder.WriteString("\n")
 		}
 	}

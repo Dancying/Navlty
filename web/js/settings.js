@@ -103,7 +103,7 @@ App.settings = (function () {
 
         const avatarElement = document.querySelector('.avatar');
         if (avatarElement) {
-            avatarElement.src = settings.avatarURL ? settings.avatarURL : '#';
+            avatarElement.src = settings.avatarURL ? settings.avatarURL : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
             avatarElement.style.display = settings.avatarURL ? 'block' : 'none';
         }
 
@@ -140,29 +140,5 @@ App.settings = (function () {
         App.helpers.checkDescriptionOverflow();
     }
 
-    // 页面首次加载时获取并应用设置
-    function initialLoad() {
-        if (!App.auth.isAuthenticated()) {
-            return Promise.resolve(null);
-        }
-
-        return fetch('/api/settings')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return Promise.resolve(null);
-            })
-            .then(settings => {
-                if (settings) {
-                    apply(settings);
-                }
-            })
-            .catch(error => {
-                console.error("Failed to initialize app settings:", error);
-                return Promise.resolve();
-            });
-    }
-
-    return { init, loadAndShow, apply, initialLoad };
+    return { init, loadAndShow, apply };
 })();

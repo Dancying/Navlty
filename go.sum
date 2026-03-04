@@ -1,4 +1,9 @@
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/tdewolff/minify/v2 v2.24.10 h1:SjOOY2Y3Uv34WY4wtyUzJA2T1Xd1v1zQVSZvPP0A/h4=
+github.com/tdewolff/minify/v2 v2.24.10/go.mod h1:fXkGpJ4gel+z1nmeIjVtKmxGZ4ZXd7g1gA3dfTz5/j8=
+github.com/tdewolff/parse/v2 v2.8.10 h1:5a8o388UmuiU3zlOBJ56PN0rxVi67LRNED/zzuHAfC0=
+github.com/tdewolff/parse/v2 v2.8.10/go.mod h1:Hwlni2tiVNKyzR1o6nUs4FOF07URA+JLBLd6dlIXYqo=
+github.com/tdewolff/test v1.0.11/go.mod h1:XPuWBzvdUzhCuxWO1ojpXsyzsA5bFoS3tO/Q3kFuTG8=
 golang.org/x/crypto v0.48.0 h1:/VRzVqiRSggnhY7gNRxPauEQ5Drw9haKdM0jqfcCFts=
 golang.org/x/crypto v0.48.0/go.mod h1:r0kV5h3qnFPlQnBSrULhlsRfryS2pmewsg+XfMgkVos=

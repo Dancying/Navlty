@@ -32,7 +32,15 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(buf.Bytes())
+	minifiedHTML, err := m.Bytes("text/html", buf.Bytes())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error minifying HTML: "+err.Error())
+		w.Write(buf.Bytes())
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(minifiedHTML)
 }
 
 // HandleSettings 根据 HTTP 方法路由设置相关的请求。

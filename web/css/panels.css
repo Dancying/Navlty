@@ -1,8 +1,13 @@
+/* 根元素HTML的样式，设置了页面的基础背景色 */
+html {
+    background-color: #f0f2f5;
+}
+
 /* 设置页面外边距为0，相对定位，并指定默认背景色 */
 body {
     margin: 0;
     position: relative;
-    background-color: #f0f2f5;
+    background-color: transparent;
 }
 
 /* 用于背景图片的伪元素，固定定位，覆盖整个视口 */

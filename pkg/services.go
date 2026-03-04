@@ -78,6 +78,7 @@ func LoadSettings() *Settings {
 				SiteTitle:      "Navlty Dashboard",
 				CardsPerRow:    2,
 				BackgroundBlur: 8,
+                BackgroundURL:  "",
 			}
 			if err := SaveSettings(defaultSettings); err != nil {
 				log.Printf("error: failed to save default settings: %v", err)

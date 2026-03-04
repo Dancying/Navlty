@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.SiteName}}</title>
+    <link rel="icon" href="{{.SiteIcon}}">
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
         :root {
             --cards-per-row: {{.CardsPerRow}};
-            --background-url: "";
-            --background-blur: 0;
-            --background-opacity: 0;
+            --background-url: {{if .BackgroundURL}}url('{{.BackgroundURL}}'){{else}}none{{end}};
+            --background-blur: {{.BackgroundBlur}}px;
+            --background-opacity: {{if .BackgroundURL}}1{{else}}0{{end}};
         }
         {{.CSS | safeCSS}}
     </style>
-    {{if .CustomCSS}}<style id="custom-css-style">{{.CustomCSS | safeCSS}}</style>{{end}}
+    {{if .CustomCSS}}
+    <style id="custom-css-style">
+        {{.CustomCSS | safeCSS}}
+    </style>
+    {{end}}
 </head>
+
 <body>
     <div class="header-background">
         <div class="container">
             <header class="header">
                 <div class="header-left">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;"{{end}}>
+                    <img src="{{.AvatarURL}}" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;" {{end}}>
                     <h1 class="site-title">{{.SiteTitle}}</h1>
                 </div>
                 <div class="button-container">
@@ -30,8 +37,6 @@
                         <button id="search-button" class="icon-button"><i data-feather="search"></i></button>
                     </div>
                     <button id="toggle-panel-button" class="icon-button"><i data-feather="repeat"></i></button>
-                    <button id="add-button" class="icon-button" data-modal-target="addLinkModal"><i data-feather="plus"></i></button>
-                    <button id="management-button" class="icon-button" data-modal-target="management-modal"><i data-feather="list"></i></button>
                     <button id="settings-button" class="icon-button" data-modal-target="settings-modal"><i data-feather="settings"></i></button>
                 </div>
             </header>
@@ -42,132 +47,53 @@
         <main>
             <div id="primary-panel" class="panel active">
                 {{range .PrimaryLinks}}
-                    <h2 class="category-title">{{.Name}}</h2>
-                    <div class="card-container">
-                        {{range .Links}}
-                        <a href="{{.URL}}" target="_blank" class="card">
-                            {{if isURLOrBase64 .IconURL}}
-                                <img src="{{.IconURL}}" class="icon"/>
-                            {{else}}
-                                <i data-feather="{{.IconURL}}" class="icon"></i>
-                            {{end}}
-                            <div class="content">
-                                <h3 class="title">{{.Title}}</h3>
-                                {{if .Desc}}
-                                <p class="desc"><span>{{.Desc}}</span></p>
-                                {{end}}
-                            </div>
-                        </a>
+                <h2 class="category-title">{{.Name}}</h2>
+                <div class="card-container">
+                    {{range .Links}}
+                    <a href="{{.URL}}" target="_blank" class="card">
+                        {{if isURLOrBase64 .IconURL}}
+                        <img src="{{.IconURL}}" class="icon" />
+                        {{else}}
+                        <i data-feather="{{.IconURL}}" class="icon"></i>
                         {{end}}
-                    </div>
+                        <div class="content">
+                            <h3 class="title">{{.Title}}</h3>
+                            {{if .Desc}}
+                            <p class="desc"><span>{{.Desc}}</span></p>
+                            {{end}}
+                        </div>
+                    </a>
+                    {{end}}
+                </div>
                 {{end}}
             </div>
 
             <div id="secondary-panel" class="panel sub-nav">
-                 {{range .SecondaryLinks}}
-                    <h2 class="category-title">{{.Name}}</h2>
-                    <div class="card-container">
-                        {{range .Links}}
-                        <a href="{{.URL}}" target="_blank" class="card">
-                           {{if isURLOrBase64 .IconURL}}
-                                <img src="{{.IconURL}}" class="icon"/>
-                            {{else}}
-                                <i data-feather="{{.IconURL}}" class="icon"></i>
-                            {{end}}
-                            <div class="content">
-                                <h3 class="title">{{.Title}}</h3>
-                                {{if .Desc}}
-                                <p class="desc"><span>{{.Desc}}</span></p>
-                                {{end}}
-                            </div>
-                        </a>
+                {{range .SecondaryLinks}}
+                <h2 class="category-title">{{.Name}}</h2>
+                <div class="card-container">
+                    {{range .Links}}
+                    <a href="{{.URL}}" target="_blank" class="card">
+                        {{if isURLOrBase64 .IconURL}}
+                        <img src="{{.IconURL}}" class="icon" />
+                        {{else}}
+                        <i data-feather="{{.IconURL}}" class="icon"></i>
                         {{end}}
-                    </div>
+                        <div class="content">
+                            <h3 class="title">{{.Title}}</h3>
+                            {{if .Desc}}
+                            <p class="desc"><span>{{.Desc}}</span></p>
+                            {{end}}
+                        </div>
+                    </a>
+                    {{end}}
+                </div>
                 {{end}}
             </div>
         </main>
     </div>
 
-    <!-- Modals -->
-    <div id="addLinkModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>添加链接</h2>
-                <span class="close-button"><i data-feather="x"></i></span>
-            </div>
-            <div class="modal-body">
-                <div class="tab-switcher">
-                    <button class="tab-button active" data-tab="single-link-tab">单个添加</button>
-                    <button class="tab-button" data-tab="bulk-add-tab">批量添加</button>
-                </div>
-
-                <div class="tab-content-container">
-                    <div id="single-link-tab" class="tab-content active">
-                         <form id="add-link-form" class="form-grid">
-                            <div class="form-group">
-                                <label for="link-title">标题*</label>
-                                <input type="text" id="link-title" name="title" placeholder="Google" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="link-url">链接*</label>
-                                <input type="url" id="link-url" name="url" placeholder="https://google.com" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="link-category">分类</label>
-                                <input type="text" id="link-category" name="category" placeholder="搜索引擎">
-                            </div>
-                            <div class="form-group">
-                                <label for="link-icon">图标</label>
-                                <div class="input-with-button">
-                                    <input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64">
-                                    <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                    <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
-                                </div>
-                            </div>
-                            <div class="form-group span-two">
-                                <label for="link-description">描述</label>
-                                <textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div id="bulk-add-tab" class="tab-content">
-                        <form id="bulk-add-form">
-                             <div class="form-group">
-                                <label for="bulk-links">批量链接</label>
-                                <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
-                                <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary cancel-button">取消</button>
-                <button class="btn btn-primary" id="save-link-button">保存</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Link Management Modal -->
-    <div id="management-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>链接管理</h2>
-                <span class="close-button"><i data-feather="x"></i></span>
-            </div>
-            <div class="modal-body" id="link-management-body">
-                <div id="link-management-container" class="link-management-grid">
-                    <!-- JS will populate this content -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary cancel-button">取消</button>
-                <button type="button" class="btn btn-primary" id="management-save-button">保存</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Settings Modal -->
     <div id="settings-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -217,7 +143,7 @@
                             <div class="form-grid" style="margin-top: 1.5rem;">
                                 <div class="form-group span-two">
                                     <label for="background-url">背景图片</label>
-                                     <div class="input-with-button">
+                                    <div class="input-with-button">
                                         <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
                                         <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
                                         <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
@@ -235,7 +161,7 @@
                         </div>
                         <!-- Advanced Settings -->
                         <div id="advanced-settings-tab" class="tab-content">
-                             <div class="form-grid" style="margin-top: 1.5rem;">
+                            <div class="form-grid" style="margin-top: 1.5rem;">
                                 <div class="form-group span-two">
                                     <label for="custom-css">外部 CSS</label>
                                     <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
@@ -256,8 +182,13 @@
         </div>
     </div>
 
-    {{range .ExternalJS}}<script src="{{.}}"></script>{{end}}
+    {{range .ExternalJS}}
+    <script src="{{.}}"></script>
+    {{end}}
     <script>{{.JS | safeJS}}</script>
-    <script>feather.replace()</script>
+    <script>
+        feather.replace()
+    </script>
 </body>
+
 </html>

@@ -10,12 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     App.auth.init();
     App.modal.init();
     App.links.init();
-    App.manage.init();
     App.toast.init();
-
-    // 默认隐藏添加和管理按钮
-    document.getElementById('add-button').style.display = 'none';
-    document.getElementById('management-button').style.display = 'none';
 
     // 主副面板切换
     const togglePanelButton = document.getElementById('toggle-panel-button');
@@ -54,14 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // --- 应用初始化加载 ---
-    App.settings.initialLoad()
-        .then(() => {
-            // 数据加载并应用设置后，检查卡片描述是否溢出
-            App.helpers.checkDescriptionOverflow();
-        })
-        .catch(error => {
-            console.error("Failed to initialize app settings:", error);
-            App.toast.show('页面加载失败', 'error');
-        });
+    // 检查卡片描述是否溢出
+    App.helpers.checkDescriptionOverflow();
 });

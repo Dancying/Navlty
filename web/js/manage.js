@@ -7,10 +7,13 @@ App.manage = (function () {
     // 模块内状态变量
     let currentLinks = [];
     let dom = {};
+    let openCategories = new Set();
+    let dragEndTime = 0;
+    let isDragging = false;
     let draggedInfo = null;
     let placeholder = null;
-    let dragEndTime = 0;
-    let openCategories = new Set();
+    let ghost = null;
+    let offsetX = 0, offsetY = 0;
 
     // 初始化模块，缓存DOM并绑定事件
     function init() {
@@ -31,7 +34,6 @@ App.manage = (function () {
 
         dom.openButton.addEventListener('click', openModal);
         dom.saveButton.addEventListener('click', saveChanges);
-        document.addEventListener('dragend', handleDragEnd);
     }
 
     // 打开管理模态框
@@ -108,9 +110,6 @@ App.manage = (function () {
             contentWrapper.appendChild(categoryGroup);
         });
 
-        contentWrapper.addEventListener('dragover', handleDragOver);
-        contentWrapper.addEventListener('dragleave', handleDragLeave);
-        contentWrapper.addEventListener('drop', handleDrop);
         return panel;
     }
 
@@ -132,9 +131,6 @@ App.manage = (function () {
 
         group.appendChild(header);
         group.appendChild(linkList);
-        group.addEventListener('dragover', handleDragOver);
-        group.addEventListener('dragleave', handleDragLeave);
-        group.addEventListener('drop', handleDrop);
         return group;
     }
 
@@ -142,11 +138,13 @@ App.manage = (function () {
     function createCategoryHeader(categoryName, panelName) {
         const header = document.createElement('div');
         header.className = 'management-category-header';
-        header.draggable = true;
+
+        header.addEventListener('mousedown', (e) => onPointerDown(e, header, 'category'));
+        header.addEventListener('touchstart', (e) => onPointerDown(e, header, 'category'), { passive: false });
+
         header.dataset.type = 'category';
         header.dataset.categoryName = categoryName;
         header.dataset.panelName = panelName;
-        header.addEventListener('dragstart', handleDragStart);
 
         const titleContainer = document.createElement('div');
         titleContainer.className = 'category-title-container';
@@ -158,7 +156,7 @@ App.manage = (function () {
         titleContainer.appendChild(title);
 
         titleContainer.addEventListener('click', () => {
-            if (Date.now() - dragEndTime < 100) return;
+            if (isDragging || (Date.now() - dragEndTime < 150)) return;
 
             const linkList = header.nextElementSibling;
             if (!linkList || !linkList.classList.contains('management-link-list')) return;
@@ -238,10 +236,12 @@ App.manage = (function () {
     function createLinkItem(link) {
         const item = document.createElement('li');
         item.className = 'management-link-item';
-        item.draggable = true;
+
+        item.addEventListener('mousedown', (e) => onPointerDown(e, item, 'link'));
+        item.addEventListener('touchstart', (e) => onPointerDown(e, item, 'link'), { passive: false });
+
         item.dataset.type = 'link';
         item.dataset.linkUrl = link.url;
-        item.addEventListener('dragstart', handleDragStart);
 
         const title = document.createElement('span');
         title.className = 'management-link-title';
@@ -290,122 +290,141 @@ App.manage = (function () {
         return item;
     }
 
-    // 计算拖动时元素应插入的位置
-    function getDragAfterElement(container, y) {
-        const children = [...container.children];
-
-        return children.reduce((closest, child) => {
-            if (child.classList.contains('drop-placeholder') || child.classList.contains('dragging')) {
-                return closest;
-            }
-
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
-            }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
-    }
-
-    // 创建用于拖放的占位符元素
-    function createPlaceholder(type) {
-        if (placeholder) placeholder.remove();
-        placeholder = document.createElement('div');
-        placeholder.className = 'drop-placeholder';
-        if (type === 'category') {
-            placeholder.classList.add('category-placeholder');
-        }
-    }
-
-    // 处理拖动开始事件
-    function handleDragStart(e) {
+    // 步骤 1: 拖动开始 (鼠标按下或触摸开始)
+    function onPointerDown(e, element, type) {
+        if (e.type === 'mousedown' && e.button !== 0) return;
         e.stopPropagation();
-        const target = e.target;
+
+        const target = element;
+        const rect = target.getBoundingClientRect();
+        const pointer = e.type === 'touchstart' ? e.touches[0] : e;
+        
+        offsetX = pointer.clientX - rect.left;
+        offsetY = pointer.clientY - rect.top;
+
         draggedInfo = {
-            type: target.dataset.type,
             element: target,
-            sourceList: target.parentNode
+            type: type,
+            isCategory: type === 'category',
+            originalElement: type === 'category' ? target.closest('.management-category-group') : target,
         };
-        if (draggedInfo.type === 'link') {
-            draggedInfo.url = target.dataset.linkUrl;
-        } else if (draggedInfo.type === 'category') {
+        draggedInfo.sourceList = draggedInfo.originalElement.parentNode;
+
+        if (draggedInfo.isCategory) {
             draggedInfo.categoryName = target.dataset.categoryName;
             draggedInfo.panelName = target.dataset.panelName;
+        } else {
+            draggedInfo.url = target.dataset.linkUrl;
         }
 
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', draggedInfo.type);
-        setTimeout(() => target.classList.add('dragging'), 0);
-        createPlaceholder(draggedInfo.type);
+        document.addEventListener('mousemove', onPointerMove);
+        document.addEventListener('touchmove', onPointerMove, { passive: false });
+        document.addEventListener('mouseup', onPointerUp);
+        document.addEventListener('touchend', onPointerUp);
+    }
+    
+    // 步骤 2: 拖动过程 (鼠标或手指移动)
+    function onPointerMove(e) {
+        if (!draggedInfo) return;
+        e.preventDefault();
+
+        if (!isDragging) {
+            isDragging = true;
+            draggedInfo.originalElement.classList.add('dragging');
+            createPlaceholder(draggedInfo.type);
+            createGhost();
+        }
+        
+        const pointer = e.type === 'touchmove' ? e.touches[0] : e;
+        
+        if (ghost) {
+            ghost.style.transform = `translate(${pointer.clientX - offsetX}px, ${pointer.clientY - offsetY}px)`;
+        }
+        
+        updatePlaceholderPosition(pointer);
     }
 
-    // 处理拖动经过事件
-    function handleDragOver(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const dropTarget = e.currentTarget;
-        dropTarget.classList.add('drag-over');
-        let container = null;
+    // 步骤 2.1: 更新占位符位置
+    function updatePlaceholderPosition(pointer) {
+        if (!placeholder) return;
+        
+        const elementBelow = document.elementFromPoint(pointer.clientX, pointer.clientY);
+        if (!elementBelow) return;
 
-        if (draggedInfo.type === 'link') {
-            const group = dropTarget.closest('.management-category-group');
-            if (group) {
-                const header = group.querySelector('.management-category-header');
-                if (header.classList.contains('open') || e.target.closest('.management-category-header')) {
-                    container = group.querySelector('.management-link-list');
-                }
-            }
-        } else {
-            container = dropTarget.closest('.management-panel-content-wrapper');
+        const dropTarget = elementBelow.closest('.management-panel-content-wrapper, .management-link-list, .management-category-header');
+        if (!dropTarget) {
+            if (placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+            return;
         }
 
-        if (container && placeholder) {
-            const afterElement = getDragAfterElement(container, e.clientY);
+        let container, scrollContainer;
+
+        if (draggedInfo.isCategory) {
+            container = dropTarget.closest('.management-panel-content-wrapper');
+        } else {
+             const categoryGroup = dropTarget.closest('.management-category-group');
+             if (categoryGroup && categoryGroup.querySelector('.management-category-header').classList.contains('open')) {
+                 container = categoryGroup.querySelector('.management-link-list');
+             } else {
+                 container = null;
+             }
+        }
+        
+        if (container) {
+            scrollContainer = findScrollableParent(container);
+            const afterElement = getDragAfterElement(container, pointer.clientY, scrollContainer);
             if (afterElement) {
                 container.insertBefore(placeholder, afterElement);
             } else {
                 container.appendChild(placeholder);
             }
-        } else if (placeholder) {
+        } else {
+            if (placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+        }
+    }
+
+    // 步骤 3: 拖动结束 (鼠标抬起或触摸结束)
+    function onPointerUp() {
+        document.removeEventListener('mousemove', onPointerMove);
+        document.removeEventListener('touchmove', onPointerMove);
+        document.removeEventListener('mouseup', onPointerUp);
+        document.removeEventListener('touchend', onPointerUp);
+
+        if (!isDragging) {
+            draggedInfo = null;
+            return;
+        }
+
+        if (placeholder && placeholder.parentNode) {
+            dropAndReposition();
+        }
+        
+        if (draggedInfo && draggedInfo.originalElement) {
+            draggedInfo.originalElement.classList.remove('dragging');
+        }
+        if (ghost) {
+            ghost.remove();
+            ghost = null;
+        }
+        if (placeholder) {
             placeholder.remove();
-        }
-    }
-
-    // 处理拖动离开事件
-    function handleDragLeave(e) {
-        e.currentTarget.classList.remove('drag-over');
-    }
-
-    // 处理拖放事件，这是核心拖放逻辑
-    function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!draggedInfo) return;
-
-        e.currentTarget.classList.remove('drag-over');
-        const finalTargetCategoryGroup = placeholder ? placeholder.closest('.management-category-group') : null;
-
-        if (draggedInfo.type === 'link') {
-            let isValidDrop = false;
-            if (finalTargetCategoryGroup) {
-                const header = finalTargetCategoryGroup.querySelector('.management-category-header');
-                if (header.classList.contains('open') || e.target.closest('.management-category-header')) {
-                    isValidDrop = true;
-                }
-            }
-            if (!isValidDrop) return;
+            placeholder = null;
         }
 
-        if (!placeholder || !placeholder.parentNode) return;
+        draggedInfo = null;
+        isDragging = false;
+        dragEndTime = Date.now();
+    }
 
-        const targetPanelEl = e.currentTarget.closest('.management-panel');
+    // 核心放置逻辑
+    function dropAndReposition() {
+        const targetContainer = placeholder.parentNode;
+        const finalTargetCategoryGroup = targetContainer.closest('.management-category-group');
+        const targetPanelEl = targetContainer.closest('.management-panel');
         const targetPanel = targetPanelEl ? targetPanelEl.dataset.panelName : null;
 
         let movedItems = [];
-        if (draggedInfo.type === 'link') {
+        if (!draggedInfo.isCategory) {
             const fromIndex = currentLinks.findIndex(l => l.url === draggedInfo.url);
             if (fromIndex > -1) movedItems = currentLinks.splice(fromIndex, 1);
         } else {
@@ -421,106 +440,137 @@ App.manage = (function () {
         }
 
         if (movedItems.length === 0) return;
-
+        
         let toIndex = -1;
         const nextSibling = placeholder.nextElementSibling;
-        if (nextSibling) {
+        if (nextSibling && !nextSibling.classList.contains('dragging')) {
             const nextSiblingUrl = nextSibling.dataset.linkUrl;
-            const nextSiblingCategory = nextSibling.dataset.categoryName;
-            if (nextSiblingUrl) {
+            const nextSiblingCategoryName = nextSibling.dataset.categoryName;
+            
+            if (draggedInfo.isCategory && nextSiblingCategoryName) {
+                 toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextSiblingCategoryName);
+            } else if (!draggedInfo.isCategory && nextSiblingUrl) {
                 toIndex = currentLinks.findIndex(l => l.url === nextSiblingUrl);
-            } else if (nextSiblingCategory) {
-                toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextSiblingCategory);
             }
         }
 
         if (toIndex === -1) {
-            const newCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : null;
-            if (newCategoryName) {
-                let lastLinkOfCategory = -1;
-                for (let i = currentLinks.length - 1; i >= 0; i--) {
-                    if ((currentLinks[i].category || 'Uncategorized') === newCategoryName) {
-                        lastLinkOfCategory = i;
-                        break;
-                    }
+            if (draggedInfo.isCategory) {
+                 const lastCategoryInPanel = Array.from(targetContainer.children).filter(el => el.matches('.management-category-group:not(.dragging)')).pop();
+                 if (lastCategoryInPanel) {
+                     const lastCategoryName = lastCategoryInPanel.dataset.categoryName;
+                     let lastLinkIndex = -1;
+                     for(let i = currentLinks.length - 1; i >= 0; i--) {
+                         if ((currentLinks[i].category || 'Uncategorized') === lastCategoryName) {
+                             lastLinkIndex = i;
+                             break;
+                         }
+                     }
+                     toIndex = lastLinkIndex + 1;
+                 } else {
+                     toIndex = currentLinks.length;
+                 }
+            } else { 
+                const categoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : null;
+                if(categoryName) {
+                    let lastLinkIndex = -1;
+                     for(let i = currentLinks.length - 1; i >= 0; i--) {
+                         if ((currentLinks[i].category || 'Uncategorized') === categoryName) {
+                             lastLinkIndex = i;
+                             break;
+                         }
+                     }
+                     toIndex = lastLinkIndex + 1;
+                } else {
+                    toIndex = currentLinks.length;
                 }
-                toIndex = lastLinkOfCategory > -1 ? lastLinkOfCategory + 1 : currentLinks.length;
-            } else if (targetPanel) {
-                let lastLinkOfPanel = -1;
-                for (let i = currentLinks.length - 1; i >= 0; i--) {
-                    if (currentLinks[i].panel === targetPanel) {
-                        lastLinkOfPanel = i;
-                        break;
-                    }
-                }
-                toIndex = lastLinkOfPanel > -1 ? lastLinkOfPanel + 1 : currentLinks.length;
-            } else {
-                toIndex = currentLinks.length;
             }
         }
+        if (toIndex === -1) toIndex = currentLinks.length;
 
-        const finalTargetCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : '未分类';
+        const finalTargetCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : (draggedInfo.isCategory ? draggedInfo.categoryName : '未分类');
 
         movedItems.forEach(item => {
             if (targetPanel) item.panel = targetPanel;
-            if (draggedInfo.type === 'link') item.category = finalTargetCategoryName;
+            if (!draggedInfo.isCategory) {
+                 item.category = finalTargetCategoryName;
+            } else {
+                 item.category = item.category || 'Uncategorized';
+            }
         });
 
         currentLinks.splice(toIndex, 0, ...movedItems);
+        renderPanels(); 
+    }
 
-        const elementToMove = draggedInfo.type === 'category' ? draggedInfo.element.closest('.management-category-group') : draggedInfo.element;
-
-        if (elementToMove) {
-            const destinationList = placeholder.parentNode;
-            destinationList.replaceChild(elementToMove, placeholder);
-
-            updateListHeight(draggedInfo.sourceList);
-            if (draggedInfo.sourceList !== destinationList) {
-                updateListHeight(destinationList);
+    // 动态查找第一个可滚动的父元素
+    function findScrollableParent(element) {
+        if (!element) return document.getElementById('link-management-body') || document.body;
+        let parent = element;
+        while (parent && parent.tagName !== 'BODY') {
+            const style = window.getComputedStyle(parent);
+            if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+                return parent;
             }
+            parent = parent.parentElement;
         }
-        placeholder = null;
+        return document.getElementById('link-management-body') || document.body;
+    }
+    
+    // 计算拖动时元素应插入的位置
+    function getDragAfterElement(container, y, scrollContainer) {
+        const children = [...container.children];
+        const scrollContainerRect = scrollContainer.getBoundingClientRect();
+        const relativeY = y - scrollContainerRect.top + scrollContainer.scrollTop;
+
+        return children.reduce((closest, child) => {
+            if (child.classList.contains('dragging') || child.classList.contains('drop-placeholder') || child.classList.contains('ghost')) {
+                return closest;
+            }
+            const box = child.getBoundingClientRect();
+            const childTopInScrolledContent = box.top - scrollContainerRect.top + scrollContainer.scrollTop;
+            const offset = relativeY - childTopInScrolledContent - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    // 处理拖动结束事件，用于清理
-    function handleDragEnd() {
-        if (draggedInfo && draggedInfo.element) {
-            draggedInfo.element.classList.remove('dragging');
-        }
-        if (placeholder) {
-            placeholder.remove();
-            placeholder = null;
-        }
-        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-        draggedInfo = null;
-        dragEndTime = Date.now();
-    }
-
-    // 同步更新列表高度
-    function updateListHeight(list) {
-        if (!list || !list.classList.contains('management-link-list')) return;
-
-        const header = list.previousElementSibling;
-        if (header && header.classList.contains('open')) {
-            list.style.maxHeight = list.scrollHeight + 'px';
+    // 创建占位符
+    function createPlaceholder(type) {
+        if (placeholder) placeholder.remove();
+        placeholder = document.createElement('div');
+        placeholder.className = 'drop-placeholder';
+        if (type === 'category') {
+            placeholder.classList.add('category-placeholder');
         }
     }
-
+    
+    // 创建“幽灵”元素
+    function createGhost() {
+        if (ghost) ghost.remove();
+        const original = draggedInfo.element;
+        ghost = original.cloneNode(true);
+        ghost.classList.add('ghost');
+        const rect = original.getBoundingClientRect();
+        ghost.style.width = `${rect.width}px`;
+        ghost.style.height = `${rect.height}px`;
+        document.body.appendChild(ghost);
+    }
+    
     // 处理链接标题的编辑操作
     function editLinkTitle(titleElement, linkUrl) {
         if (titleElement.querySelector('input')) return;
-
         const linkToEdit = currentLinks.find(l => l.url === linkUrl);
         if (!linkToEdit) return;
-
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'management-link-input';
         input.value = linkToEdit.title;
-
         titleElement.replaceWith(input);
         input.focus();
-
         const save = () => {
             const newTitle = input.value.trim();
             if (newTitle && newTitle !== linkToEdit.title) {
@@ -528,7 +578,6 @@ App.manage = (function () {
             }
             renderPanels();
         };
-
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') input.blur();
@@ -539,15 +588,12 @@ App.manage = (function () {
     // 处理分类名称的编辑操作
     function editCategoryName(titleElement, oldCategoryName) {
         if (titleElement.querySelector('input')) return;
-
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'management-category-input';
         input.value = oldCategoryName;
-
         titleElement.replaceWith(input);
         input.focus();
-
         const save = () => {
             const newCategoryName = input.value.trim();
             if (newCategoryName && newCategoryName !== oldCategoryName) {
@@ -556,14 +602,13 @@ App.manage = (function () {
                     openCategories.add(newCategoryName);
                 }
                 currentLinks.forEach(link => {
-                    if ((link.category || '未分类') === oldCategoryName) {
+                    if ((link.category || 'Uncategorized') === oldCategoryName) {
                         link.category = newCategoryName;
                     }
                 });
             }
             renderPanels();
         };
-
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') input.blur();
@@ -580,13 +625,8 @@ App.manage = (function () {
 
     // 删除单个链接
     function deleteLink(url) {
-        const linkItem = dom.container.querySelector(`.management-link-item[data-link-url="${url}"]`);
-        if (linkItem) {
-            const list = linkItem.parentNode;
-            linkItem.remove();
-            updateListHeight(list);
-        }
         currentLinks = currentLinks.filter(link => link.url !== url);
+        renderPanels();
     }
 
     // 保存所有更改到后端
@@ -606,7 +646,7 @@ App.manage = (function () {
             document.dispatchEvent(new CustomEvent('links-updated'));
         } catch (error) {
             console.error('Error saving changes:', error);
-            App.toast.show(`链接保存失败: ${error.message}`, 'error');
+            App.toast.show('链接保存失败', 'error');
         }
     }
 

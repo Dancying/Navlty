@@ -29,18 +29,18 @@ App.auth = (function () {
                 document.getElementById("add-button").style.display = "block";
                 document.getElementById("management-button").style.display = "block";
                 App.modal.close("auth-modal");
-                App.toast.show(result.message);
+                App.toast.show("密码验证通过", "success");
                 if (onSuccessCallback) {
                     onSuccessCallback();
                 }
             } else {
                 isAuthorized = false;
-                App.toast.show(result.message);
+                App.toast.show("密码验证失败", "error");
             }
         } catch (error) {
             isAuthorized = false;
             console.error("Auth failed:", error);
-            App.toast.show("验证发生错误");
+            App.toast.show("验证发生错误", "error");
         }
     }
 

@@ -1,3 +1,16 @@
+/* 链接分类标题 */
+.category-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
 /* 链接卡片的网格容器 */
 .card-container {
     display: grid;
@@ -114,4 +127,49 @@
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+/* --- 响应式布局 --- */
+
+/* 1200px断点样式 */
+@media (max-width: 1200px) {
+
+    /* 主面板链接卡片容器 */
+    #primary-panel .card-container {
+        grid-template-columns: repeat(var(--cards-per-row, 3), 1fr);
+    }
+}
+
+/* 992px断点样式 */
+@media (max-width: 992px) {
+
+    /* 主面板链接卡片容器 */
+    #primary-panel .card-container {
+        grid-template-columns: repeat(var(--cards-per-row, 2), 1fr);
+    }
+}
+
+/* 768px断点样式 */
+@media (max-width: 768px) {
+
+    /* 减小卡片容器间距 */
+    .card-container {
+        gap: 1rem;
+    }
+
+    /* 主面板链接卡片容器 */
+    #primary-panel .card-container {
+        grid-template-columns: 1fr;
+    }
+
+    /* 次要面板链接卡片容器 */
+    #secondary-panel .card-container {
+        grid-template-columns: 1fr;
+    }
+
+    /* 减小卡片图标尺寸 */
+    .card .icon {
+        width: 40px;
+        height: 40px;
+    }
 }

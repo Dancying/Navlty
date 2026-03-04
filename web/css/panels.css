@@ -168,3 +168,75 @@ main {
 .panel.active {
     display: block;
 }
+
+/* --- 响应式布局 --- */
+
+/* 1200px断点样式 */
+@media (max-width: 1200px) {
+
+    /* 调整内容容器宽度 */
+    .container {
+        width: 90%;
+    }
+}
+
+/* 992px断点样式 */
+@media (max-width: 992px) {
+
+    /* 调整内容容器宽度 */
+    .container {
+        width: 95%;
+    }
+}
+
+/* 768px断点样式 */
+@media (max-width: 768px) {
+
+    /* 增加标题栏高度 */
+    .header-background {
+        height: auto;
+        padding: 0.75rem 0;
+    }
+
+    /* 页眉内容垂直排列 */
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    /* 按钮容器换行显示 */
+    .button-container {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    /* 展开的搜索框宽度 */
+    .search-wrapper.active {
+        width: calc(100% - 48px);
+    }
+}
+
+/* 480px断点样式 */
+@media (max-width: 480px) {
+
+    /* 减小网站标题字体大小 */
+    .header .site-title {
+        font-size: 1.5rem;
+    }
+
+    /* 页眉左侧部分间距 */
+    .header-left {
+        gap: 0.5rem;
+    }
+
+    /* 展开的搜索框宽度 */
+    .search-wrapper.active {
+        width: 100%;
+    }
+
+    /* 调整主内容区域内边距 */
+    main {
+        padding: 1rem 0;
+    }
+}

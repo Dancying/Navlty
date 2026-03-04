@@ -140,3 +140,25 @@
     border-color: #dc3545 !important;
     box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.55) !important;
 }
+
+/* --- 响应式布局 --- */
+
+/* 768px断点样式 */
+@media (max-width: 768px) {
+
+    /* 表单网格单列布局 */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* 表单组跨列 */
+    .form-group.span-two {
+        grid-column: span 1;
+    }
+
+    /* 减小标签底部边距 */
+    .form-group label {
+        margin-bottom: 0.5rem;
+    }
+}

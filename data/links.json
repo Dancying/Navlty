@@ -1,50 +1,90 @@
 [
   {
+    "title": "Notion",
+    "url": "https://notion.so",
+    "desc": "The calendar for your work and life.",
+    "icon_url": "https://api.iconify.design/logos:notion-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Netflix",
+    "url": "https://netflix.com",
+    "desc": "Watch TV shows and movies online.",
+    "icon_url": "https://api.iconify.design/logos:netflix-icon.svg",
+    "panel": "primary",
+    "category": "Entertainment"
+  },
+  {
+    "title": "Muzli",
+    "url": "https://muz.li",
+    "desc": "Designers' Secret Source for inspiration.",
+    "icon_url": "https://api.iconify.design/tabler:app-window.svg",
+    "panel": "primary",
+    "category": "Design"
+  },
+  {
+    "title": "Cron",
+    "url": "https://cron.com",
+    "desc": "Next-generation calendar for professionals.",
+    "icon_url": "https://api.iconify.design/logos:cron-icon.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Twitch",
+    "url": "https://twitch.tv",
+    "desc": "The world's leading live streaming platform for gamers.",
+    "icon_url": "https://api.iconify.design/logos:twitch.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Vue.js",
+    "url": "https://vuejs.org",
+    "desc": "The Progressive JavaScript Framework.",
+    "icon_url": "https://api.iconify.design/logos:vue.svg",
+    "panel": "primary",
+    "category": "Productivity"
+  },
+  {
+    "title": "111",
+    "url": "222",
+    "desc": "",
+    "icon_url": "globe",
+    "panel": "secondary",
+    "category": "Uncategorized"
+  },
+  {
+    "title": "Spotify",
+    "url": "https://spotify.com",
+    "desc": "Digital music service that gives you access to millions of songs.",
+    "icon_url": "https://api.iconify.design/logos:spotify-icon.svg",
+    "panel": "secondary",
+    "category": "Uncategorized"
+  },
+  {
+    "title": "React",
+    "url": "https://react.dev",
+    "desc": "A JavaScript library for building user interfaces.",
+    "icon_url": "https://api.iconify.design/logos:react.svg",
+    "panel": "secondary",
+    "category": "Uncategorized"
+  },
+  {
     "title": "Obsidian",
     "url": "https://obsidian.md",
     "desc": "A second brain, for you, forever.",
     "icon_url": "https://api.iconify.design/logos:obsidian-icon.svg",
-    "panel": "primary",
-    "category": "Development1111111111111111111111111111"
-  },
-  {
-    "title": "Tailwind CSS",
-    "url": "https://tailwindcss.com",
-    "desc": "Rapidly build modern websites without ever leaving your HTML.",
-    "icon_url": "https://api.iconify.design/logos:tailwindcss-icon.svg",
-    "panel": "primary",
-    "category": "Development1111111111111111111111111111"
-  },
-  {
-    "title": "Copilot",
-    "url": "https://github.com/features/copilot",
-    "desc": "Your AI pair programmer, powered by GitHub and OpenAI.",
-    "icon_url": "https://api.iconify.design/logos:github-copilot.svg",
     "panel": "secondary",
-    "category": "AI"
+    "category": "Development"
   },
   {
-    "title": "Mistral AI",
-    "url": "https://mistral.ai",
-    "desc": "Frontier AI in your hands with open-weight models.",
-    "icon_url": "https://api.iconify.design/logos:mistral-ai-icon.svg",
+    "title": "Steam",
+    "url": "https://store.steampowered.com",
+    "desc": "The ultimate destination for playing games.",
+    "icon_url": "https://api.iconify.design/logos:steam.svg",
     "panel": "secondary",
-    "category": "AI"
-  },
-  {
-    "title": "Obsidian",
-    "url": "https://obsidian.md",
-    "desc": "A second brain, for you, forever.",
-    "icon_url": "https://api.iconify.design/logos:obsidian-icon.svg",
-    "panel": "primary",
-    "category": "Development1111111111111111111111111111"
-  },
-  {
-    "title": "Tailwind CSS",
-    "url": "https://tailwindcss.com",
-    "desc": "Rapidly build modern websites without ever leaving your HTML.",
-    "icon_url": "https://api.iconify.design/logos:tailwindcss-icon.svg",
-    "panel": "primary",
-    "category": "Development1111111111111111111111111111"
+    "category": "Development"
   }
 ]

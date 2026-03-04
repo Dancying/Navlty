@@ -30,9 +30,10 @@ App.auth = (function () {
                 document.getElementById("management-button").style.display = "block";
                 App.modal.close("auth-modal");
                 App.toast.show("密码验证通过", "success");
-                if (onSuccessCallback) {
+                if (typeof onSuccessCallback === 'function') {
                     onSuccessCallback();
                 }
+                onSuccessCallback = null;
             } else {
                 isAuthorized = false;
                 App.toast.show("密码验证失败", "error");

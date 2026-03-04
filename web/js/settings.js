@@ -28,7 +28,7 @@ App.settings = (function () {
 
     // 从后端加载设置数据并显示模态框
     function loadAndShow() {
-        App.auth.checkAuthStatus(() => {
+        const openSettingsPanel = () => {
             fetch('/api/settings')
                 .then(response => {
                     if (!response.ok) throw new Error('加载设置失败');
@@ -50,7 +50,13 @@ App.settings = (function () {
                     console.error('Error loading settings:', error);
                     App.toast.show('配置加载失败', 'error');
                 });
-        });
+        };
+
+        if (App.auth.isAuthenticated()) {
+            openSettingsPanel();
+        } else {
+            App.auth.checkAuthStatus(null);
+        }
     }
 
     // 处理保存设置的逻辑

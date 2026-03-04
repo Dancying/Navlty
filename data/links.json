@@ -24,30 +24,6 @@
     "category": "Design"
   },
   {
-    "title": "Cron",
-    "url": "https://cron.com",
-    "desc": "Next-generation calendar for professionals.",
-    "icon_url": "https://api.iconify.design/logos:cron-icon.svg",
-    "panel": "primary",
-    "category": "Productivity"
-  },
-  {
-    "title": "Twitch",
-    "url": "https://twitch.tv",
-    "desc": "The world's leading live streaming platform for gamers.",
-    "icon_url": "https://api.iconify.design/logos:twitch.svg",
-    "panel": "primary",
-    "category": "Productivity"
-  },
-  {
-    "title": "Vue.js",
-    "url": "https://vuejs.org",
-    "desc": "The Progressive JavaScript Framework.",
-    "icon_url": "https://api.iconify.design/logos:vue.svg",
-    "panel": "primary",
-    "category": "Productivity"
-  },
-  {
     "title": "111",
     "url": "222",
     "desc": "",
@@ -86,5 +62,29 @@
     "icon_url": "https://api.iconify.design/logos:steam.svg",
     "panel": "secondary",
     "category": "Development"
+  },
+  {
+    "title": "Cron",
+    "url": "https://cron.com",
+    "desc": "Next-generation calendar for professionals.",
+    "icon_url": "https://api.iconify.design/logos:cron-icon.svg",
+    "panel": "secondary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Twitch",
+    "url": "https://twitch.tv",
+    "desc": "The world's leading live streaming platform for gamers.",
+    "icon_url": "https://api.iconify.design/logos:twitch.svg",
+    "panel": "secondary",
+    "category": "Productivity"
+  },
+  {
+    "title": "Vue.js",
+    "url": "https://vuejs.org",
+    "desc": "The Progressive JavaScript Framework.",
+    "icon_url": "https://api.iconify.design/logos:vue.svg",
+    "panel": "secondary",
+    "category": "Productivity"
   }
 ]

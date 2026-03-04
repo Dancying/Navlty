@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	authFileName     = "auth.json"
 	linksFileName    = "links.json"
 	settingsFileName = "settings.json"
 )
@@ -135,4 +136,16 @@ func LoadLinks() []Link {
 // SaveLinks 将给定的链接保存到磁盘。
 func SaveLinks(links []Link) error {
 	return saveJSONData(linksFileName, links)
+}
+
+// LoadAuth 从 auth.json 加载身份验证数据
+func LoadAuth() *Auth {
+	var auth Auth
+	loadJSONData(authFileName, &auth)
+	return &auth
+}
+
+// SaveAuth 将身份验证数据保存到 auth.json
+func SaveAuth(auth *Auth) {
+	saveJSONData(authFileName, auth)
 }

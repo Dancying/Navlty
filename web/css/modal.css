@@ -13,7 +13,7 @@ body.modal-open {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
 }
@@ -23,7 +23,7 @@ body.modal-open {
     position: absolute;
     background-color: #fff;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 95%;
     max-width: 900px;
     display: flex;
@@ -134,10 +134,8 @@ body.modal-open {
     min-width: 100px;
 }
 
-/* --- 全新的双栏可折叠链接管理布局 --- */
-
 /* 锁定链接管理模态框的主体，启用 flex 布局以进行内部滚动控制 */
-div#management-modal > .modal-content > div#link-management-body.modal-body {
+div#management-modal>.modal-content>div#link-management-body.modal-body {
     padding: 0;
     overflow: hidden;
     display: flex;
@@ -145,6 +143,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     min-height: 0;
 }
 
+/* 链接管理容器，采用网格布局 */
 #link-management-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -154,6 +153,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     padding: 2rem;
 }
 
+/* 管理面板，用于包含主、次链接的管理区域 */
 .management-panel {
     display: flex;
     flex-direction: column;
@@ -162,6 +162,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     min-height: 0;
 }
 
+/* 管理面板的标题 */
 .management-panel-title {
     font-size: 1.25rem;
     font-weight: 600;
@@ -172,13 +173,14 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     flex-shrink: 0;
 }
 
-/* 新增：用于分类列表的滚动容器 */
+/* 用于分类列表的滚动容器 */
 .management-panel-content-wrapper {
     overflow-y: auto;
     flex-grow: 1;
     padding: 2px 5px 2px 2px;
 }
 
+/* 单个分类的容器 */
 .management-category-group {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -187,6 +189,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     margin-bottom: 1rem;
 }
 
+/* 分类标题栏 */
 .management-category-header {
     display: flex;
     justify-content: space-between;
@@ -198,14 +201,17 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     transition: background-color 0.2s;
 }
 
+/* 分类标题栏的悬浮效果 */
 .management-category-header:hover {
     background-color: #f1f1f1;
 }
 
+/* 展开状态下的分类标题栏 */
 .management-category-header.open {
     border-bottom: 1px solid #e0e0e0;
 }
 
+/* 分类标题文本和图标的容器 */
 .category-title-container {
     display: flex;
     align-items: center;
@@ -214,14 +220,17 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     min-width: 0;
 }
 
+/* 分类折叠/展开的雪佛龙图标 */
 .category-chevron {
     transition: transform 0.3s;
 }
 
+/* 展开状态下的雪佛龙图标旋转效果 */
 .management-category-header.open .category-chevron {
     transform: rotate(90deg);
 }
 
+/* 分类标题文本 */
 .management-category-title {
     font-weight: 600;
     color: #444;
@@ -231,6 +240,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     text-overflow: ellipsis;
 }
 
+/* 分类名称编辑输入框 */
 .management-category-input {
     font: inherit;
     font-weight: 600;
@@ -240,6 +250,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     width: 100%;
 }
 
+/* 分类和链接操作按钮的容器 */
 .management-category-actions,
 .management-link-actions {
     display: flex;
@@ -248,6 +259,7 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     flex-shrink: 0;
 }
 
+/* 分类和链接操作按钮 */
 .management-category-actions button,
 .management-link-actions button {
     background: none;
@@ -259,18 +271,21 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     transition: color 0.2s, background-color 0.2s;
 }
 
+/* 分类和链接操作按钮的悬浮效果 */
 .management-category-actions button:hover,
 .management-link-actions button:hover {
     color: #333;
     background-color: #e9ecef;
 }
 
+/* 链接列表 */
 .management-link-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
+/* 单个链接项 */
 .management-link-item {
     display: flex;
     justify-content: space-between;
@@ -280,32 +295,38 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     cursor: grab;
     border-top: 1px solid #f0f0f0;
 }
+
+/* 移除第一个链接项的顶部边框 */
 .management-link-item:first-child {
     border-top: none;
 }
 
+/* 链接项的悬浮效果 */
 .management-link-item:hover {
     background-color: #f6f6f6;
 }
 
+/* 链接标题 */
 .management-link-title {
     font-size: 0.95rem;
     color: #555;
 }
 
-/* --- 拖拽样式 --- */
+/* 正在被拖拽的元素 */
 .dragging {
     opacity: 0.4;
     background: #d3eaff !important;
     border: 1px dashed #999;
 }
 
+/* 拖拽元素经过的有效放置区域 */
 .drag-over {
     background-color: #f0f8ff !important;
 }
 
+/* 拖拽元素经过管理面板内容区域时的效果 */
 .management-panel-content-wrapper.drag-over {
-     box-shadow: inset 0 0 0 2px #007bff;
+    box-shadow: inset 0 0 0 2px #007bff;
 }
 
 /* 用于指示精确放置位置的占位符 */
@@ -319,13 +340,16 @@ div#management-modal > .modal-content > div#link-management-body.modal-body {
     transition: all 0.1s ease;
 }
 
+/* 用于分类拖拽的占位符 */
 .drop-placeholder.category-placeholder {
     height: 40px;
     margin: -10px 0 10px 0;
 }
 
-/* 响应式调整 */
+/* --- 响应式调整 --- */
 @media (max-width: 768px) {
+
+    /* 在小屏幕上，链接管理容器变为单列布局 */
     #link-management-container {
         grid-template-columns: 1fr;
     }

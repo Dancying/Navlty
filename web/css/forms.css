@@ -26,6 +26,7 @@
 /* 表单中的文本输入框、URL 输入框、下拉选择框和文本域 */
 .form-group input[type="text"],
 .form-group input[type="url"],
+.form-group input[type="password"],
 .form-group select,
 .form-group textarea {
     width: 100%;
@@ -40,6 +41,7 @@
 /* 表单输入元素在聚焦时的样式 */
 .form-group input[type="text"]:focus,
 .form-group input[type="url"]:focus,
+.form-group input[type="password"]:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     border-color: #007bff;

@@ -2,7 +2,7 @@
 window.App = window.App || {};
 
 // 辅助函数模块
-App.helpers = (function() {
+App.helpers = (function () {
 
     // 将文件转换为 Base64 字符串
     function fileToBase64(fileInputElement, targetInputId) {
@@ -11,7 +11,7 @@ App.helpers = (function() {
             const reader = new FileReader();
 
             // 文件读取成功
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const targetInput = document.getElementById(targetInputId);
                 if (targetInput) {
                     targetInput.value = e.target.result;
@@ -20,7 +20,7 @@ App.helpers = (function() {
             };
 
             // 文件读取失败
-            reader.onerror = function(error) {
+            reader.onerror = function (error) {
                 App.toast.show('文件编码失败', 'error');
                 console.error('File could not be read: ' + error.message);
             };
@@ -44,15 +44,12 @@ App.helpers = (function() {
     const setFormValue = (id, value) => {
         const element = document.getElementById(id);
         if (element) {
-            // 滑块类型，同时更新旁边的数值显示
             if (element.type === 'range') {
                 element.value = value;
                 const display = document.getElementById(id + '-value');
                 if (display) display.textContent = value;
-            // 文本域类型，处理数组和空值
             } else if (element.type === 'textarea') {
                 element.value = Array.isArray(value) ? value.join('\n') : (value || '');
-            // 其他普通类型
             } else {
                 element.value = value || '';
             }

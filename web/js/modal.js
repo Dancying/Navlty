@@ -2,43 +2,34 @@
 window.App = window.App || {};
 
 // 模态框管理模块
-App.modal = (function() {
+App.modal = (function () {
 
     // 初始化所有模态框相关的触发器
     function init() {
-        // 绑定所有带 `data-modal-target` 属性的按钮
-        document.querySelectorAll('[data-modal-target]').forEach(button => {
-            button.addEventListener('click', function() {
+        // 绑定所有带 `data-modal-target` 属性的按钮, 但排除设置按钮，因为它有特殊的验证逻辑
+        document.querySelectorAll('[data-modal-target]:not(#settings-button)').forEach(button => {
+            button.addEventListener('click', function () {
                 const modalId = this.getAttribute('data-modal-target');
-                // 特殊处理：打开设置模态框前需要先加载数据
-                if (modalId === 'settings-modal') {
-                    App.settings.loadAndShow();
-                } else {
-                    open(modalId);
-                }
+                open(modalId);
             });
         });
 
         // 遍历每个模态框，绑定关闭事件和内部组件
         document.querySelectorAll('.modal').forEach(modal => {
-            // 绑定模态框内的关闭按钮和取消按钮
             modal.querySelectorAll('.close-button, .cancel-button').forEach(button => {
                 button.addEventListener('click', () => close(modal.id));
             });
 
-            // 点击模态框背景遮罩层时关闭
             modal.addEventListener('click', (event) => {
                 if (event.target === modal) {
                     close(modal.id);
                 }
             });
 
-            // 初始化模态框内部的选项卡和滑块
             initTabs(modal);
             initSliders(modal);
         });
 
-         // 监听窗口大小变化，以保持模态框居中
         window.addEventListener('resize', () => {
             document.querySelectorAll('.modal.show').forEach(center);
         });
@@ -49,13 +40,12 @@ App.modal = (function() {
         const modal = document.getElementById(modalId);
         if (!modal) return;
 
-        // 处理滚动条，防止页面在模态框打开时跳动
         const bodyHasScrollbar = document.body.scrollHeight > window.innerHeight;
         if (bodyHasScrollbar) {
             const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
             document.body.style.paddingRight = `${scrollbarWidth}px`;
             const header = document.querySelector('.header-background');
-            if(header) header.style.paddingRight = `${scrollbarWidth}px`;
+            if (header) header.style.paddingRight = `${scrollbarWidth}px`;
         }
 
         modal.style.display = 'block';
@@ -68,16 +58,17 @@ App.modal = (function() {
     function close(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
-
         modal.classList.remove('show');
-
-        // 在 CSS 过渡动画结束后再隐藏元素并恢复滚动条
         modal.addEventListener('transitionend', () => {
-            modal.style.display = 'none';
+            if (modal.id === 'auth-modal') {
+                modal.remove();
+            } else {
+                modal.style.display = 'none';
+            }
             document.body.classList.remove('modal-open');
             document.body.style.paddingRight = '';
             const header = document.querySelector('.header-background');
-            if(header) header.style.paddingRight = '';
+            if (header) header.style.paddingRight = '';
         }, { once: true });
     }
 
@@ -118,7 +109,7 @@ App.modal = (function() {
         sliders.forEach(slider => {
             const valueSpan = document.getElementById(`${slider.id}-value`);
             if (valueSpan) {
-                 // 初始化显示滑块的当前值
+                // 初始化显示滑块的当前值
                 valueSpan.textContent = slider.value;
                 // 监听输入事件，实时更新数值显示
                 slider.addEventListener('input', () => {

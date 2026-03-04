@@ -51,11 +51,9 @@ func HandleSettings(w http.ResponseWriter, r *http.Request) {
 func HandleLinks(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		// 对于 GET 请求，加载链接并以 JSON 格式返回
 		links := LoadLinks()
 		respondWithJSON(w, http.StatusOK, links)
 	case http.MethodPost:
-		// 对于 POST 请求，解码请求体并保存链接
 		var links []Link
 		if err := json.NewDecoder(r.Body).Decode(&links); err != nil {
 			respondWithError(w, http.StatusBadRequest, "Invalid data format: "+err.Error())

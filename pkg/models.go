@@ -1,5 +1,26 @@
 package pkg
 
+// Auth 定义了授权文件的结构
+type Auth struct {
+	PasswordHash string `json:"password_hash"`
+}
+
+// Link 代表一个链接条目。
+type Link struct {
+	Title    string `json:"title"`
+	URL      string `json:"url"`
+	Desc     string `json:"desc"`
+	IconURL  string `json:"icon_url"`
+	Panel    string `json:"panel"`
+	Category string `json:"category,omitempty"`
+}
+
+// LinkCategory 定义了链接的分类。
+type LinkCategory struct {
+	Name  string
+	Links []Link
+}
+
 // Settings 定义了网站的配置信息。
 type Settings struct {
 	SiteName       string   `json:"siteName"`
@@ -13,12 +34,6 @@ type Settings struct {
 	ExternalJS     []string `json:"externalJS"`
 }
 
-// LinkCategory 定义了链接的分类。
-type LinkCategory struct {
-	Name  string
-	Links []Link
-}
-
 // PageData 包含了页面渲染所需的全部数据。
 type PageData struct {
 	Settings
@@ -27,14 +42,4 @@ type PageData struct {
 	SecondaryLinks []LinkCategory
 	CSS            string
 	JS             string
-}
-
-// Link 代表一个链接条目。
-type Link struct {
-	Title    string `json:"title"`
-	URL      string `json:"url"`
-	Desc     string `json:"desc"`
-	IconURL  string `json:"icon_url"`
-	Panel    string `json:"panel"`
-	Category string `json:"category,omitempty"`
 }

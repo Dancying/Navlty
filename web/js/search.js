@@ -2,7 +2,7 @@
 window.App = window.App || {};
 
 // 搜索功能模块
-App.search = (function() {
+App.search = (function () {
     let searchWrapper, searchInput, searchButton;
 
     // 初始化搜索相关的元素和事件
@@ -15,7 +15,6 @@ App.search = (function() {
             searchButton.addEventListener('click', toggleSearch);
         }
         if (searchInput) {
-            // 实时根据输入内容进行搜索
             searchInput.addEventListener('input', performSearch);
         }
     }
@@ -50,38 +49,32 @@ App.search = (function() {
     // 执行搜索操作，过滤卡片
     function performSearch() {
         const searchTerm = searchInput.value.toLowerCase();
-        // 如果搜索词为空，则清除搜索结果
         if (searchTerm.trim() === '') {
             clearSearch();
             return;
         }
 
-        // 定位到当前激活的面板
         const activePanel = document.querySelector('.panel.active');
         if (!activePanel) return;
 
-        // 判断当前是否为主面板，主面板需要搜索描述
         const isPrimary = activePanel.id === 'primary-panel';
 
         // 遍历所有分类容器
         activePanel.querySelectorAll('.card-container').forEach(container => {
             let categoryHasVisibleCards = false;
-            // 遍历容器内的所有卡片
             container.querySelectorAll('.card').forEach(card => {
                 const title = card.querySelector('.title')?.textContent.toLowerCase() || '';
                 const url = card.href?.toLowerCase() || '';
                 const desc = isPrimary ? (card.querySelector('.desc span')?.textContent.toLowerCase() || '') : '';
 
-                // 匹配逻辑：标题、URL或描述包含搜索词
                 const isMatch = title.includes(searchTerm) || url.includes(searchTerm) || (isPrimary && desc.includes(searchTerm));
-                
+
                 card.style.display = isMatch ? '' : 'none';
                 if (isMatch) {
                     categoryHasVisibleCards = true;
                 }
             });
 
-            // 如果一个分类下没有任何卡片匹配，则隐藏该分类的标题
             const categoryTitle = container.previousElementSibling;
             if (categoryTitle && categoryTitle.classList.contains('category-title')) {
                 categoryTitle.style.display = categoryHasVisibleCards ? '' : 'none';

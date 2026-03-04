@@ -2,16 +2,13 @@
 window.App = window.App || {};
 
 // 链接处理模块
-App.links = (function() {
+App.links = (function () {
 
     // 初始化链接相关的事件绑定
     function init() {
         const addLinkModal = document.getElementById('addLinkModal');
         if (addLinkModal) {
-            // 绑定保存按钮
             document.getElementById('save-link-button')?.addEventListener('click', handleSave);
-
-            // 绑定“上传图标”按钮，触发隐藏的文件输入框
             const uploadIconButton = document.getElementById('upload-icon-button');
             const iconFileInput = document.getElementById('icon-file-input');
             if (uploadIconButton && iconFileInput) {
@@ -76,7 +73,7 @@ App.links = (function() {
         }
 
         const panel = document.getElementById('primary-panel').classList.contains('active') ? 'primary' : 'secondary';
-        
+
         // 解析每一行文本为链接对象
         const newLinks = lines.map(line => {
             // 格式: 标题|链接|分类|图标|描述
@@ -95,23 +92,20 @@ App.links = (function() {
 
     // 将链接数据提交到后端
     function submitLinks(links) {
-        // 关闭模态框
         App.modal.close('addLinkModal');
-
-        // 发送 POST 请求
-        fetch('/api/links/bulk', { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify(links) 
+        fetch('/api/links/bulk', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(links)
         })
-        .then(response => {
-            if (!response.ok) throw new Error('服务器响应错误');
-            App.toast.show('链接保存成功', 'success');
-        })
-        .catch(error => {
-            App.toast.show('链接保存失败', 'error');
-            console.error('Error:', error);
-        });
+            .then(response => {
+                if (!response.ok) throw new Error('服务器响应错误');
+                App.toast.show('链接保存成功', 'success');
+            })
+            .catch(error => {
+                App.toast.show('链接保存失败', 'error');
+                console.error('Error:', error);
+            });
     }
 
     return { init };

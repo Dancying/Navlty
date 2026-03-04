@@ -2,17 +2,20 @@
 window.App = window.App || {};
 
 // DOM 加载完成后执行
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
     // 初始化所有功能模块
-    App.toast.init();
-    App.modal.init();
     App.search.init();
-    App.links.init();
     App.settings.init();
+    App.auth.init();
+    App.modal.init();
+    App.links.init();
     App.manage.init();
+    App.toast.init();
 
-    // --- 全局事件监听 ---
+    // 默认隐藏添加和管理按钮
+    document.getElementById('add-button').style.display = 'none';
+    document.getElementById('management-button').style.display = 'none';
 
     // 主副面板切换
     const togglePanelButton = document.getElementById('toggle-panel-button');
@@ -23,11 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 设置按钮点击后检查授权状态
+    const settingsButton = document.getElementById('settings-button');
+    if (settingsButton) {
+        settingsButton.addEventListener('click', () => {
+            App.settings.loadAndShow();
+        });
+    }
+
     // 全局键盘快捷键
     window.addEventListener('keydown', (event) => {
         // ESC 键关闭所有激活的模态框和搜索框
         if (event.key === 'Escape') {
-            document.querySelectorAll('.modal.show').forEach(modal => App.modal.close(modal.id));
+            App.modal.remove();
             if (document.getElementById('search-wrapper')?.classList.contains('active')) {
                 App.search.hideSearch();
             }

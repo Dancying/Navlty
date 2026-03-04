@@ -1,9 +1,8 @@
-
 // 确保 App 全局命名空间存在
 window.App = window.App || {};
 
 // 链接管理模块
-App.manage = (function() {
+App.manage = (function () {
 
     // 模块内状态变量
     let currentLinks = [];
@@ -19,12 +18,12 @@ App.manage = (function() {
         dom.openButton = document.getElementById('management-button');
         dom.saveButton = document.getElementById('management-save-button');
         dom.container = document.getElementById('link-management-container');
-        
+
         if (!dom.modal || !dom.openButton || !dom.saveButton || !dom.container) {
             console.error('Management modal elements are missing from the DOM.');
             return;
         }
-        
+
         const closeButton = dom.modal.querySelector('.close-button');
         if (closeButton) {
             closeButton.addEventListener('click', closeModal);
@@ -77,7 +76,7 @@ App.manage = (function() {
         dom.container.appendChild(secondaryPanel);
         feather.replace();
     }
-    
+
     // 创建单个面板（主面板或副面板）
     function createPanel(title, panelName, links) {
         const panel = document.createElement('div');
@@ -90,7 +89,7 @@ App.manage = (function() {
         contentWrapper.className = 'management-panel-content-wrapper';
         panel.appendChild(panelTitle);
         panel.appendChild(contentWrapper);
-        
+
         const categories = [];
         const categoryMap = new Map();
 
@@ -130,7 +129,7 @@ App.manage = (function() {
                 linkList.style.maxHeight = linkList.scrollHeight + 'px';
             }, 0);
         }
-        
+
         group.appendChild(header);
         group.appendChild(linkList);
         group.addEventListener('dragover', handleDragOver);
@@ -152,7 +151,7 @@ App.manage = (function() {
         const titleContainer = document.createElement('div');
         titleContainer.className = 'category-title-container';
         titleContainer.innerHTML = `<i data-feather="chevron-right" class="category-chevron"></i>`;
-        
+
         const title = document.createElement('span');
         title.className = 'management-category-title';
         title.textContent = categoryName;
@@ -163,11 +162,10 @@ App.manage = (function() {
 
             const linkList = header.nextElementSibling;
             if (!linkList || !linkList.classList.contains('management-link-list')) return;
-            
+
             const isOpening = !header.classList.contains('open');
             header.classList.toggle('open', isOpening);
-            
-            // 根据状态即时展开或收起列表
+
             if (isOpening) {
                 openCategories.add(categoryName);
                 linkList.style.maxHeight = linkList.scrollHeight + 'px';
@@ -185,7 +183,7 @@ App.manage = (function() {
         editButton.innerHTML = '<i data-feather="edit"></i>';
         editButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            if(header.querySelector('.management-category-title')) {
+            if (header.querySelector('.management-category-title')) {
                 editCategoryName(header.querySelector('.management-category-title'), categoryName);
             }
         });
@@ -251,7 +249,7 @@ App.manage = (function() {
 
         const actions = document.createElement('div');
         actions.className = 'management-link-actions';
-                
+
         const editButton = document.createElement('button');
         editButton.title = '编辑链接名称';
         editButton.innerHTML = '<i data-feather="edit"></i>';
@@ -311,7 +309,7 @@ App.manage = (function() {
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
-    
+
     // 创建用于拖放的占位符元素
     function createPlaceholder(type) {
         if (placeholder) placeholder.remove();
@@ -343,7 +341,7 @@ App.manage = (function() {
         setTimeout(() => target.classList.add('dragging'), 0);
         createPlaceholder(draggedInfo.type);
     }
-    
+
     // 处理拖动经过事件
     function handleDragOver(e) {
         e.preventDefault();
@@ -390,7 +388,6 @@ App.manage = (function() {
         e.currentTarget.classList.remove('drag-over');
         const finalTargetCategoryGroup = placeholder ? placeholder.closest('.management-category-group') : null;
 
-        // 验证拖放目标是否有效
         if (draggedInfo.type === 'link') {
             let isValidDrop = false;
             if (finalTargetCategoryGroup) {
@@ -403,16 +400,15 @@ App.manage = (function() {
         }
 
         if (!placeholder || !placeholder.parentNode) return;
-        
+
         const targetPanelEl = e.currentTarget.closest('.management-panel');
         const targetPanel = targetPanelEl ? targetPanelEl.dataset.panelName : null;
 
-        // 更新数据
         let movedItems = [];
         if (draggedInfo.type === 'link') {
             const fromIndex = currentLinks.findIndex(l => l.url === draggedInfo.url);
             if (fromIndex > -1) movedItems = currentLinks.splice(fromIndex, 1);
-        } else { 
+        } else {
             const categoryLinks = [];
             currentLinks = currentLinks.filter(l => {
                 if ((l.category || 'Uncategorized') === draggedInfo.categoryName) {
@@ -425,60 +421,59 @@ App.manage = (function() {
         }
 
         if (movedItems.length === 0) return;
-        
+
         let toIndex = -1;
         const nextSibling = placeholder.nextElementSibling;
         if (nextSibling) {
             const nextSiblingUrl = nextSibling.dataset.linkUrl;
             const nextSiblingCategory = nextSibling.dataset.categoryName;
-            if(nextSiblingUrl) {
+            if (nextSiblingUrl) {
                 toIndex = currentLinks.findIndex(l => l.url === nextSiblingUrl);
-            } else if(nextSiblingCategory) {
+            } else if (nextSiblingCategory) {
                 toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextSiblingCategory);
             }
         }
-        
+
         if (toIndex === -1) {
             const newCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : null;
-             if (newCategoryName) { 
-                 let lastLinkOfCategory = -1;
-                 for(let i = currentLinks.length - 1; i >= 0; i--) {
-                     if ((currentLinks[i].category || 'Uncategorized') === newCategoryName) {
-                         lastLinkOfCategory = i;
-                         break;
-                     }
-                 }
-                 toIndex = lastLinkOfCategory > -1 ? lastLinkOfCategory + 1 : currentLinks.length;
-             } else if (targetPanel) {
-                 let lastLinkOfPanel = -1;
-                 for(let i = currentLinks.length - 1; i >= 0; i--) {
-                     if (currentLinks[i].panel === targetPanel) {
-                         lastLinkOfPanel = i;
-                         break;
-                     }
-                 }
-                 toIndex = lastLinkOfPanel > -1 ? lastLinkOfPanel + 1 : currentLinks.length;
-             } else {
-                 toIndex = currentLinks.length;
-             }
+            if (newCategoryName) {
+                let lastLinkOfCategory = -1;
+                for (let i = currentLinks.length - 1; i >= 0; i--) {
+                    if ((currentLinks[i].category || 'Uncategorized') === newCategoryName) {
+                        lastLinkOfCategory = i;
+                        break;
+                    }
+                }
+                toIndex = lastLinkOfCategory > -1 ? lastLinkOfCategory + 1 : currentLinks.length;
+            } else if (targetPanel) {
+                let lastLinkOfPanel = -1;
+                for (let i = currentLinks.length - 1; i >= 0; i--) {
+                    if (currentLinks[i].panel === targetPanel) {
+                        lastLinkOfPanel = i;
+                        break;
+                    }
+                }
+                toIndex = lastLinkOfPanel > -1 ? lastLinkOfPanel + 1 : currentLinks.length;
+            } else {
+                toIndex = currentLinks.length;
+            }
         }
-        
+
         const finalTargetCategoryName = finalTargetCategoryGroup ? finalTargetCategoryGroup.dataset.categoryName : '未分类';
 
         movedItems.forEach(item => {
             if (targetPanel) item.panel = targetPanel;
             if (draggedInfo.type === 'link') item.category = finalTargetCategoryName;
         });
-        
+
         currentLinks.splice(toIndex, 0, ...movedItems);
-        
-        // 直接移动 DOM 节点以避免重新渲染
+
         const elementToMove = draggedInfo.type === 'category' ? draggedInfo.element.closest('.management-category-group') : draggedInfo.element;
 
         if (elementToMove) {
             const destinationList = placeholder.parentNode;
             destinationList.replaceChild(elementToMove, placeholder);
-            
+
             updateListHeight(draggedInfo.sourceList);
             if (draggedInfo.sourceList !== destinationList) {
                 updateListHeight(destinationList);
@@ -486,7 +481,7 @@ App.manage = (function() {
         }
         placeholder = null;
     }
-    
+
     // 处理拖动结束事件，用于清理
     function handleDragEnd() {
         if (draggedInfo && draggedInfo.element) {
@@ -522,7 +517,7 @@ App.manage = (function() {
         input.type = 'text';
         input.className = 'management-link-input';
         input.value = linkToEdit.title;
-        
+
         titleElement.replaceWith(input);
         input.focus();
 
@@ -549,7 +544,7 @@ App.manage = (function() {
         input.type = 'text';
         input.className = 'management-category-input';
         input.value = oldCategoryName;
-        
+
         titleElement.replaceWith(input);
         input.focus();
 
@@ -575,7 +570,7 @@ App.manage = (function() {
             if (e.key === 'Escape') renderPanels();
         });
     }
-    
+
     // 删除整个分类
     function deleteCategory(categoryName) {
         openCategories.delete(categoryName);
@@ -593,7 +588,7 @@ App.manage = (function() {
         }
         currentLinks = currentLinks.filter(link => link.url !== url);
     }
-    
+
     // 保存所有更改到后端
     async function saveChanges() {
         try {
@@ -615,7 +610,6 @@ App.manage = (function() {
         }
     }
 
-    // 暴露 init 方法
     return {
         init,
     };

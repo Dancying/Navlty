@@ -1,194 +1,136 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-<head>
+  <!-- 页面头部元信息和资源引用区域开始 -->
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.SiteName}}</title>
     <link rel="icon" href="{{.SiteIcon}}">
     <script src="https://unpkg.com/feather-icons"></script>
+    <!-- 页面 CSS 样式区域开始 -->
     <style>
-        :root {
-            --cards-per-row: {{.CardsPerRow}};
-            --background-url: {{if .BackgroundURL}}url('{{.BackgroundURL}}'){{else}}none{{end}};
-            --background-blur: {{.BackgroundBlur}}px;
-            --background-opacity: {{if .BackgroundURL}}1{{else}}0{{end}};
-        }
-        {{.CSS | safeCSS}}
+      :root {
+        --cards-per-row: {{.CardsPerRow}};
+        --background-url: {{if .BackgroundURL}}url('{{.BackgroundURL}}'){{else}}none{{end}};
+        --background-blur: {{.BackgroundBlur}}px;
+        --background-opacity: {{if .BackgroundURL}}1{{else}}0{{end}};
+      }
+      {{.CSS | safeCSS}}
     </style>
     {{if .CustomCSS}}
     <style id="custom-css-style">
-        {{.CustomCSS | safeCSS}}
+      {{.CustomCSS | safeCSS}}
     </style>
     {{end}}
-</head>
+    <!-- 页面 CSS 样式区域结束 -->
+  </head>
+  <!-- 页面头部元信息和资源引用区域结束 -->
 
-<body>
+  <body>
+    <!-- 页面顶部导航和操作区域开始 -->
     <div class="header-background">
-        <div class="container">
-            <header class="header">
-                <div class="header-left">
-                    <img src="{{.AvatarURL}}" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;" {{end}}>
-                    <h1 class="site-title">{{.SiteTitle}}</h1>
-                </div>
-                <div class="button-container">
-                    <div class="search-wrapper" id="search-wrapper">
-                        <input type="text" id="search-input" class="search-input" placeholder="按 / 搜索，按 Esc 退出">
-                        <button id="search-button" class="icon-button"><i data-feather="search"></i></button>
-                    </div>
-                    <button id="toggle-panel-button" class="icon-button"><i data-feather="repeat"></i></button>
-                    <button id="settings-button" class="icon-button" data-modal-target="settings-modal"><i data-feather="settings"></i></button>
-                </div>
-            </header>
-        </div>
+      <div class="container">
+        <header class="header">
+          <div class="header-left">
+            <img src="{{.AvatarURL}}" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;"{{end}}>
+            <h1 class="site-title">{{.SiteTitle}}</h1>
+          </div>
+          <div class="button-container">
+            <div class="search-wrapper" id="search-wrapper">
+              <input type="text" id="search-input" class="search-input" placeholder="按 / 搜索，按 Esc 退出">
+              <button id="search-button" class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </div>
+            <button id="toggle-panel-button" class="icon-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat">
+                <polyline points="17 1 21 5 17 9"></polyline>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                <polyline points="7 23 3 19 7 15"></polyline>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+              </svg>
+            </button>
+            <button id="settings-button" class="icon-button" data-modal-target="settings-modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
+          </div>
+        </header>
+      </div>
     </div>
+    <!-- 页面顶部导航和操作区域结束 -->
 
+    <!-- 页面主内容区域开始 -->
     <div class="container">
-        <main>
-            <div id="primary-panel" class="panel active">
-                {{range .PrimaryLinks}}
-                <h2 class="category-title">{{.Name}}</h2>
-                <div class="card-container">
-                    {{range .Links}}
-                    <a href="{{.URL}}" target="_blank" class="card">
-                        {{if isURLOrBase64 .IconURL}}
-                        <img src="{{.IconURL}}" class="icon" />
-                        {{else}}
-                        <i data-feather="{{.IconURL}}" class="icon"></i>
-                        {{end}}
-                        <div class="content">
-                            <h3 class="title">{{.Title}}</h3>
-                            {{if .Desc}}
-                            <p class="desc"><span>{{.Desc}}</span></p>
-                            {{end}}
-                        </div>
-                    </a>
-                    {{end}}
-                </div>
+      <main>
+        <!-- 主要链接卡片容器开始 -->
+        <div id="primary-panel" class="panel active">
+          {{range .PrimaryLinks}}
+          <h2 class="category-title">{{.Name}}</h2>
+          <div class="card-container">
+            {{range .Links}}
+            <a href="{{.URL}}" target="_blank" class="card">
+              {{if isURLOrBase64 .IconURL}}
+              <img src="{{.IconURL}}" class="icon">
+              {{else}}
+              <i data-feather="{{.IconURL}}" class="icon"></i>
+              {{end}}
+              <div class="content">
+                <h3 class="title">{{.Title}}</h3>
+                {{if .Desc}}
+                <p class="desc"><span>{{.Desc}}</span></p>
                 {{end}}
-            </div>
-
-            <div id="secondary-panel" class="panel sub-nav">
-                {{range .SecondaryLinks}}
-                <h2 class="category-title">{{.Name}}</h2>
-                <div class="card-container">
-                    {{range .Links}}
-                    <a href="{{.URL}}" target="_blank" class="card">
-                        {{if isURLOrBase64 .IconURL}}
-                        <img src="{{.IconURL}}" class="icon" />
-                        {{else}}
-                        <i data-feather="{{.IconURL}}" class="icon"></i>
-                        {{end}}
-                        <div class="content">
-                            <h3 class="title">{{.Title}}</h3>
-                            {{if .Desc}}
-                            <p class="desc"><span>{{.Desc}}</span></p>
-                            {{end}}
-                        </div>
-                    </a>
-                    {{end}}
-                </div>
-                {{end}}
-            </div>
-        </main>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>网站设置</h2>
-                <span class="close-button"><i data-feather="x"></i></span>
-            </div>
-            <div class="modal-body">
-                <form id="settings-form">
-                    <div class="tab-switcher">
-                        <button type="button" class="tab-button active" data-tab="general-settings-tab">常规</button>
-                        <button type="button" class="tab-button" data-tab="style-settings-tab">样式</button>
-                        <button type="button" class="tab-button" data-tab="advanced-settings-tab">高级</button>
-                    </div>
-
-                    <div class="tab-content-container">
-                        <!-- General Settings -->
-                        <div id="general-settings-tab" class="tab-content active">
-                            <div class="form-grid" style="margin-top: 1.5rem;">
-                                <div class="form-group">
-                                    <label for="site-name">站点名称</label>
-                                    <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
-                                </div>
-                                <div class="form-group">
-                                    <label for="site-icon">站点图标</label>
-                                    <div class="input-with-button">
-                                        <input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64">
-                                        <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                        <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="site-title">网站标题</label>
-                                    <input type="text" id="site-title" name="siteTitle" value="{{.SiteTitle}}" placeholder="显示在主页的标题">
-                                </div>
-                                <div class="form-group">
-                                    <label for="avatar-url">网站头像</label>
-                                    <div class="input-with-button">
-                                        <input type="text" id="avatar-url" name="avatarURL" value="{{.AvatarURL}}" placeholder="Feather 图标名、URL 或 Base64">
-                                        <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                        <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Style Settings -->
-                        <div id="style-settings-tab" class="tab-content">
-                            <div class="form-grid" style="margin-top: 1.5rem;">
-                                <div class="form-group span-two">
-                                    <label for="background-url">背景图片</label>
-                                    <div class="input-with-button">
-                                        <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
-                                        <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                        <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
-                                    </div>
-                                </div>
-                                <div class="form-group span-two slider-group">
-                                    <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
-                                    <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
-                                </div>
-                                <div class="form-group span-two slider-group">
-                                    <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
-                                    <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Advanced Settings -->
-                        <div id="advanced-settings-tab" class="tab-content">
-                            <div class="form-grid" style="margin-top: 1.5rem;">
-                                <div class="form-group span-two">
-                                    <label for="custom-css">外部 CSS</label>
-                                    <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码">{{.CustomCSS}}</textarea>
-                                </div>
-                                <div class="form-group span-two">
-                                    <label for="external-js">外部 JS</label>
-                                    <textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js&#10;https://another.com/script.js">{{.ExternalJSStr}}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary cancel-button">取消</button>
-                <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
-            </div>
+              </div>
+            </a>
+            {{end}}
+          </div>
+          {{end}}
         </div>
-    </div>
+        <!-- 主要链接卡片容器结束 -->
 
+        <!-- 次要链接卡片容器开始 -->
+        <div id="secondary-panel" class="panel sub-nav">
+          {{range .SecondaryLinks}}
+          <h2 class="category-title">{{.Name}}</h2>
+          <div class="card-container">
+            {{range .Links}}
+            <a href="{{.URL}}" target="_blank" class="card">
+              {{if isURLOrBase64 .IconURL}}
+              <img src="{{.IconURL}}" class="icon">
+              {{else}}
+              <i data-feather="{{.IconURL}}" class="icon"></i>
+              {{end}}
+              <div class="content">
+                <h3 class="title">{{.Title}}</h3>
+                {{if .Desc}}
+                <p class="desc"><span>{{.Desc}}</span></p>
+                {{end}}
+              </div>
+            </a>
+            {{end}}
+          </div>
+          {{end}}
+        </div>
+        <!-- 次要链接卡片容器结束 -->
+      </main>
+    </div>
+    <!-- 页面主内容区域结束 -->
+
+    <!-- 页面脚本和第三方库引用区域开始 -->
     {{range .ExternalJS}}
-    <script src="{{.}}"></script>
+    <script src="{{.X}}"></script>
     {{end}}
     <script>{{.JS | safeJS}}</script>
     <script>
-        feather.replace()
+      feather.replace()
     </script>
-</body>
+    <!-- 页面脚本和第三方库引用区域结束 -->
+  </body>
 
 </html>

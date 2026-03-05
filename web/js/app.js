@@ -6,9 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 初始化所有功能模块
     App.search.init();
-    App.settings.init();
     App.auth.init();
-    App.modal.init();
     App.links.init();
     App.toast.init();
 
@@ -33,7 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('keydown', (event) => {
         // ESC 键关闭所有激活的模态框和搜索框
         if (event.key === 'Escape') {
-            App.modal.remove();
+            if (document.querySelector('.modal.show')) {
+                App.modal.close();
+            }
             if (document.getElementById('search-wrapper')?.classList.contains('active')) {
                 App.search.hideSearch();
             }

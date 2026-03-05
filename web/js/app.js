@@ -4,11 +4,12 @@ window.App = window.App || {};
 // DOM 加载完成后执行
 document.addEventListener('DOMContentLoaded', function () {
 
-    // 初始化所有功能模块
+    // 优先初始化核心UI模块
+    App.toast.init();
+    
+    // 初始化其他功能模块
     App.search.init();
     App.auth.init();
-    App.links.init();
-    App.toast.init();
 
     // 主副面板切换
     const togglePanelButton = document.getElementById('toggle-panel-button');

@@ -29,11 +29,21 @@ App.helpers = (function () {
         }
     }
 
-    // 检查卡片描述是否溢出，如果溢出则添加滚动类
+    // 检查卡片描述和标题是否溢出，并为溢出的元素添加对应的滚动类
     function checkDescriptionOverflow() {
         document.querySelectorAll('.card').forEach(card => {
+            const title = card.querySelector('.title');
             const desc = card.querySelector('.desc');
-            card.classList.remove('scrolling-desc');
+
+            // 首先重置类
+            card.classList.remove('scrolling-title', 'scrolling-desc');
+
+            // 检查标题是否溢出
+            if (title && title.scrollWidth > title.clientWidth) {
+                card.classList.add('scrolling-title');
+            }
+
+            // 检查描述是否溢出
             if (desc && desc.scrollWidth > desc.clientWidth) {
                 card.classList.add('scrolling-desc');
             }

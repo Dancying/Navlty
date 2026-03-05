@@ -20,6 +20,7 @@ func RegisterHandlers() {
 	api.HandleFunc("/api/settings", HandleSettings)
 	api.HandleFunc("/api/links", HandleLinks)
 	api.HandleFunc("/api/links/bulk", HandleBulkAddLinks)
+    api.HandleFunc("/api/auth/passwd", HandleChangePassword)
 
 	// 为所有 /api/ 路由应用认证中间件
 	mux.Handle("/api/", AuthMiddleware(api))

@@ -13,6 +13,19 @@ App.settings = (function () {
             input.addEventListener('change', () => App.helpers.fileToBase64(input, targetId));
         }
     }
+    
+    // 更新滑块值的显示
+    function updateSliderValue(sliderId, displayId) {
+        const slider = document.getElementById(sliderId);
+        const display = document.getElementById(displayId);
+        if (slider && display) {
+            display.textContent = slider.value;
+            slider.addEventListener('input', () => {
+                display.textContent = slider.value;
+            });
+        }
+    }
+    
 
     // 创建并初始化设置模态框与事件
     function createModalAndEvents() {
@@ -24,85 +37,92 @@ App.settings = (function () {
                     <button class="close-button">&times;</button>
                     <div id="settings-nav">
                         <h3>设置</h3>
-                        <a href="#" class="settings-nav-item active" data-target="content-site-settings">网站设置</a>
+                        <a href="#" class="settings-nav-item active" data-target="content-site-settings">站点设置</a>
+                        <a href="#" class="settings-nav-item" data-target="content-style-settings">样式设置</a>
+                        <hr>
                         <a href="#" class="settings-nav-item" data-target="content-add-link">添加链接</a>
+                        <a href="#" class="settings-nav-item" data-target="content-bulk-add">批量添加</a>
                         <a href="#" class="settings-nav-item" data-target="content-manage-links">链接管理</a>
+                        <hr>
+                        <a href="#" class="settings-nav-item" data-target="content-advanced-settings">高级设置</a>
+                        <a href="#" class="settings-nav-item" data-target="content-password-settings">访问密码</a>
                     </div>
                     <div id="settings-content">
                         <!-- Site Settings -->
                         <div id="content-site-settings" class="settings-content-panel active">
-                             <div class="modal-header">
-                                <h2>网站设置</h2>
+                            <div class="modal-header">
+                                <h2>站点设置</h2>
                             </div>
                             <div class="modal-body">
-                                <form id="settings-form">
-                                    <div class="tab-switcher">
-                                        <button type="button" class="tab-button active" data-tab="general-settings-tab">常规</button>
-                                        <button type="button" class="tab-button" data-tab="style-settings-tab">样式</button>
-                                        <button type="button" class="tab-button" data-tab="advanced-settings-tab">高级</button>
+                                <form id="site-settings-form" class="form-grid">
+                                    <div class="form-group">
+                                        <label for="site-name">站点名称</label>
+                                        <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
                                     </div>
-                                    <div class="tab-content-container">
-                                        <div id="general-settings-tab" class="tab-content active">
-                                            <div class="form-grid" style="margin-top: 1.5rem;">
-                                                <div class="form-group">
-                                                    <label for="site-name">站点名称</label>
-                                                    <input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="site-icon">站点图标</label>
-                                                    <div class="input-with-button">
-                                                        <input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64">
-                                                        <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                                        <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="site-title">网站标题</label>
-                                                    <input type="text" id="site-title" name="siteTitle" placeholder="显示在主页的标题">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="avatar-url">网站头像</label>
-                                                    <div class="input-with-button">
-                                                        <input type="text" id="avatar-url" name="avatarURL" placeholder="Feather 图标名、URL 或 Base64">
-                                                        <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                                        <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="form-group">
+                                        <label for="site-icon">站点图标</label>
+                                        <div class="input-with-button">
+                                            <input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64">
+                                            <button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                            <input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*">
                                         </div>
-                                        <div id="style-settings-tab" class="tab-content">
-                                            <div class="form-grid" style="margin-top: 1.5rem;">
-                                                <div class="form-group span-two">
-                                                    <label for="background-url">背景图片</label>
-                                                    <div class="input-with-button">
-                                                        <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
-                                                        <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                                        <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group span-two slider-group">
-                                                    <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
-                                                    <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
-                                                </div>
-                                                <div class="form-group span-two slider-group">
-                                                    <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
-                                                    <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="site-title">网站标题</label>
+                                        <input type="text" id="site-title" name="siteTitle" placeholder="显示在主页的标题">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="avatar-url">网站头像</label>
+                                        <div class="input-with-button">
+                                            <input type="text" id="avatar-url" name="avatarURL" placeholder="Feather 图标名、URL 或 Base64">
+                                            <button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                            <input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*">
                                         </div>
-                                        <div id="advanced-settings-tab" class="tab-content">
-                                            <div class="form-grid" style="margin-top: 1.5rem;">
-                                                <div class="form-group span-two">
-                                                    <label for="custom-css">外部 CSS</label>
-                                                    <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码"></textarea>
-                                                </div>
-                                                <div class="form-group span-two">
-                                                    <label for="external-js">外部 JS</label>
-                                                    <textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Style Settings -->
+                        <div id="content-style-settings" class="settings-content-panel">
+                            <div class="modal-header">
+                                <h2>样式设置</h2>
+                            </div>
+                            <div class="modal-body">
+                                <form id="style-settings-form" class="form-grid">
+                                    <div class="form-group span-two">
+                                        <label for="background-url">背景图片</label>
+                                        <div class="input-with-button">
+                                            <input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64">
+                                            <button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                            <input type="file" id="background-file-input" class="hidden-file-input" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="form-group span-two slider-group">
+                                        <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
+                                        <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
+                                    </div>
+                                    <div class="form-group span-two slider-group">
+                                        <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
+                                        <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Advanced Settings -->
+                        <div id="content-advanced-settings" class="settings-content-panel">
+                            <div class="modal-header">
+                                <h2>高级设置</h2>
+                            </div>
+                            <div class="modal-body">
+                                <form id="advanced-settings-form" class="form-grid">
+                                    <div class="form-group span-two">
+                                        <label for="custom-css">自定义 CSS</label>
+                                        <textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码"></textarea>
+                                    </div>
+                                    <div class="form-group span-two">
+                                        <label for="external-js">外部 JS</label>
+                                        <textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js
 https://another.com/script.js"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -113,49 +133,47 @@ https://another.com/script.js"></textarea>
                                 <h2>添加链接</h2>
                             </div>
                             <div class="modal-body">
-                                <div class="tab-switcher">
-                                    <button class="tab-button active" data-tab="single-link-tab">单个添加</button>
-                                    <button class="tab-button" data-tab="bulk-add-tab">批量添加</button>
-                                </div>
-                                <div class="tab-content-container">
-                                    <div id="single-link-tab" class="tab-content active">
-                                         <form id="add-link-form" class="form-grid">
-                                            <div class="form-group">
-                                                <label for="link-title">标题*</label>
-                                                <input type="text" id="link-title" name="title" placeholder="Google" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="link-url">链接*</label>
-                                                <input type="url" id="link-url" name="url" placeholder="https://google.com" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="link-category">分类</label>
-                                                <input type="text" id="link-category" name="category" placeholder="搜索引擎">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="link-icon">图标</label>
-                                                <div class="input-with-button">
-                                                    <input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64">
-                                                    <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
-                                                    <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
-                                                </div>
-                                            </div>
-                                            <div class="form-group span-two">
-                                                <label for="link-description">描述</label>
-                                                <textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea>
-                                            </div>
-                                        </form>
+                                <form id="add-link-form" class="form-grid">
+                                    <div class="form-group">
+                                        <label for="link-title">标题*</label>
+                                        <input type="text" id="link-title" name="title" placeholder="Google" required>
                                     </div>
-                                    <div id="bulk-add-tab" class="tab-content">
-                                        <form id="bulk-add-form">
-                                             <div class="form-group">
-                                                <label for="bulk-links">批量链接</label>
-                                                <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
-                                                <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
-                                            </div>
-                                        </form>
+                                    <div class="form-group">
+                                        <label for="link-url">链接*</label>
+                                        <input type="url" id="link-url" name="url" placeholder="https://google.com" required>
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="link-category">分类</label>
+                                        <input type="text" id="link-category" name="category" placeholder="搜索引擎">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="link-icon">图标</label>
+                                        <div class="input-with-button">
+                                            <input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64">
+                                            <button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button>
+                                            <input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="form-group span-two">
+                                        <label for="link-description">描述</label>
+                                        <textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Bulk Add -->
+                        <div id="content-bulk-add" class="settings-content-panel">
+                            <div class="modal-header">
+                                <h2>批量添加</h2>
+                            </div>
+                            <div class="modal-body">
+                                <form id="bulk-add-form">
+                                    <div class="form-group">
+                                        <label for="bulk-links">批量链接</label>
+                                        <textarea id="bulk-links" name="bulk-links" placeholder="标题 | URL | 分类(可选) | 图标URL(可选) | 描述(可选)"></textarea>
+                                        <small>提示：仅标题和 URL 是必需的。使用“|”分隔符。</small>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <!-- Link Management -->
@@ -165,6 +183,33 @@ https://another.com/script.js"></textarea>
                             </div>
                             <div class="modal-body" id="link-management-body">
                                 <!-- App.manage.loadAndRender will populate this -->
+                            </div>
+                        </div>
+                        <!-- 访问密码 -->
+                        <div id="content-password-settings" class="settings-content-panel">
+                            <div class="modal-header">
+                                <h2>访问密码</h2>
+                            </div>
+                            <div class="modal-body">
+                                <form id="change-password-form" class="form-grid">
+                                    <div class="form-group span-two">
+                                        <label for="current-password">当前密码</label>
+                                        <input type="password" id="current-password" name="currentPassword" placeholder="请输入当前密码">
+                                    </div>
+                                    <div class="form-group span-two">
+                                        <label for="new-password-change">新密码</label>
+                                        <input type="password" id="new-password-change" name="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group span-two">
+                                        <label for="confirm-password">确认新密码</label>
+                                        <input type="password" id="confirm-password" name="confirmPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                </form>
+                                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                                <div class="form-group span-two">
+                                    <label>操作</label>
+                                    <button type="button" class="btn btn-danger" id="logout-button">退出登录</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,36 +232,30 @@ https://another.com/script.js"></textarea>
         });
 
         document.getElementById('settings-save-button')?.addEventListener('click', handleSave);
+        document.getElementById('logout-button')?.addEventListener('click', () => {
+            App.auth.logout();
+            App.modal.close();
+        });
 
         bindUploadButton('upload-site-icon-button', 'site-icon-file-input', 'site-icon');
         bindUploadButton('upload-avatar-button', 'avatar-file-input', 'avatar-url');
         bindUploadButton('upload-background-button', 'background-file-input', 'background-url');
-        
-        App.links.init(document.getElementById('content-add-link'));
+        bindUploadButton('upload-icon-button', 'icon-file-input', 'link-icon');
 
         const navItems = modal.querySelectorAll('.settings-nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetId = item.getAttribute('data-target');
-                switchPanel(targetId);
+                if(targetId){
+                    switchPanel(targetId);
+                }
             });
         });
         
-        const tabButtons = modal.querySelectorAll('.tab-button');
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabContainer = button.closest('.tab-switcher');
-                const contentContainer = button.closest('.modal-body').querySelector('.tab-content-container');
+        updateSliderValue('background-blur', 'background-blur-value');
+        updateSliderValue('cards-per-row', 'cards-per-row-value');
 
-                tabContainer.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                contentContainer.querySelectorAll('.tab-content').forEach(content => {
-                    content.id === button.dataset.tab ? content.classList.add('active') : content.classList.remove('active');
-                });
-            });
-        });
     }
 
     // 切换设置模态框中的主内容面板
@@ -235,33 +274,33 @@ https://another.com/script.js"></textarea>
     }
 
     // 从后端加载设置数据并显示模态框
-    function loadAndShow(initialPanelId = 'content-site-settings') {
+    async function loadAndShow(initialPanelId = 'content-site-settings') {
         createModalAndEvents();
 
-        const openSettingsPanel = () => {
-            fetch('/api/settings')
-                .then(response => {
-                    if (!response.ok) throw new Error('加载设置失败');
-                    return response.json();
-                })
-                .then(data => {
-                    App.helpers.setFormValue('site-name', data.siteName);
-                    App.helpers.setFormValue('site-icon', data.siteIcon);
-                    App.helpers.setFormValue('site-title', data.siteTitle);
-                    App.helpers.setFormValue('avatar-url', data.avatarURL);
-                    App.helpers.setFormValue('background-url', data.backgroundURL);
-                    App.helpers.setFormValue('background-blur', data.backgroundBlur);
-                    App.helpers.setFormValue('cards-per-row', data.cardsPerRow);
-                    App.helpers.setFormValue('custom-css', data.customCSS);
-                    App.helpers.setFormValue('external-js', data.externalJS.join('\n'));
-                    
-                    App.modal.open('settings-modal');
-                    switchPanel(initialPanelId);
-                })
-                .catch(error => {
+        const openSettingsPanel = async () => {
+            try {
+                const data = await App.api.request('/api/settings');
+                App.helpers.setFormValue('site-name', data.siteName);
+                App.helpers.setFormValue('site-icon', data.siteIcon);
+                App.helpers.setFormValue('site-title', data.siteTitle);
+                App.helpers.setFormValue('avatar-url', data.avatarURL);
+                App.helpers.setFormValue('background-url', data.backgroundURL);
+                App.helpers.setFormValue('background-blur', data.backgroundBlur);
+                App.helpers.setFormValue('cards-per-row', data.cardsPerRow);
+                App.helpers.setFormValue('custom-css', data.customCSS);
+                App.helpers.setFormValue('external-js', data.externalJS.join('\n'));
+                
+                updateSliderValue('background-blur', 'background-blur-value');
+                updateSliderValue('cards-per-row', 'cards-per-row-value');
+
+                App.modal.open('settings-modal');
+                switchPanel(initialPanelId);
+            } catch (error) {
+                if (error.message !== 'Unauthorized') {
                     console.error('Error loading settings:', error);
                     App.toast.show('配置加载失败', 'error');
-                });
+                }
+            }
         };
 
         if (App.auth.isAuthenticated()) {
@@ -278,19 +317,85 @@ https://another.com/script.js"></textarea>
 
         switch (activePanel.id) {
             case 'content-site-settings':
+            case 'content-style-settings':
+            case 'content-advanced-settings':
                 saveSiteSettings();
                 break;
             case 'content-add-link':
-                App.links.save();
+                App.links.saveSingle();
+                break;
+            case 'content-bulk-add':
+                App.links.saveBulk();
                 break;
             case 'content-manage-links':
                 App.manage.saveChanges();
                 break;
+            case 'content-password-settings':
+                handleChangePassword();
+                break;
+        }
+    }
+
+    async function handleChangePassword() {
+        const currentPasswordInput = document.getElementById('current-password');
+        const newPasswordInput = document.getElementById('new-password-change');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+    
+        const currentPassword = currentPasswordInput.value;
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+    
+        // 1. 如果所有输入框都为空则直接关闭面板
+        if (!currentPassword && !newPassword && !confirmPassword) {
+            App.modal.close();
+            return;
+        }
+    
+        // 2. 如果输入了任一一个输入框，则检查所有输入框
+        const inputs = [currentPasswordInput, newPasswordInput, confirmPasswordInput];
+        let allFieldsFilled = true;
+    
+        // 重置错误状态并检查空值
+        inputs.forEach(input => {
+            input.classList.remove('input-error');
+            if (!input.value) {
+                input.classList.add('input-error');
+                allFieldsFilled = false;
+            }
+        });
+    
+        if (!allFieldsFilled) {
+            App.toast.show('所有字段均为必填项', 'error');
+            return;
+        }
+        
+        // 检查新密码和确认密码是否匹配
+        if (newPassword !== confirmPassword) {
+            App.toast.show('新密码和确认密码不匹配', 'error');
+            newPasswordInput.classList.add('input-error');
+            confirmPasswordInput.classList.add('input-error');
+            return;
+        }
+    
+        try {
+            const data = await App.api.request('/api/auth/passwd', {
+                method: 'POST',
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+            if (data.success) {
+                App.toast.show('密码修改成功', 'success');
+                App.modal.close();
+            } else {
+                throw new Error(data.message || '密码修改失败');
+            }
+        } catch (error) {
+            App.toast.show(error.message, 'error');
+            console.error('Error changing password:', error);
         }
     }
     
     // 保存网站设置
-    function saveSiteSettings() {
+    async function saveSiteSettings() {
         const getValue = (id, defaultValue = '') => document.getElementById(id)?.value || defaultValue;
         const settings = {
             siteName: getValue('site-name'),
@@ -304,23 +409,20 @@ https://another.com/script.js"></textarea>
             externalJS: getValue('external-js').split('\n').filter(line => line.trim() !== ''),
         };
 
-        fetch('/api/settings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settings)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status !== 'success') throw new Error(data.message || '保存失败');
-                App.toast.show('配置保存成功', 'success');
-                App.modal.close();
-                apply(settings);
-                document.dispatchEvent(new CustomEvent('settings-updated', { detail: settings }));
-            })
-            .catch(error => {
-                App.toast.show('配置保存失败', 'error');
-                console.error('Error saving settings:', error);
+        try {
+            const data = await App.api.request('/api/settings', {
+                method: 'POST',
+                body: JSON.stringify(settings)
             });
+            if (data.status !== 'success') throw new Error(data.message || '保存失败');
+            App.toast.show('配置保存成功', 'success');
+            App.modal.close();
+            apply(settings);
+            document.dispatchEvent(new CustomEvent('settings-updated', { detail: settings }));
+        } catch (error) {
+            App.toast.show('配置保存失败', 'error');
+            console.error('Error saving settings:', error);
+        }
     }
 
     // 将设置实时应用到页面上
@@ -370,7 +472,7 @@ https://another.com/script.js"></textarea>
         App.helpers.checkDescriptionOverflow();
     }
 
-    // 自动为设置按钮绑定点击事件
+    // auto-bind click events to settings buttons
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('settings-button')?.addEventListener('click', () => loadAndShow());
     });

@@ -12,7 +12,7 @@ import (
 
 // session 代表一个用户会话
 type session struct {
-	expiry time.Time
+	// expiry time.Time // 不再需要 expiry
 }
 
 // sessions 是一个线程安全的会话存储
@@ -24,28 +24,18 @@ var (
 // createSession 创建一个新的会话并返回会话令牌
 func createSession() string {
 	sessionToken := uuid.NewString()
-	expiresAt := time.Now().Add(12 * time.Hour)
-
 	mu.Lock()
-	sessions[sessionToken] = session{
-		expiry: expiresAt,
-	}
+	sessions[sessionToken] = session{}
 	mu.Unlock()
-
 	return sessionToken
 }
 
-// IsSessionValid 检查会话令牌是否有效且未过期
+// IsSessionValid 检查会话令牌是否有效
 func IsSessionValid(sessionToken string) bool {
 	mu.Lock()
 	defer mu.Unlock()
-
-	s, exists := sessions[sessionToken]
-	if !exists {
-		return false
-	}
-
-	return s.expiry.After(time.Now())
+	_, exists := sessions[sessionToken]
+	return exists
 }
 
 // deleteSession 删除一个会话
@@ -151,6 +141,48 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 }
+
+// HandleChangePassword 处理修改密码请求
+func HandleChangePassword(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
+        return
+    }
+
+    var creds struct {
+        CurrentPassword string `json:"currentPassword"`
+        NewPassword     string `json:"newPassword"`
+    }
+
+    if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+        respondWithError(w, http.StatusBadRequest, "Invalid request body")
+        return
+    }
+
+    auth := LoadAuth()
+
+    if !CheckPasswordHash(creds.CurrentPassword, auth.PasswordHash) {
+        respondWithJSON(w, http.StatusUnauthorized, map[string]interface{}{"success": false, "message": "当前密码不正确"})
+        return
+    }
+
+    hashedPassword, err := HashPassword(creds.NewPassword)
+    if err != nil {
+        respondWithError(w, http.StatusInternalServerError, "Failed to hash new password")
+        return
+    }
+
+    auth.PasswordHash = hashedPassword
+    SaveAuth(auth)
+
+    // 使所有旧的会话无效
+    mu.Lock()
+    sessions = make(map[string]session)
+    mu.Unlock()
+
+    respondWithJSON(w, http.StatusOK, map[string]interface{}{"success": true, "message": "密码修改成功"})
+}
+
 
 // HandleAuthStatus 检查系统是否已设置管理员密码
 func HandleAuthStatus(w http.ResponseWriter, r *http.Request) {

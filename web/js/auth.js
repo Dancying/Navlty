@@ -7,25 +7,33 @@ App.auth = (function () {
     let onSuccessCallback = null;
 
     // 初始化模块
-    function init() { }
+    function init() {
+        // 页面加载时，从 localStorage 恢复登录状态
+        if (localStorage.getItem("isAuthorized") === "true") {
+            isAuthorized = true;
+        }
+    }
+    
+    // 处理未授权的情况
+    function handleUnauthorized() {
+        isAuthorized = false;
+        localStorage.removeItem("isAuthorized");
+        App.toast.show("您的登录已过期，请重新验证", "error");
+        checkAuthStatus();
+    }
 
     // 验证用户密码
     async function authUser(password) {
         try {
-            const response = await fetch("/auth/login", {
+            const result = await App.api.request("/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ password }),
             });
 
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-
-            const result = await response.json();
-
             if (result.success) {
                 isAuthorized = true;
+                // 登录成功后，将状态保存到 localStorage
+                localStorage.setItem("isAuthorized", "true");
                 App.modal.close();
                 App.toast.show("密码验证通过", "success");
                 if (typeof onSuccessCallback === 'function') {
@@ -34,12 +42,29 @@ App.auth = (function () {
                 onSuccessCallback = null;
             } else {
                 isAuthorized = false;
+                localStorage.removeItem("isAuthorized");
                 App.toast.show("密码验证失败", "error");
             }
         } catch (error) {
             isAuthorized = false;
+            localStorage.removeItem("isAuthorized");
             console.error("Auth failed:", error);
-            App.toast.show("验证发生错误", "error");
+            if (error.message !== 'Unauthorized') { // 避免重复弹窗
+                App.toast.show("验证发生错误", "error");
+            }
+        }
+    }
+    
+    // 用户登出
+    async function logout() {
+        try {
+            await App.api.request("/auth/logout", { method: "POST" });
+        } catch (error) {
+            console.error("Logout failed:", error);
+        } finally {
+            isAuthorized = false;
+            localStorage.removeItem("isAuthorized");
+            App.toast.show("已退出登录", "info");
         }
     }
 
@@ -149,8 +174,7 @@ App.auth = (function () {
         onSuccessCallback = callback;
 
         try {
-            const response = await fetch("/auth/status");
-            const result = await response.json();
+            const result = await App.api.request("/auth/status");
             if (result.isPasswordSet) {
                 showVerifyPassword();
             } else {
@@ -158,7 +182,9 @@ App.auth = (function () {
             }
         } catch (error) {
             console.error("Failed to check auth status:", error);
-            App.toast.show("身份验证失败", "error");
+            if (error.message !== 'Unauthorized') {
+                App.toast.show("身份验证失败", "error");
+            }
         }
     }
 
@@ -169,7 +195,9 @@ App.auth = (function () {
 
     return {
         init,
+        logout,
         checkAuthStatus,
         isAuthenticated,
+        handleUnauthorized,
     };
 })();

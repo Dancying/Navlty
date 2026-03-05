@@ -1,6 +1,6 @@
 /* 链接分类标题 */
 .category-title {
-    font-size: 1.2rem;
+    font-size: 2rem;
     font-weight: 600;
     margin: 2rem 0 1rem 0;
     padding-bottom: 0.5rem;
@@ -49,8 +49,16 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* 悬浮时卡片描述文字的滚动动画 */
+/* 当标题需要滚动时，鼠标悬浮时改变 overflow 以允许动画 */
+.card.scrolling-title:hover .title {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* 为需要滚动的标题和描述的 span 应用滚动动画 */
+.card.scrolling-title:hover .title > span,
 .card.scrolling-desc:hover .desc span {
+    display: inline-block; /* 确保标题的 span 也能正确应用 transform */
     animation: scroll 10s linear infinite;
 }
 
@@ -86,6 +94,7 @@
     color: #333;
     margin: 0px;
     white-space: nowrap;
+    overflow: hidden; /* 与标题对齐，确保溢出检测正常工作 */
 }
 
 /* 卡片描述的文本容器 */

@@ -29,6 +29,7 @@ body.modal-open {
     max-width: 1200px;
     display: flex;
     flex-direction: column;
+    height: 650px;
     max-height: 90vh;
     opacity: 0;
     transform: scale(0.95);
@@ -39,6 +40,7 @@ body.modal-open {
 #settings-modal .modal-content {
     --nav-width: 130px;
     flex-direction: row;
+    height: 700px;
 }
 
 /* 设置导航栏的样式，确保其在页脚上方以显示边框 */
@@ -218,6 +220,18 @@ body.modal-open {
 .btn-secondary:hover {
     background-color: #dae0e5;
 }
+
+/* 危险操作按钮 */
+.btn-danger {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* 危险操作按钮的悬浮样式 */
+.btn-danger:hover {
+    background-color: #c9302c;
+}
+
 
 /* 模态框页脚按钮的最小宽度 */
 .modal-footer .btn {

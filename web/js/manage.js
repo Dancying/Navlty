@@ -413,7 +413,6 @@ App.manage = (function () {
                 throw new Error(errorData || 'Failed to save changes.');
             }
             App.toast.show('链接保存成功', 'success');
-            App.modal.close();
             document.dispatchEvent(new CustomEvent('links-updated'));
         } catch (error) {
             console.error('Error saving changes:', error);

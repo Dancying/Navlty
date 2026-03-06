@@ -72,7 +72,6 @@ App.links = (function () {
                 body: JSON.stringify(links)
             });
             App.toast.show('链接保存成功', 'success');
-            App.modal.close();
             // 触发事件，通知主页面链接已更新
             document.dispatchEvent(new CustomEvent('links-updated'));
         } catch (error) {

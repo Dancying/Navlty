@@ -37,19 +37,17 @@ App.settings = (function () {
                     <button class="close-button">&times;</button>
                     <div id="settings-nav">
                         <h3>设置</h3>
-                        <a href="#" class="settings-nav-item active" data-target="content-site-settings">站点设置</a>
-                        <a href="#" class="settings-nav-item" data-target="content-style-settings">样式设置</a>
-                        <hr>
-                        <a href="#" class="settings-nav-item" data-target="content-add-link">添加链接</a>
+                        <a href="#" class="settings-nav-item active" data-target="content-add-link">添加链接</a>
                         <a href="#" class="settings-nav-item" data-target="content-bulk-add">批量添加</a>
                         <a href="#" class="settings-nav-item" data-target="content-manage-links">链接管理</a>
-                        <hr>
+                        <a href="#" class="settings-nav-item" data-target="content-site-settings">站点设置</a>
+                        <a href="#" class="settings-nav-item" data-target="content-style-settings">外观设置</a>
                         <a href="#" class="settings-nav-item" data-target="content-advanced-settings">高级设置</a>
                         <a href="#" class="settings-nav-item" data-target="content-password-settings">访问密码</a>
                     </div>
                     <div id="settings-content">
                         <!-- Site Settings -->
-                        <div id="content-site-settings" class="settings-content-panel active">
+                        <div id="content-site-settings" class="settings-content-panel">
                             <div class="modal-header">
                                 <h2>站点设置</h2>
                             </div>
@@ -85,7 +83,7 @@ App.settings = (function () {
                         <!-- Style Settings -->
                         <div id="content-style-settings" class="settings-content-panel">
                             <div class="modal-header">
-                                <h2>样式设置</h2>
+                                <h2>外观设置</h2>
                             </div>
                             <div class="modal-body">
                                 <form id="style-settings-form" class="form-grid">
@@ -99,11 +97,11 @@ App.settings = (function () {
                                     </div>
                                     <div class="form-group span-two slider-group">
                                         <label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label>
-                                        <input type="range" id="background-blur" name="backgroundBlur" min="0" max="20" value="5" class="slider">
+                                        <input type="range" id="background-blur" name="backgroundBlur" min="0" max="50" value="5" class="slider">
                                     </div>
                                     <div class="form-group span-two slider-group">
                                         <label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label>
-                                        <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="12" value="4" class="slider">
+                                        <input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="20" value="4" class="slider">
                                     </div>
                                 </form>
                             </div>
@@ -215,7 +213,7 @@ https://another.com/script.js"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary cancel-button">取消</button>
-                        <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
+                        <button type="button" class="btn btn-primary" id="settings-save-button">应用</button>
                     </div>
                 </div>
             </div>
@@ -274,7 +272,7 @@ https://another.com/script.js"></textarea>
     }
 
     // 从后端加载设置数据并显示模态框
-    async function loadAndShow(initialPanelId = 'content-site-settings') {
+    async function loadAndShow(initialPanelId = 'content-add-link') {
         createModalAndEvents();
 
         const openSettingsPanel = async () => {
@@ -288,7 +286,7 @@ https://another.com/script.js"></textarea>
                 App.helpers.setFormValue('background-blur', data.backgroundBlur);
                 App.helpers.setFormValue('cards-per-row', data.cardsPerRow);
                 App.helpers.setFormValue('custom-css', data.customCSS);
-                App.helpers.setFormValue('external-js', data.externalJS.join('\n'));
+                App.helpers.setFormValue('external-js', (data.externalJS || []).join('\n'));
                 
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
@@ -345,13 +343,6 @@ https://another.com/script.js"></textarea>
         const newPassword = newPasswordInput.value;
         const confirmPassword = confirmPasswordInput.value;
     
-        // 1. 如果所有输入框都为空则直接关闭面板
-        if (!currentPassword && !newPassword && !confirmPassword) {
-            App.modal.close();
-            return;
-        }
-    
-        // 2. 如果输入了任一一个输入框，则检查所有输入框
         const inputs = [currentPasswordInput, newPasswordInput, confirmPasswordInput];
         let allFieldsFilled = true;
     
@@ -384,7 +375,6 @@ https://another.com/script.js"></textarea>
             });
             if (data.success) {
                 App.toast.show('密码修改成功', 'success');
-                App.modal.close();
             } else {
                 throw new Error(data.message || '密码修改失败');
             }
@@ -416,7 +406,6 @@ https://another.com/script.js"></textarea>
             });
             if (data.status !== 'success') throw new Error(data.message || '保存失败');
             App.toast.show('配置保存成功', 'success');
-            App.modal.close();
             apply(settings);
             document.dispatchEvent(new CustomEvent('settings-updated', { detail: settings }));
         } catch (error) {

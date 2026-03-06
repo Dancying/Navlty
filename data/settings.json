@@ -1,10 +1,10 @@
 {
-  "siteName": "Navlty - 111222",
-  "siteIcon": "https://api.dancying.cn/assets/icons/favicon.ico",
-  "siteTitle": "Navlty Dashboard 111122222",
-  "avatarURL": "https://api.dancying.cn/assets/icons/favicon.ico",
-  "backgroundURL": "https://github.com/Dancying/Image-Source-Library/raw/main/anime/%5BNekomoe%20kissaten%5D%5BGIRLS%20BAND%20CRY%5D%5B01%5D%5B1080p%5D%5BJPSC%5D.mp4_snapshot_09.28_%5B2024.05.21_20.29.10%5D.jpg",
-  "backgroundBlur": 0,
+  "siteName": "Navlty - A Lightweight Dashboard",
+  "siteIcon": "",
+  "siteTitle": "Navlty Dashboard",
+  "avatarURL": "",
+  "backgroundURL": "",
+  "backgroundBlur": 3,
   "cardsPerRow": 4,
   "customCSS": "",
   "externalJS": []

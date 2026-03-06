@@ -40,7 +40,7 @@
     text-decoration: none;
     color: inherit;
     box-sizing: border-box;
-    min-width: 0;
+    min-width: 200px;
 }
 
 /* 链接卡片悬浮时的变换和阴影效果 */

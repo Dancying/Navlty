@@ -409,7 +409,7 @@ App.settings = (function () {
         }
         customCSSStyle.innerHTML = settings.customCSS || '';
 
-        App.helpers.checkDescriptionOverflow();
+        App.helpers.updateCardOverflow();
     }
 
     // 自动为设置按钮绑定点击事件

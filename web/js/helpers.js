@@ -30,7 +30,7 @@ App.helpers = (function () {
     }
 
     // 检查卡片描述和标题是否溢出，并为溢出的元素添加对应的滚动类
-    function checkDescriptionOverflow() {
+    function updateCardOverflow() {
         document.querySelectorAll('.card').forEach(card => {
             const title = card.querySelector('.title');
             const desc = card.querySelector('.desc');
@@ -68,7 +68,7 @@ App.helpers = (function () {
 
     return {
         fileToBase64,
-        checkDescriptionOverflow,
+        updateCardOverflow,
         setFormValue
     };
 })();

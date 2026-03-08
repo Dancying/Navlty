@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         togglePanelButton.addEventListener('click', () => {
             document.getElementById('primary-panel')?.classList.toggle('active');
             document.getElementById('secondary-panel')?.classList.toggle('active');
+            App.helpers.updateCardOverflow();
         });
     }
 
@@ -40,5 +41,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 检查卡片描述是否溢出
-    App.helpers.checkDescriptionOverflow();
+    App.helpers.updateCardOverflow();
 });

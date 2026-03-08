@@ -4,12 +4,10 @@ window.App = window.App || {};
 // 链接管理模块
 App.manage = (function () {
 
-    // 模块内状态变量
     let currentLinks = [];
     let dom = { container: null };
     let openCategories = new Set();
 
-    // 响应拖放结束事件，处理数据模型的变更
     function handleDrop(event) {
         const { item, target, nextElement } = event.detail;
         const isCategory = item.dataset.dndType === 'category';
@@ -70,18 +68,35 @@ App.manage = (function () {
         renderPanels();
     }
 
-    // 在指定容器中加载并渲染链接管理界面
     async function loadAndRender(container) {
         dom.container = container;
         dom.container.innerHTML = '<div class="loading-spinner"></div>';
         dom.container.addEventListener('dnd:drop', handleDrop);
 
         try {
-            const linksData = await App.api.request('/api/links');
-            currentLinks = linksData || [];
+            const panels = await App.api.request('/api/links');
+            const flatLinks = [];
+            if (panels && typeof panels === 'object') {
+                for (const panelName in panels) {
+                    const categories = panels[panelName];
+                    if (Array.isArray(categories)) {
+                        categories.forEach(category => {
+                            if (category.links && Array.isArray(category.links)) {
+                                category.links.forEach(link => {
+                                    flatLinks.push({
+                                        ...link,
+                                        panel: panelName,
+                                        category: category.name
+                                    });
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            currentLinks = flatLinks;
             renderPanels();
         } catch (error) {
-            // App.api.request 会自动处理401等情况，这里只处理通用错误
             if (error.message !== 'Unauthorized') {
                 console.error('Error loading links:', error);
                 App.toast.show('链接加载失败', 'error');
@@ -90,7 +105,6 @@ App.manage = (function () {
         }
     }
 
-    // 渲染主面板和副面板
     function renderPanels() {
         if (!dom.container) return;
         dom.container.innerHTML = '';
@@ -112,7 +126,6 @@ App.manage = (function () {
         App.dnd.init(gridContainer);
     }
 
-    // 创建单个面板（主面板或副面板）
     function createPanel(title, panelName, links) {
         const panel = document.createElement('div');
         panel.className = 'management-panel';
@@ -122,7 +135,7 @@ App.manage = (function () {
         panelTitle.textContent = title;
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'management-panel-content-wrapper';
-        contentWrapper.dataset.dndTarget = 'category-container'; // 修复：使用简单的标识符
+        contentWrapper.dataset.dndTarget = 'category-container';
         panel.appendChild(panelTitle);
         panel.appendChild(contentWrapper);
 
@@ -147,7 +160,6 @@ App.manage = (function () {
         return panel;
     }
 
-    // 创建单个分类（包含标题和链接列表）
     function createCategory(categoryName, links, panelName) {
         const group = document.createElement('div');
         group.className = 'management-category-group';
@@ -170,7 +182,6 @@ App.manage = (function () {
         return group;
     }
 
-    // 创建分类的头部（包含标题、图标和操作按钮）
     function createCategoryHeader(categoryName, panelName) {
         const header = document.createElement('div');
         header.className = 'management-category-header';
@@ -234,7 +245,6 @@ App.manage = (function () {
         return header;
     }
 
-    // 切换分类的展开/收起状态
     function toggleCategory(header, categoryName) {
         const linkList = header.nextElementSibling;
         if (!linkList || !linkList.classList.contains('management-link-list')) return;
@@ -253,13 +263,12 @@ App.manage = (function () {
         }
     }
 
-    // 创建链接列表的 UL 元素
     function createLinkList(links) {
         const list = document.createElement('ul');
         list.className = 'management-link-list';
         list.style.overflow = 'hidden';
         list.style.maxHeight = '0px';
-        list.dataset.dndTarget = 'link-container'; // 修复：使用简单的标识符
+        list.dataset.dndTarget = 'link-container';
 
         links.forEach(link => {
             list.appendChild(createLinkItem(link));
@@ -267,7 +276,6 @@ App.manage = (function () {
         return list;
     }
 
-    // 创建单个链接项 LI 元素
     function createLinkItem(link) {
         const item = document.createElement('li');
         item.className = 'management-link-item';
@@ -322,7 +330,6 @@ App.manage = (function () {
         return item;
     }
 
-    // 查找数组中最后一个满足条件的元素的索引
     function findLastIndex(arr, predicate) {
         for (let i = arr.length - 1; i >= 0; i--) {
             if (predicate(arr[i])) {
@@ -332,7 +339,6 @@ App.manage = (function () {
         return -1;
     }
     
-    // 处理链接标题的编辑操作
     function editLinkTitle(titleElement, linkUrl) {
         if (titleElement.querySelector('input')) return;
         const linkToEdit = currentLinks.find(l => l.url === linkUrl);
@@ -357,7 +363,6 @@ App.manage = (function () {
         });
     }
 
-    // 处理分类名称的编辑操作
     function editCategoryName(titleElement, oldCategoryName) {
         if (titleElement.querySelector('input')) return;
         const input = document.createElement('input');
@@ -388,30 +393,46 @@ App.manage = (function () {
         });
     }
 
-    // 删除整个分类
     function deleteCategory(categoryName) {
         openCategories.delete(categoryName);
         currentLinks = currentLinks.filter(link => (link.category || 'Uncategorized') !== categoryName);
         renderPanels();
     }
 
-    // 删除单个链接
     function deleteLink(url) {
         currentLinks = currentLinks.filter(link => link.url !== url);
         renderPanels();
     }
 
-    // 保存所有更改到后端
     async function saveChanges() {
+        const panels = {
+            primary: [],
+            secondary: []
+        };
+        currentLinks.forEach(link => {
+            const panelName = link.panel || 'primary';
+            const categoryName = link.category || '';
+    
+            let categoryObj = panels[panelName].find(c => c.name === categoryName);
+    
+            if (!categoryObj) {
+                categoryObj = { name: categoryName, links: [] };
+                panels[panelName].push(categoryObj);
+            }
+    
+            const { panel, category, ...rest } = link;
+            categoryObj.links.push(rest);
+        });
+    
         try {
             await App.api.request('/api/links', {
                 method: 'POST',
-                body: JSON.stringify(currentLinks),
+                body: JSON.stringify(panels),
             });
             App.toast.show('链接保存成功', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));
+            App.modal.close();
         } catch (error) {
-            // App.api.request 会自动处理401等情况，这里只处理通用错误
             if (error.message !== 'Unauthorized') {
                 console.error('Error saving changes:', error);
                 App.toast.show('链接保存失败', 'error');

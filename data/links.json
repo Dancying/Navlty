@@ -20,52 +20,9 @@
           "sort": 1
         }
       ]
-    },
-    {
-      "name": "Uncategorized",
-      "links": [
-        {
-          "id": "acb222a3-7118-4693-a289-c125fae1b786",
-          "title": "333",
-          "url": "33",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 0
-        },
-        {
-          "id": "590afd35-1312-4ff6-b607-4cba081b28b3",
-          "title": "444",
-          "url": "44",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 1
-        },
-        {
-          "id": "9e5fefe1-3a6f-4747-8973-59c2ac0ddc08",
-          "title": "44",
-          "url": "5",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 2
-        },
-        {
-          "id": "8d5b9a75-1ec3-4c14-af75-aee5c7bffef0",
-          "title": "66",
-          "url": "6",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 3
-        },
-        {
-          "id": "088ba7c0-347b-487b-8300-42dbc6820f26",
-          "title": "11",
-          "url": "1",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 4
-        }
-      ]
-    },
+    }
+  ],
+  "secondary": [
     {
       "name": "AI",
       "links": [
@@ -84,14 +41,6 @@
           "desc": "Next-generation AI assistant by Anthropic.",
           "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
           "sort": 1
-        },
-        {
-          "id": "8b4c25bd-8ecb-491c-b59f-04abddd24c3e",
-          "title": "Gemini",
-          "url": "https://gemini.google.com",
-          "desc": "Google's most capable AI model for multimodal tasks.",
-          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
-          "sort": 2
         },
         {
           "id": "92bc880e-ef15-4519-b829-2d1ea6682247",
@@ -116,35 +65,15 @@
           "desc": "Google's most capable AI model for multimodal tasks.",
           "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
           "sort": 5
-        }
-      ]
-    }
-  ],
-  "secondary": [
-    {
-      "name": "Uncategorized",
-      "links": [
-        {
-          "id": "c1804c83-c321-45d4-9775-2b9c1a4d7300",
-          "title": "77",
-          "url": "7",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 0
         },
         {
-          "id": "1476cca9-0708-47c5-8a05-a8db65cee3f6",
-          "title": "88",
-          "url": "88",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 1
-        }
-      ]
-    },
-    {
-      "name": "AI",
-      "links": [
+          "id": "8b4c25bd-8ecb-491c-b59f-04abddd24c3e",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 2
+        },
         {
           "id": "251742fc-e393-4dbe-bfc4-a715306fd74a",
           "title": "ChatGPT",
@@ -192,6 +121,67 @@
           "desc": "Google's most capable AI model for multimodal tasks.",
           "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
           "sort": 5
+        }
+      ]
+    },
+    {
+      "name": "Uncategorized",
+      "links": [
+        {
+          "id": "acb222a3-7118-4693-a289-c125fae1b786",
+          "title": "333",
+          "url": "33",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 0
+        },
+        {
+          "id": "590afd35-1312-4ff6-b607-4cba081b28b3",
+          "title": "444",
+          "url": "44",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 1
+        },
+        {
+          "id": "9e5fefe1-3a6f-4747-8973-59c2ac0ddc08",
+          "title": "44",
+          "url": "5",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 2
+        },
+        {
+          "id": "8d5b9a75-1ec3-4c14-af75-aee5c7bffef0",
+          "title": "66",
+          "url": "6",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 3
+        },
+        {
+          "id": "088ba7c0-347b-487b-8300-42dbc6820f26",
+          "title": "11",
+          "url": "1",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 4
+        },
+        {
+          "id": "c1804c83-c321-45d4-9775-2b9c1a4d7300",
+          "title": "77",
+          "url": "7",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 0
+        },
+        {
+          "id": "1476cca9-0708-47c5-8a05-a8db65cee3f6",
+          "title": "88",
+          "url": "88",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 1
         }
       ]
     }

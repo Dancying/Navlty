@@ -53,6 +53,8 @@ func HandleSettings(w http.ResponseWriter, r *http.Request) {
 		getSettings(w)
 	case http.MethodPost:
 		saveSettings(w, r)
+	case http.MethodPatch:
+		patchSettings(w, r)
 	default:
 		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
 	}
@@ -116,6 +118,48 @@ func saveSettings(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := SaveSettings(&newSettings); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error saving settings: "+err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+// patchSettings 处理对网站设置的局部更新请求。
+func patchSettings(w http.ResponseWriter, r *http.Request) {
+	currentSettings := LoadSettings()
+
+	var currentSettingsMap map[string]interface{}
+	settingsBytes, err := json.Marshal(currentSettings)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to serialize current settings: "+err.Error())
+		return
+	}
+	json.Unmarshal(settingsBytes, &currentSettingsMap)
+
+	var updates map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&updates); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request body: "+err.Error())
+		return
+	}
+
+	for key, value := range updates {
+		currentSettingsMap[key] = value
+	}
+
+	updatedBytes, err := json.Marshal(currentSettingsMap)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to serialize updated settings: "+err.Error())
+		return
+	}
+
+	var updatedSettings Settings
+	if err := json.Unmarshal(updatedBytes, &updatedSettings); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to apply updates to settings structure: "+err.Error())
+		return
+	}
+
+	if err := SaveSettings(&updatedSettings); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error saving settings: "+err.Error())
 		return
 	}

@@ -49,7 +49,7 @@ App.auth = (function () {
             isAuthorized = false;
             localStorage.removeItem("isAuthorized");
             console.error("Auth failed:", error);
-            if (error.message !== 'Unauthorized') { // 避免重复弹窗
+            if (error.message !== 'Unauthorized') {
                 App.toast.show("验证发生错误", "error");
             }
         }
@@ -68,36 +68,36 @@ App.auth = (function () {
         }
     }
 
-    // 显示设置初始密码的模态框
-    function showSetInitialPassword() {
+    // 创建并显示一个通用的认证模态框
+    function _showAuthModal(config) {
         const modalContent = `
             <div class="modal-content" id="auth-modal-content">
                 <div class="modal-header">
-                    <h2>设置访问密码</h2>
+                    <h2>${config.title}</h2>
                     <span class="close-button">&times;</span>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="new-password">首次使用，请设置访问密码</label>
-                        <input type="password" id="new-password" placeholder="请输入···" autocomplete="new-password">
+                        <label for="${config.inputId}">${config.label}</label>
+                        <input type="password" id="${config.inputId}" placeholder="${config.placeholder}" autocomplete="${config.autocomplete}">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary cancel-button">取消</button>
-                    <button class="btn btn-primary save-button">保存</button>
+                    <button class="btn btn-primary confirm-button">${config.buttonText}</button>
                 </div>
             </div>`;
 
         const modal = document.createElement('div');
-        modal.id = 'auth-modal';
+        modal.id = config.modalId;
         modal.className = 'modal';
         modal.innerHTML = modalContent;
         document.body.appendChild(modal);
 
-        App.modal.open('auth-modal');
+        App.modal.open(config.modalId);
 
-        modal.querySelector('.save-button').addEventListener('click', async () => {
-            const passwordInput = document.getElementById("new-password");
+        modal.querySelector('.confirm-button').addEventListener('click', async () => {
+            const passwordInput = document.getElementById(config.inputId);
             const password = passwordInput.value;
             if (!password) {
                 App.toast.show("密码不能为空", "error");
@@ -116,51 +116,29 @@ App.auth = (function () {
         });
     }
 
+    // 显示设置初始密码的模态框
+    function showSetInitialPassword() {
+        _showAuthModal({
+            modalId: 'auth-modal',
+            title: '设置访问密码',
+            label: '首次使用，请设置访问密码',
+            inputId: 'new-password',
+            placeholder: '请输入···',
+            autocomplete: 'new-password',
+            buttonText: '保存'
+        });
+    }
+
     // 显示验证密码的模态框
     function showVerifyPassword() {
-        const modalContent = `
-            <div class="modal-content" id="auth-modal-content">
-                <div class="modal-header">
-                    <h2>验证访问密码</h2>
-                    <span class="close-button">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="password">请输入访问密码</label>
-                        <input type="password" id="password" placeholder="请输入···" autocomplete="current-password">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary cancel-button">取消</button>
-                    <button class="btn btn-primary confirm-button">确认</button>
-                </div>
-            </div>`;
-
-        const modal = document.createElement('div');
-        modal.id = 'auth-modal';
-        modal.className = 'modal';
-        modal.innerHTML = modalContent;
-        document.body.appendChild(modal);
-
-        App.modal.open('auth-modal');
-
-        modal.querySelector('.confirm-button').addEventListener('click', async () => {
-            const passwordInput = document.getElementById("password");
-            const password = passwordInput.value;
-            if (!password) {
-                App.toast.show("密码不能为空", "error");
-                return;
-            }
-            await authUser(password);
-        });
-
-        modal.querySelector('.cancel-button').addEventListener('click', () => App.modal.close());
-        modal.querySelector('.close-button').addEventListener('click', () => App.modal.close());
-
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                App.modal.close();
-            }
+        _showAuthModal({
+            modalId: 'auth-modal',
+            title: '验证访问密码',
+            label: '请输入访问密码',
+            inputId: 'password',
+            placeholder: '请输入···',
+            autocomplete: 'current-password',
+            buttonText: '确认'
         });
     }
 

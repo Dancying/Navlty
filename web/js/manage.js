@@ -77,15 +77,16 @@ App.manage = (function () {
         dom.container.addEventListener('dnd:drop', handleDrop);
 
         try {
-            const response = await fetch('/api/links');
-            if (!response.ok) throw new Error('Failed to fetch links.');
-            const linksData = await response.json();
+            const linksData = await App.api.request('/api/links');
             currentLinks = linksData || [];
             renderPanels();
         } catch (error) {
-            console.error('Error loading links:', error);
-            App.toast.show('链接加载失败', 'error');
-            dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
+            // App.api.request 会自动处理401等情况，这里只处理通用错误
+            if (error.message !== 'Unauthorized') {
+                console.error('Error loading links:', error);
+                App.toast.show('链接加载失败', 'error');
+                dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
+            }
         }
     }
 
@@ -403,20 +404,18 @@ App.manage = (function () {
     // 保存所有更改到后端
     async function saveChanges() {
         try {
-            const response = await fetch('/api/links', {
+            await App.api.request('/api/links', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(currentLinks),
             });
-            if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData || 'Failed to save changes.');
-            }
             App.toast.show('链接保存成功', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));
         } catch (error) {
-            console.error('Error saving changes:', error);
-            App.toast.show('链接保存失败', 'error');
+            // App.api.request 会自动处理401等情况，这里只处理通用错误
+            if (error.message !== 'Unauthorized') {
+                console.error('Error saving changes:', error);
+                App.toast.show('链接保存失败', 'error');
+            }
         }
     }
 

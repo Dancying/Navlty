@@ -4,12 +4,9 @@ window.App = window.App || {};
 // DOM 加载完成后执行
 document.addEventListener('DOMContentLoaded', function () {
 
-    // 优先初始化核心UI模块
-    App.toast.init();
-    
-    // 初始化其他功能模块
-    App.search.init();
     App.auth.init();
+    App.search.init();
+    App.toast.init();
 
     // 主副面板切换
     const togglePanelButton = document.getElementById('toggle-panel-button');
@@ -17,14 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
         togglePanelButton.addEventListener('click', () => {
             document.getElementById('primary-panel')?.classList.toggle('active');
             document.getElementById('secondary-panel')?.classList.toggle('active');
-        });
-    }
-
-    // 设置按钮点击后检查授权状态
-    const settingsButton = document.getElementById('settings-button');
-    if (settingsButton) {
-        settingsButton.addEventListener('click', () => {
-            App.settings.loadAndShow();
         });
     }
 

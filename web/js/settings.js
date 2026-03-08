@@ -4,6 +4,9 @@ window.App = window.App || {};
 // 设置模块
 App.settings = (function () {
 
+    // 记录上次打开的面板ID，刷新后重置
+    let lastActivePanelId = 'content-add-link';
+
     // 辅助函数：绑定上传按钮和文件输入框
     function bindUploadButton(buttonId, inputId, targetId) {
         const button = document.getElementById(buttonId);
@@ -150,7 +153,7 @@ App.settings = (function () {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary cancel-button">取消</button>
-                        <button type="button" class="btn btn-primary" id="settings-save-button">应用</button>
+                        <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
                     </div>
                 </div>
             </div>
@@ -195,6 +198,7 @@ App.settings = (function () {
 
     // 切换设置模态框中的主内容面板
     function switchPanel(targetId) {
+        lastActivePanelId = targetId;
         const modal = document.getElementById('settings-modal');
         modal.querySelectorAll('.settings-nav-item').forEach(nav => nav.classList.remove('active'));
         modal.querySelectorAll('.settings-content-panel').forEach(panel => panel.classList.remove('active'));
@@ -209,8 +213,10 @@ App.settings = (function () {
     }
 
     // 从后端加载设置数据并显示模态框
-    async function loadAndShow(initialPanelId = 'content-add-link') {
+    async function loadAndShow(initialPanelId) {
         createModalAndEvents();
+
+        const panelToShow = initialPanelId || lastActivePanelId;
 
         const openSettingsPanel = async () => {
             try {
@@ -229,7 +235,7 @@ App.settings = (function () {
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
 
                 App.modal.open('settings-modal');
-                switchPanel(initialPanelId);
+                switchPanel(panelToShow);
             } catch (error) {
                 if (error.message !== 'Unauthorized') {
                     console.error('Error loading settings:', error);
@@ -245,7 +251,7 @@ App.settings = (function () {
         }
     }
 
-    // 处理保存操作，根据当前激活的面板调用不同的保存方法
+    // 根据当前激活的面板处理保存操作
     function handleSave() {
         const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
         if (!activePanel) return;
@@ -263,7 +269,9 @@ App.settings = (function () {
                 App.links.saveBulk();
                 break;
             case 'content-manage-links':
-                App.manage.saveChanges();
+                App.manage.saveChanges().then(success => {
+                    if (success) App.modal.close();
+                });
                 break;
             case 'content-password-settings':
                 handleChangePassword();
@@ -271,6 +279,7 @@ App.settings = (function () {
         }
     }
 
+    // 处理密码修改。若表单为空则关闭面板；若校验失败则不关闭；若成功则关闭。
     async function handleChangePassword() {
         const currentPasswordInput = document.getElementById('current-password');
         const newPasswordInput = document.getElementById('new-password-change');
@@ -279,11 +288,15 @@ App.settings = (function () {
         const currentPassword = currentPasswordInput.value;
         const newPassword = newPasswordInput.value;
         const confirmPassword = confirmPasswordInput.value;
+
+        if (!currentPassword && !newPassword && !confirmPassword) {
+            App.modal.close();
+            return;
+        }
     
         const inputs = [currentPasswordInput, newPasswordInput, confirmPasswordInput];
         let allFieldsFilled = true;
     
-        // 重置错误状态并检查空值
         inputs.forEach(input => {
             input.classList.remove('input-error');
             if (!input.value) {
@@ -297,7 +310,6 @@ App.settings = (function () {
             return;
         }
         
-        // 检查新密码和确认密码是否匹配
         if (newPassword !== confirmPassword) {
             App.toast.show('新密码和确认密码不匹配', 'error');
             newPasswordInput.classList.add('input-error');
@@ -312,6 +324,7 @@ App.settings = (function () {
             });
             if (data.success) {
                 App.toast.show('密码修改成功', 'success');
+                App.modal.close();
             } else {
                 throw new Error(data.message || '密码修改失败');
             }
@@ -345,6 +358,7 @@ App.settings = (function () {
             App.toast.show('配置保存成功', 'success');
             apply(settings);
             document.dispatchEvent(new CustomEvent('settings-updated', { detail: settings }));
+            App.modal.close();
         } catch (error) {
             App.toast.show('配置保存失败', 'error');
             console.error('Error saving settings:', error);
@@ -398,7 +412,7 @@ App.settings = (function () {
         App.helpers.checkDescriptionOverflow();
     }
 
-    // auto-bind click events to settings buttons
+    // 自动为设置按钮绑定点击事件
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('settings-button')?.addEventListener('click', () => loadAndShow());
     });

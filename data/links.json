@@ -20,6 +20,180 @@
           "sort": 1
         }
       ]
+    },
+    {
+      "name": "Uncategorized",
+      "links": [
+        {
+          "id": "acb222a3-7118-4693-a289-c125fae1b786",
+          "title": "333",
+          "url": "33",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 0
+        },
+        {
+          "id": "590afd35-1312-4ff6-b607-4cba081b28b3",
+          "title": "444",
+          "url": "44",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 1
+        },
+        {
+          "id": "9e5fefe1-3a6f-4747-8973-59c2ac0ddc08",
+          "title": "44",
+          "url": "5",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 2
+        },
+        {
+          "id": "8d5b9a75-1ec3-4c14-af75-aee5c7bffef0",
+          "title": "66",
+          "url": "6",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 3
+        },
+        {
+          "id": "088ba7c0-347b-487b-8300-42dbc6820f26",
+          "title": "11",
+          "url": "1",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 4
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "links": [
+        {
+          "id": "11fe1b5a-f930-4c63-b8e7-0036277d12ef",
+          "title": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "desc": "Leading AI conversational model by OpenAI.",
+          "icon_url": "https://api.iconify.design/logos:openai.svg",
+          "sort": 0
+        },
+        {
+          "id": "cbb6e9ff-79cd-4131-84a0-768b1d44b36c",
+          "title": "Claude",
+          "url": "https://claude.ai",
+          "desc": "Next-generation AI assistant by Anthropic.",
+          "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
+          "sort": 1
+        },
+        {
+          "id": "8b4c25bd-8ecb-491c-b59f-04abddd24c3e",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 2
+        },
+        {
+          "id": "92bc880e-ef15-4519-b829-2d1ea6682247",
+          "title": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "desc": "Leading AI conversational model by OpenAI.",
+          "icon_url": "https://api.iconify.design/logos:openai.svg",
+          "sort": 3
+        },
+        {
+          "id": "94b14971-81af-4430-bd6b-ac74aa550512",
+          "title": "Claude",
+          "url": "https://claude.ai",
+          "desc": "Next-generation AI assistant by Anthropic.",
+          "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
+          "sort": 4
+        },
+        {
+          "id": "0a5fc2fc-b9f2-45da-b6a3-b53383f0c4a9",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 5
+        }
+      ]
+    }
+  ],
+  "secondary": [
+    {
+      "name": "Uncategorized",
+      "links": [
+        {
+          "id": "c1804c83-c321-45d4-9775-2b9c1a4d7300",
+          "title": "77",
+          "url": "7",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 0
+        },
+        {
+          "id": "1476cca9-0708-47c5-8a05-a8db65cee3f6",
+          "title": "88",
+          "url": "88",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 1
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "links": [
+        {
+          "id": "251742fc-e393-4dbe-bfc4-a715306fd74a",
+          "title": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "desc": "Leading AI conversational model by OpenAI.",
+          "icon_url": "https://api.iconify.design/logos:openai.svg",
+          "sort": 0
+        },
+        {
+          "id": "660aaf63-a4ec-4e90-a723-b468782f2990",
+          "title": "Claude",
+          "url": "https://claude.ai",
+          "desc": "Next-generation AI assistant by Anthropic.",
+          "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
+          "sort": 1
+        },
+        {
+          "id": "189f75b8-5363-4c6f-92e0-cf851e3bfaaa",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 2
+        },
+        {
+          "id": "c496619d-4d46-4919-9de4-40059a7a98ce",
+          "title": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "desc": "Leading AI conversational model by OpenAI.",
+          "icon_url": "https://api.iconify.design/logos:openai.svg",
+          "sort": 3
+        },
+        {
+          "id": "8bcb7c9d-8131-4917-9642-3c47146b1be9",
+          "title": "Claude",
+          "url": "https://claude.ai",
+          "desc": "Next-generation AI assistant by Anthropic.",
+          "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
+          "sort": 4
+        },
+        {
+          "id": "d314e9d6-707c-4dc5-aa63-3fc27283185b",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 5
+        }
+      ]
     }
   ]
 }

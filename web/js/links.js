@@ -4,16 +4,31 @@ window.App = window.App || {};
 // 链接处理模块
 App.links = (function () {
 
-    // 保存单个链接
+    // 获取当前激活的面板的名称
+    function getActivePanel() {
+        const primaryPanel = document.getElementById('primary-panel');
+        if (primaryPanel && primaryPanel.classList.contains('active')) {
+            return 'primary';
+        }
+        return 'secondary';
+    }
+
+    // 保存单个链接。若表单为空则关闭面板；若校验失败则显示错误且不关闭；若成功则关闭。
     async function saveSingle() {
         const titleInput = document.getElementById('link-title');
         const urlInput = document.getElementById('link-url');
-        
-        // 重置错误状态
+        const categoryInput = document.getElementById('link-category');
+        const descInput = document.getElementById('link-description');
+        const iconInput = document.getElementById('link-icon');
+
+        if (!titleInput.value && !urlInput.value && !categoryInput.value && !descInput.value && !iconInput.value) {
+            App.modal.close();
+            return;
+        }
+
         titleInput.classList.remove('input-error');
         urlInput.classList.remove('input-error');
 
-        // 校验
         if (!titleInput.value || !urlInput.value) {
             App.toast.show('标题和链接是必填项', 'error');
             if (!titleInput.value) titleInput.classList.add('input-error');
@@ -24,23 +39,31 @@ App.links = (function () {
         const newLink = {
             title: titleInput.value,
             url: urlInput.value,
-            category: document.getElementById('link-category').value || '未分类',
-            desc: document.getElementById('link-description').value,
-            icon_url: document.getElementById('link-icon').value || 'globe',
+            category: categoryInput.value || 'Uncategorized',
+            desc: descInput.value,
+            icon_url: iconInput.value || 'globe',
         };
 
-        await submitLinks([newLink]);
+        if (await submitLinks([newLink])) {
+            App.modal.close();
+        }
     }
 
-    // 批量保存链接
+    // 批量保存链接。若表单为空则关闭面板；若格式无效则显示错误且不关闭；若成功则关闭。
     async function saveBulk() {
         const bulkLinksInput = document.getElementById('bulk-links');
-        const lines = bulkLinksInput.value.split('\n').filter(line => line.trim() !== '');
+        const bulkContent = bulkLinksInput.value.trim();
+
+        if (!bulkContent) {
+            App.modal.close();
+            return;
+        }
         
+        const lines = bulkContent.split('\n').filter(line => line.trim() !== '');
         bulkLinksInput.classList.remove('input-error');
+
         if (lines.length === 0) {
-            bulkLinksInput.classList.add('input-error');
-            App.toast.show('请输入至少一个链接', 'error');
+            App.modal.close();
             return;
         }
         
@@ -50,7 +73,7 @@ App.links = (function () {
             return { 
                 title, 
                 url, 
-                category: category || '未分类', 
+                category: category || 'Uncategorized', 
                 icon_url: icon_url || 'globe', 
                 desc: desc || '' 
             };
@@ -61,25 +84,50 @@ App.links = (function () {
             return;
         }
 
-        await submitLinks(newLinks);
-    }
-
-    // 将链接数据提交到后端
-    async function submitLinks(links) {
-        try {
-            await App.api.request('/api/links/bulk', {
-                method: 'POST',
-                body: JSON.stringify(links)
-            });
-            App.toast.show('链接保存成功', 'success');
-            // 触发事件，通知主页面链接已更新
-            document.dispatchEvent(new CustomEvent('links-updated'));
-        } catch (error) {
-            App.toast.show(`链接保存失败: ${error.message}`, 'error');
-            console.error('Error submitting links:', error);
+        if (await submitLinks(newLinks)) {
+            App.modal.close();
         }
     }
 
+    // 将链接数据提交到后端 API，成功时返回 true，失败时返回 false。
+    async function submitLinks(links) {
+        const linksByCategory = links.reduce((acc, link) => {
+            const category = link.category || 'Uncategorized';
+            if (!acc[category]) {
+                acc[category] = [];
+            }
+            const { category: _, ...linkData } = link;
+            acc[category].push(linkData);
+            return acc;
+        }, {});
+
+        const panel = getActivePanel();
+        const actions = Object.entries(linksByCategory).map(([category, categoryLinks]) => {
+            return {
+                action: 'CREATE_LINKS',
+                payload: {
+                    panel: panel,
+                    category: category,
+                    links: categoryLinks
+                }
+            };
+        });
+
+        try {
+            await App.api.request('/api/links/batch', {
+                method: 'POST',
+                body: JSON.stringify(actions)
+            });
+            App.toast.show('链接保存成功', 'success');
+            document.dispatchEvent(new CustomEvent('links-updated'));
+            return true;
+        } catch (error) {
+            App.toast.show(`链接保存失败: ${error.message}`, 'error');
+            console.error('Error submitting links:', error);
+            return false;
+        }
+    }
+    
     // 导出公共方法
     return { saveSingle, saveBulk };
 })();

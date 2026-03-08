@@ -114,7 +114,7 @@ App.links = (function () {
         });
 
         try {
-            await App.api.request('/api/links/batch', {
+            await App.api.request('/api/links/actions', {
                 method: 'POST',
                 body: JSON.stringify(actions)
             });

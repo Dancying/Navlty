@@ -1,12 +1,14 @@
-// 确保 App 全局命名空间存在
+// 定义全局 App 命名空间
 window.App = window.App || {};
 
 // 链接管理模块
 App.manage = (function () {
 
+    let initialLinks = [];
     let currentLinks = [];
     let dom = { container: null };
     let openCategories = new Set();
+    let linkIdCounter = 0;
 
     function handleDrop(event) {
         const { item, target, nextElement } = event.detail;
@@ -22,8 +24,8 @@ App.manage = (function () {
             movedItems = currentLinks.filter(l => (l.category || 'Uncategorized') === categoryName);
             currentLinks = currentLinks.filter(l => (l.category || 'Uncategorized') !== categoryName);
         } else {
-            const linkUrl = item.dataset.linkUrl;
-            const fromIndex = currentLinks.findIndex(l => l.url === linkUrl);
+            const linkClientId = item.dataset.linkId;
+            const fromIndex = currentLinks.findIndex(l => l.clientId === linkClientId);
             if (fromIndex > -1) {
                 movedItems = currentLinks.splice(fromIndex, 1);
             }
@@ -38,8 +40,8 @@ App.manage = (function () {
                 const nextCategoryName = nextElement.dataset.categoryName;
                 toIndex = currentLinks.findIndex(l => (l.category || 'Uncategorized') === nextCategoryName);
             } else {
-                const nextLinkUrl = nextElement.dataset.linkUrl;
-                toIndex = currentLinks.findIndex(l => l.url === nextLinkUrl);
+                const nextLinkClientId = nextElement.dataset.linkId;
+                toIndex = currentLinks.findIndex(l => l.clientId === nextLinkClientId);
             }
         } else {
             if (isCategory) {
@@ -76,6 +78,7 @@ App.manage = (function () {
         try {
             const panels = await App.api.request('/api/links');
             const flatLinks = [];
+            linkIdCounter = 0;
             if (panels && typeof panels === 'object') {
                 for (const panelName in panels) {
                     const categories = panels[panelName];
@@ -85,8 +88,9 @@ App.manage = (function () {
                                 category.links.forEach(link => {
                                     flatLinks.push({
                                         ...link,
+                                        clientId: `client-link-${linkIdCounter++}`,
                                         panel: panelName,
-                                        category: category.name
+                                        category: category.name || ''
                                     });
                                 });
                             }
@@ -95,6 +99,7 @@ App.manage = (function () {
                 }
             }
             currentLinks = flatLinks;
+            initialLinks = JSON.parse(JSON.stringify(flatLinks));
             renderPanels();
         } catch (error) {
             if (error.message !== 'Unauthorized') {
@@ -149,6 +154,12 @@ App.manage = (function () {
                 categories.push(categoryName);
             }
             categoryMap.get(categoryName).push(link);
+        });
+        
+        categories.sort((a, b) => {
+            if (a === 'Uncategorized') return 1;
+            if (b === 'Uncategorized') return -1;
+            return a.localeCompare(b);
         });
 
         categories.forEach(categoryName => {
@@ -279,7 +290,7 @@ App.manage = (function () {
     function createLinkItem(link) {
         const item = document.createElement('li');
         item.className = 'management-link-item';
-        item.dataset.linkUrl = link.url;
+        item.dataset.linkId = link.clientId;
         item.dataset.dndType = 'link';
         item.setAttribute('draggable', 'true');
 
@@ -297,7 +308,7 @@ App.manage = (function () {
             e.stopPropagation();
             const titleElement = item.querySelector('.management-link-title');
             if (titleElement) {
-                editLinkTitle(titleElement, link.url);
+                editLinkTitle(titleElement, link.clientId);
             }
         });
 
@@ -306,7 +317,7 @@ App.manage = (function () {
         copyButton.innerHTML = '<i data-feather="copy"></i>';
         copyButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${l.desc || ''}`;
+            const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${link.desc || ''}`;
             navigator.clipboard.writeText(formattedLink).then(() => {
                 App.toast.show('链接复制成功', 'success');
             }, () => {
@@ -319,7 +330,7 @@ App.manage = (function () {
         deleteButton.innerHTML = '<i data-feather="x"></i>';
         deleteButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            deleteLink(link.url);
+            deleteLink(link.clientId);
         });
 
         actions.appendChild(editButton);
@@ -339,9 +350,9 @@ App.manage = (function () {
         return -1;
     }
     
-    function editLinkTitle(titleElement, linkUrl) {
+    function editLinkTitle(titleElement, clientId) {
         if (titleElement.querySelector('input')) return;
-        const linkToEdit = currentLinks.find(l => l.url === linkUrl);
+        const linkToEdit = currentLinks.find(l => l.clientId === clientId);
         if (!linkToEdit) return;
         const input = document.createElement('input');
         input.type = 'text';
@@ -359,28 +370,32 @@ App.manage = (function () {
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') input.blur();
-            if (e.key === 'Escape') renderPanels();
+            if (e.key === 'Escape') {
+                input.value = linkToEdit.title;
+                input.blur();
+            }
         });
     }
 
     function editCategoryName(titleElement, oldCategoryName) {
         if (titleElement.querySelector('input')) return;
+        const originalName = oldCategoryName;
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'management-category-input';
-        input.value = oldCategoryName;
+        input.value = originalName;
         titleElement.replaceWith(input);
         input.focus();
         const save = () => {
             const newCategoryName = input.value.trim();
-            if (newCategoryName && newCategoryName !== oldCategoryName) {
-                if (openCategories.has(oldCategoryName)) {
-                    openCategories.delete(oldCategoryName);
+            if (newCategoryName && newCategoryName !== originalName) {
+                if (openCategories.has(originalName)) {
+                    openCategories.delete(originalName);
                     openCategories.add(newCategoryName);
                 }
                 currentLinks.forEach(link => {
-                    if ((link.category || 'Uncategorized') === oldCategoryName) {
-                        link.category = newCategoryName;
+                    if ((link.category || 'Uncategorized') === originalName) {
+                        link.category = newCategoryName === 'Uncategorized' ? '' : newCategoryName;
                     }
                 });
             }
@@ -389,7 +404,10 @@ App.manage = (function () {
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') input.blur();
-            if (e.key === 'Escape') renderPanels();
+            if (e.key === 'Escape') {
+                input.value = originalName;
+                input.blur();
+            }
         });
     }
 
@@ -399,35 +417,82 @@ App.manage = (function () {
         renderPanels();
     }
 
-    function deleteLink(url) {
-        currentLinks = currentLinks.filter(link => link.url !== url);
+    function deleteLink(clientId) {
+        currentLinks = currentLinks.filter(link => link.clientId !== clientId);
         renderPanels();
     }
 
     async function saveChanges() {
-        const panels = {
-            primary: [],
-            secondary: []
-        };
-        currentLinks.forEach(link => {
-            const panelName = link.panel || 'primary';
-            const categoryName = link.category || '';
-    
-            let categoryObj = panels[panelName].find(c => c.name === categoryName);
-    
-            if (!categoryObj) {
-                categoryObj = { name: categoryName, links: [] };
-                panels[panelName].push(categoryObj);
+        const actions = [];
+        const initialLinksMap = new Map(initialLinks.map(link => [link.id, link]));
+        const currentLinksMap = new Map(currentLinks.map(link => [link.id, link]));
+
+        const deletedIds = [];
+        for (const id of initialLinksMap.keys()) {
+            if (!currentLinksMap.has(id)) {
+                deletedIds.push(id);
             }
-    
-            const { panel, category, ...rest } = link;
-            categoryObj.links.push(rest);
-        });
-    
+        }
+        if (deletedIds.length > 0) {
+            actions.push({
+                action: 'DELETE_LINKS',
+                payload: { ids: deletedIds }
+            });
+        }
+
+        const updates = [];
+        const moves = new Map();
+
+        for (const link of currentLinks) {
+            const initialLink = initialLinksMap.get(link.id);
+            if (initialLink) {
+                const titleChanged = link.title !== initialLink.title;
+                const categoryChanged = (link.category || '') !== (initialLink.category || '');
+                const panelChanged = link.panel !== initialLink.panel;
+
+                if (titleChanged) {
+                    updates.push({
+                        id: link.id,
+                        updates: { title: link.title }
+                    });
+                }
+                if (categoryChanged || panelChanged) {
+                    const targetKey = `${link.panel}:${link.category || ''}`;
+                    if (!moves.has(targetKey)) {
+                        moves.set(targetKey, {
+                            target: { panel: link.panel, category: link.category || '' },
+                            ids: []
+                        });
+                    }
+                    moves.get(targetKey).ids.push(link.id);
+                }
+            }
+        }
+
+        if (updates.length > 0) {
+            actions.push({
+                action: 'UPDATE_LINKS',
+                payload: updates
+            });
+        }
+
+        for (const move of moves.values()) {
+            actions.push({
+                action: 'MOVE_LINKS',
+                payload: move
+            });
+        }
+
+        if (actions.length === 0) {
+            App.toast.show('没有检测到任何更改', 'info');
+            App.modal.close();
+            return;
+        }
+
         try {
-            await App.api.request('/api/links', {
+            await App.api.request('/api/links/actions', {
                 method: 'POST',
-                body: JSON.stringify(panels),
+                body: JSON.stringify(actions),
             });
             App.toast.show('链接保存成功', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));

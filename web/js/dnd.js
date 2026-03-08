@@ -1,4 +1,4 @@
-// 确保 App 全局命名空间存在
+// 定义全局 App 命名空间
 window.App = window.App || {};
 
 // 通用拖放模块 (Drag and Drop)

@@ -84,3 +84,9 @@ type DeleteCategoryPayload struct {
 	Panel    string `json:"panel"`
 	Category string `json:"category"`
 }
+
+// ReorderCategoriesPayload 定义了 REORDER_CATEGORIES 操作的数据
+type ReorderCategoriesPayload struct {
+	Panel                string   `json:"panel"`
+	OrderedCategoryNames []string `json:"orderedCategoryNames"`
+}

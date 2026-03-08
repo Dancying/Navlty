@@ -71,7 +71,6 @@ func HandleLinks(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// 清洗数据：确保所有链接都有 ID 和正确的排序
 		for _, categories := range panels {
 			for i := range categories {
 				maxSort := -1
@@ -141,7 +140,6 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 
 	auth := LoadAuth()
 
-	// 如果是首次启动，设置密码
 	if auth.PasswordHash == "" {
 		hashedPassword, err := HashPassword(creds.Password)
 		if err != nil {
@@ -156,7 +154,6 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 验证密码
 	if CheckPasswordHash(creds.Password, auth.PasswordHash) {
 		createAndSetSessionCookie(w)
 		respondWithJSON(w, http.StatusOK, map[string]interface{}{"success": true, "message": "验证成功"})
@@ -409,7 +406,7 @@ func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
 				respondWithError(w, http.StatusBadRequest, "Invalid DELETE_CATEGORIES payload: "+err.Error())
 				return
 			}
-			
+
 			for _, catToDelete := range payload {
 				if categories, ok := panels[catToDelete.Panel]; ok {
 					var remainingCategories []LinkCategory
@@ -421,6 +418,31 @@ func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
 					panels[catToDelete.Panel] = remainingCategories
 				}
 			}
+		case "REORDER_CATEGORIES":
+			var payload ReorderCategoriesPayload
+			if err := json.Unmarshal(action.Payload, &payload); err != nil {
+				respondWithError(w, http.StatusBadRequest, "Invalid REORDER_CATEGORIES payload: "+err.Error())
+				return
+			}
+
+			currentCategories, panelExists := panels[payload.Panel]
+			if !panelExists {
+				respondWithError(w, http.StatusBadRequest, "Panel not found for reordering: "+payload.Panel)
+				return
+			}
+
+			categoryMap := make(map[string]LinkCategory)
+			for _, category := range currentCategories {
+				categoryMap[category.Name] = category
+			}
+
+			reorderedCategories := make([]LinkCategory, 0, len(payload.OrderedCategoryNames))
+			for _, categoryName := range payload.OrderedCategoryNames {
+				if category, found := categoryMap[categoryName]; found {
+					reorderedCategories = append(reorderedCategories, category)
+				}
+			}
+			panels[payload.Panel] = reorderedCategories
 
 		default:
 			respondWithError(w, http.StatusBadRequest, "Unknown action: "+action.Action)

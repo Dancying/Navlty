@@ -175,6 +175,7 @@ App.settings = (function () {
         document.getElementById('logout-button')?.addEventListener('click', () => {
             App.auth.logout();
             App.modal.close();
+            location.reload();
         });
 
         bindUploadButton('upload-site-icon-button', 'site-icon-file-input', 'site-icon');
@@ -245,7 +246,7 @@ App.settings = (function () {
             } catch (error) {
                 if (error.message !== 'Unauthorized') {
                     console.error('Error loading settings:', error);
-                    App.toast.show('配置加载失败', 'error');
+                    App.toast.show('配置加载失败，请刷新页面重试', 'error');
                 }
             }
         };
@@ -329,13 +330,13 @@ App.settings = (function () {
                 body: JSON.stringify({ currentPassword, newPassword })
             });
             if (data.success) {
-                App.toast.show('密码修改成功', 'success');
+                App.toast.show('密码已更新，下次请使用新密码登录', 'success');
                 App.modal.close();
             } else {
                 throw new Error(data.message || '密码修改失败');
             }
         } catch (error) {
-            App.toast.show(error.message, 'error');
+            App.toast.show(`密码修改失败: ${error.message}`, 'error');
             console.error('Error changing password:', error);
         }
     }
@@ -393,7 +394,7 @@ App.settings = (function () {
 
             if (data.status !== 'success') throw new Error(data.message || '保存失败');
             
-            App.toast.show('配置保存成功', 'success');
+            App.toast.show('设置已保存，部分更改可能需要刷新页面生效', 'success');
 
             originalSettings = { ...originalSettings, ...updates };
             apply(originalSettings);
@@ -401,7 +402,7 @@ App.settings = (function () {
             
             App.modal.close();
         } catch (error) {
-            App.toast.show('配置保存失败', 'error');
+            App.toast.show('设置保存失败，请检查网络并重试', 'error');
             console.error('Error saving settings:', error);
         }
     }
@@ -452,11 +453,6 @@ App.settings = (function () {
 
         App.helpers.updateCardOverflow();
     }
-
-    // 自动为设置按钮绑定点击事件
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('settings-button')?.addEventListener('click', () => loadAndShow());
-    });
 
     return { loadAndShow, apply };
 })();

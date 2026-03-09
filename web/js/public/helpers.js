@@ -16,12 +16,12 @@ App.helpers = (function () {
                 if (targetInput) {
                     targetInput.value = e.target.result;
                 }
-                App.toast.show('文件编码成功', 'success');
+                App.toast.show('文件已成功加载', 'success');
             };
 
             // 文件读取失败
             reader.onerror = function (error) {
-                App.toast.show('文件编码失败', 'error');
+                App.toast.show('文件加载失败，请检查文件格式或重试', 'error');
                 console.error('File could not be read: ' + error.message);
             };
 

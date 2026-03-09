@@ -18,6 +18,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // 设置按钮点击事件
+    const settingsButton = document.getElementById('settings-button');
+    if (settingsButton) {
+        settingsButton.addEventListener('click', () => {
+            if (App.settings && typeof App.settings.loadAndShow === 'function') {
+                App.settings.loadAndShow();
+            } else {
+                App.auth.checkAuthStatus();
+            }
+        });
+    }
+
     // 全局键盘快捷键
     window.addEventListener('keydown', (event) => {
         // ESC 键关闭所有激活的模态框和搜索框
@@ -40,6 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 检查卡片描述是否溢出
+    // 检查卡片标题、描述是否溢出
     App.helpers.updateCardOverflow();
 });

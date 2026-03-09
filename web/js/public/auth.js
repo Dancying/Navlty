@@ -8,7 +8,6 @@ App.auth = (function () {
 
     // 初始化模块
     function init() {
-        // 页面加载时，从 localStorage 恢复登录状态
         if (localStorage.getItem("isAuthorized") === "true") {
             isAuthorized = true;
         }
@@ -18,7 +17,7 @@ App.auth = (function () {
     function handleUnauthorized() {
         isAuthorized = false;
         localStorage.removeItem("isAuthorized");
-        App.toast.show("您的登录已过期，请重新验证", "error");
+        App.toast.show("登录状态已失效，请重新验证", "error");
         checkAuthStatus();
     }
 
@@ -44,7 +43,7 @@ App.auth = (function () {
             localStorage.removeItem("isAuthorized");
             console.error("Auth failed:", error);
             if (error.message !== 'Unauthorized') {
-                App.toast.show("验证发生错误", "error");
+                App.toast.show("验证请求失败，请检查网络或稍后重试", "error");
             }
         }
     }
@@ -58,7 +57,6 @@ App.auth = (function () {
         } finally {
             isAuthorized = false;
             localStorage.removeItem("isAuthorized");
-            App.toast.show("已退出登录", "info");
         }
     }
 
@@ -155,7 +153,7 @@ App.auth = (function () {
         } catch (error) {
             console.error("Failed to check auth status:", error);
             if (error.message !== 'Unauthorized') {
-                App.toast.show("身份验证失败", "error");
+                App.toast.show("密码错误或服务器异常，请重试", "error");
             }
         }
     }

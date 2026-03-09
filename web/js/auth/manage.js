@@ -92,7 +92,7 @@ App.manage = (function () {
             } catch (error) {
                 if (error.message !== 'Unauthorized') {
                     console.error('Error loading links:', error);
-                    App.toast.show('链接加载失败', 'error');
+                    App.toast.show('加载链接列表失败，请刷新重试', 'error');
                     dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
                 }
                 return;
@@ -249,9 +249,9 @@ App.manage = (function () {
             }).join('\n');
 
             navigator.clipboard.writeText(formattedLinks).then(() => {
-                App.toast.show('链接复制成功', 'success');
+                App.toast.show('分类链接已按格式复制', 'success');
             }, () => {
-                App.toast.show('链接复制失败', 'error');
+                App.toast.show('复制失败，浏览器可能不支持或未授权', 'error');
             });
         });
 
@@ -334,9 +334,9 @@ App.manage = (function () {
             e.stopPropagation();
             const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${link.desc || ''}`;
             navigator.clipboard.writeText(formattedLink).then(() => {
-                App.toast.show('链接复制成功', 'success');
+                App.toast.show('链接数据已复制到剪贴板', 'success');
             }, () => {
-                App.toast.show('链接复制失败', 'error');
+                App.toast.show('复制失败，浏览器可能不支持或未授权', 'error');
             });
         });
 
@@ -509,13 +509,13 @@ App.manage = (function () {
                 body: JSON.stringify(actions),
             });
             invalidateCache();
-            App.toast.show('链接保存成功', 'success');
+            App.toast.show('链接更改已成功保存', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));
             App.modal.close();
         } catch (error) {
             if (error.message !== 'Unauthorized') {
                 console.error('Error saving changes:', error);
-                App.toast.show('链接保存失败', 'error');
+                App.toast.show('链接更改保存失败，请刷新后重试', 'error');
             }
         }
     }

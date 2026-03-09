@@ -80,7 +80,7 @@ App.links = (function () {
         }).filter(link => link !== null);
 
         if (newLinks.length === 0) {
-            App.toast.show('没有找到有效格式的链接', 'error');
+            App.toast.show('未找到有效链接，请检查格式是否正确 (标题 | 链接)', 'error');
             return;
         }
 
@@ -118,7 +118,7 @@ App.links = (function () {
                 method: 'POST',
                 body: JSON.stringify(actions)
             });
-            App.toast.show('链接保存成功', 'success');
+            App.toast.show('链接已成功添加', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));
             return true;
         } catch (error) {

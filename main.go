@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"navlty/pkg"
+	"navlty/internal"
 )
 
 func main() {
-	pkg.RegisterHandlers()
+	internal.RegisterHandlers()
 
 	log.Println("Starting server on :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

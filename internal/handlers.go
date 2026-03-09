@@ -1,4 +1,4 @@
-package pkg
+package internal
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ import (
 func RenderPage(w http.ResponseWriter, r *http.Request) {
 	pageData := LoadPageData()
 
-	templatePath := "index.html"
+	templatePath := "web/index.html"
 	t, err := template.New("index.html").Funcs(template.FuncMap{
 		"safeCSS": func(s string) template.CSS { return template.CSS(s) },
 		"safeJS":  func(s string) template.JS { return template.JS(s) },

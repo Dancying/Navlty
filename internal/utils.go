@@ -1,4 +1,4 @@
-package pkg
+package internal
 
 import (
 	"encoding/json"
@@ -20,7 +20,6 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 		return
 	}
 
-	// 使用 minifier 压缩 JSON 数据
 	minifiedResponse, err := m.Bytes("application/json", response)
 	if err != nil {
 		log.Printf("warning: could not minify JSON response: %v", err)

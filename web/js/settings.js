@@ -6,6 +6,8 @@ App.settings = (function () {
 
     // 记录上次打开的面板ID，刷新后重置
     let lastActivePanelId = 'content-add-link';
+    // 存储从服务器加载的原始设置
+    let originalSettings = {};
 
     // 辅助函数：绑定上传按钮和文件输入框
     function bindUploadButton(buttonId, inputId, targetId) {
@@ -220,16 +222,20 @@ App.settings = (function () {
 
         const openSettingsPanel = async () => {
             try {
-                const data = await App.api.request('/api/settings');
-                App.helpers.setFormValue('site-name', data.siteName);
-                App.helpers.setFormValue('site-icon', data.siteIcon);
-                App.helpers.setFormValue('site-title', data.siteTitle);
-                App.helpers.setFormValue('avatar-url', data.avatarURL);
-                App.helpers.setFormValue('background-url', data.backgroundURL);
-                App.helpers.setFormValue('background-blur', data.backgroundBlur);
-                App.helpers.setFormValue('cards-per-row', data.cardsPerRow);
-                App.helpers.setFormValue('custom-css', data.customCSS);
-                App.helpers.setFormValue('external-js', (data.externalJS || []).join('\n'));
+                if (Object.keys(originalSettings).length === 0) {
+                    const data = await App.api.request('/api/settings');
+                    originalSettings = data;
+                }
+
+                App.helpers.setFormValue('site-name', originalSettings.siteName);
+                App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
+                App.helpers.setFormValue('site-title', originalSettings.siteTitle);
+                App.helpers.setFormValue('avatar-url', originalSettings.avatarURL);
+                App.helpers.setFormValue('background-url', originalSettings.backgroundURL);
+                App.helpers.setFormValue('background-blur', originalSettings.backgroundBlur);
+                App.helpers.setFormValue('cards-per-row', originalSettings.cardsPerRow);
+                App.helpers.setFormValue('custom-css', originalSettings.customCSS);
+                App.helpers.setFormValue('external-js', (originalSettings.externalJS || []).join('\n'));
                 
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
@@ -336,28 +342,63 @@ App.settings = (function () {
     
     // 保存网站设置
     async function saveSiteSettings() {
+        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
+        if (!activePanel) return;
+
         const getValue = (id, defaultValue = '') => document.getElementById(id)?.value || defaultValue;
-        const settings = {
-            siteName: getValue('site-name'),
-            siteIcon: getValue('site-icon'),
-            siteTitle: getValue('site-title'),
-            avatarURL: getValue('avatar-url'),
-            backgroundURL: getValue('background-url'),
-            backgroundBlur: parseInt(getValue('background-blur', '5'), 10) || 0,
-            cardsPerRow: parseInt(getValue('cards-per-row', '4'), 10) || 4,
-            customCSS: getValue('custom-css'),
-            externalJS: getValue('external-js').split('\n').filter(line => line.trim() !== ''),
-        };
+        const getIntValue = (id, defaultValue) => parseInt(getValue(id, defaultValue), 10) || 0;
+        const getLinesValue = (id) => getValue(id).split('\n').filter(line => line.trim() !== '');
+
+        let currentValues = {};
+        const formFields = activePanel.querySelectorAll('input, textarea');
+        
+        formFields.forEach(field => {
+            const key = field.name;
+            if (key) {
+                switch (field.type) {
+                    case 'range':
+                        currentValues[key] = getIntValue(field.id, field.defaultValue);
+                        break;
+                    case 'textarea':
+                         if (key === 'externalJS') {
+                            currentValues[key] = getLinesValue(field.id);
+                        } else {
+                            currentValues[key] = getValue(field.id);
+                        }
+                        break;
+                    default:
+                        currentValues[key] = getValue(field.id);
+                }
+            }
+        });
+
+        const updates = {};
+        for (const key in currentValues) {
+            const original = originalSettings[key] || (Array.isArray(currentValues[key]) ? [] : '');
+            if (JSON.stringify(original) !== JSON.stringify(currentValues[key])) {
+                updates[key] = currentValues[key];
+            }
+        }
+
+        if (Object.keys(updates).length === 0) {
+            App.modal.close();
+            return;
+        }
 
         try {
             const data = await App.api.request('/api/settings', {
-                method: 'POST',
-                body: JSON.stringify(settings)
+                method: 'PATCH',
+                body: JSON.stringify(updates)
             });
+
             if (data.status !== 'success') throw new Error(data.message || '保存失败');
+            
             App.toast.show('配置保存成功', 'success');
-            apply(settings);
-            document.dispatchEvent(new CustomEvent('settings-updated', { detail: settings }));
+
+            originalSettings = { ...originalSettings, ...updates };
+            apply(originalSettings);
+            document.dispatchEvent(new CustomEvent('settings-updated', { detail: originalSettings }));
+            
             App.modal.close();
         } catch (error) {
             App.toast.show('配置保存失败', 'error');

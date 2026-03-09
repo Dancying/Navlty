@@ -9,6 +9,11 @@ App.manage = (function () {
     let dom = { container: null };
     let openCategories = new Set();
     let linkIdCounter = 0;
+    let cachedPanels = null;
+
+    function invalidateCache() {
+        cachedPanels = null;
+    }
 
     function handleDrop(event) {
         const { item, target, nextElement } = event.detail;
@@ -72,42 +77,52 @@ App.manage = (function () {
 
     async function loadAndRender(container) {
         dom.container = container;
-        dom.container.innerHTML = '<div class="loading-spinner"></div>';
-        dom.container.addEventListener('dnd:drop', handleDrop);
+        if (!dom.container.dataset.dndListenerAttached) {
+            dom.container.addEventListener('dnd:drop', handleDrop);
+            dom.container.dataset.dndListenerAttached = 'true';
+        }
 
-        try {
-            const panels = await App.api.request('/api/links');
-            const flatLinks = [];
-            linkIdCounter = 0;
-            if (panels && typeof panels === 'object') {
-                for (const panelName in panels) {
-                    const categories = panels[panelName];
-                    if (Array.isArray(categories)) {
-                        categories.forEach(category => {
-                            if (category.links && Array.isArray(category.links)) {
-                                category.links.forEach(link => {
-                                    flatLinks.push({
-                                        ...link,
-                                        clientId: `client-link-${linkIdCounter++}`,
-                                        panel: panelName,
-                                        category: category.name || ''
-                                    });
-                                });
-                            }
-                        });
-                    }
+        let panelsToRender = cachedPanels;
+
+        if (!panelsToRender) {
+            dom.container.innerHTML = '<div class="loading-spinner"></div>';
+            try {
+                panelsToRender = await App.api.request('/api/links');
+                cachedPanels = JSON.parse(JSON.stringify(panelsToRender));
+            } catch (error) {
+                if (error.message !== 'Unauthorized') {
+                    console.error('Error loading links:', error);
+                    App.toast.show('链接加载失败', 'error');
+                    dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
                 }
-            }
-            currentLinks = flatLinks;
-            initialLinks = JSON.parse(JSON.stringify(flatLinks));
-            renderPanels();
-        } catch (error) {
-            if (error.message !== 'Unauthorized') {
-                console.error('Error loading links:', error);
-                App.toast.show('链接加载失败', 'error');
-                dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
+                return;
             }
         }
+
+        const flatLinks = [];
+        linkIdCounter = 0;
+        if (panelsToRender && typeof panelsToRender === 'object') {
+            for (const panelName in panelsToRender) {
+                const categories = panelsToRender[panelName];
+                if (Array.isArray(categories)) {
+                    categories.forEach(category => {
+                        if (category.links && Array.isArray(category.links)) {
+                            category.links.forEach(link => {
+                                flatLinks.push({
+                                    ...link,
+                                    clientId: `client-link-${linkIdCounter++}`,
+                                    panel: panelName,
+                                    category: category.name || ''
+                                });
+                            });
+                        }
+                    });
+                }
+            }
+        }
+        currentLinks = flatLinks;
+        initialLinks = JSON.parse(JSON.stringify(flatLinks));
+        renderPanels();
     }
 
     function renderPanels() {
@@ -484,7 +499,6 @@ App.manage = (function () {
         }
 
         if (actions.length === 0) {
-            App.toast.show('没有检测到任何更改', 'info');
             App.modal.close();
             return;
         }
@@ -494,6 +508,7 @@ App.manage = (function () {
                 method: 'POST',
                 body: JSON.stringify(actions),
             });
+            invalidateCache();
             App.toast.show('链接保存成功', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));
             App.modal.close();
@@ -505,8 +520,11 @@ App.manage = (function () {
         }
     }
 
+    document.addEventListener('links-updated', invalidateCache);
+
     return {
         loadAndRender,
         saveChanges,
+        invalidateCache
     };
 })();

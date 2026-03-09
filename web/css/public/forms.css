@@ -22,6 +22,7 @@
     border: 1px solid #ccc;
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
+    resize: none;
 }
 
 /* 表单输入元素在聚焦时的样式 */

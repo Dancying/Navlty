@@ -4,10 +4,14 @@ window.App = window.App || {};
 // 设置模块
 App.settings = (function () {
 
-    // 记录上次打开的面板ID，刷新后重置
+    // 记录上次打开的面板ID
     let lastActivePanelId = 'content-add-link';
     // 存储从服务器加载的原始设置
     let originalSettings = {};
+    // 缓存链接列表用于编辑
+    let linksForEditing = [];
+    // 当前正在编辑的链接ID
+    let currentEditingLinkId = null;
 
     // 辅助函数：绑定上传按钮和文件输入框
     function bindUploadButton(buttonId, inputId, targetId) {
@@ -31,7 +35,104 @@ App.settings = (function () {
         }
     }
 
-    // --- HTML 模板函数 ---
+    // 注入可搜索下拉框所需的样式
+    function _injectSearchableSelectStyles() {
+        const styleId = 'searchable-select-styles';
+        if (document.getElementById(styleId)) return;
+
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.innerHTML = `
+            .searchable-select-wrapper {
+                position: relative;
+            }
+            #edit-link-search-results {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                max-height: 280px;
+                overflow-y: auto;
+                background: #fff;
+                border: 1px solid #ced4da;
+                border-top: none;
+                border-radius: 0 0 8px 8px;
+                z-index: 1051;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            .searchable-select-wrapper.active #edit-link-search-results {
+                display: block;
+            }
+            .search-result-item {
+                padding: 8px 12px;
+                cursor: pointer;
+                border-bottom: 1px solid #eee;
+            }
+            .search-result-item:last-child {
+                border-bottom: none;
+            }
+            .search-result-item:hover {
+                background-color: #e9ecef;
+            }
+            .search-result-item .top-row, .search-result-item .bottom-row {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                overflow: hidden;
+            }
+            .search-result-item .top-row {
+                justify-content: space-between;
+                margin-bottom: 5px;
+                gap: 15px;
+            }
+            .search-result-item .title {
+                font-weight: 500;
+                color: #212529;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex-shrink: 1;
+            }
+            .search-result-item .url {
+                color: #888;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex-shrink: 0;
+                font-size: 0.9em;
+            }
+            .search-result-item .bottom-row {
+                font-size: 0.8em;
+                color: #6c757d;
+                gap: 6px;
+            }
+            .search-result-item .separator {
+                color: #b0b0b0;
+            }
+            .search-result-item .panel {
+                font-weight: 600;
+                padding: 2px 6px;
+                border-radius: 4px;
+                color: #fff !important;
+                white-space: nowrap;
+            }
+            .search-result-item .panel.primary {
+                background-color: #007bff;
+            }
+            .search-result-item .panel.secondary {
+                background-color: #6c757d;
+            }
+            .search-result-item .category {
+                font-style: italic;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     function _getSiteSettingsHTML() {
         return `
         <div id="content-site-settings" class="settings-content-panel">
@@ -90,6 +191,27 @@ App.settings = (function () {
         </div>`;
     }
 
+    function _getEditLinkHTML() {
+        return `
+        <div id="content-edit-link" class="settings-content-panel">
+            <div class="modal-header"><h2>编辑链接</h2></div>
+            <div class="modal-body">
+                <form id="edit-link-form" class="form-grid">
+                    <div class="form-group span-two searchable-select-wrapper">
+                        <label for="edit-link-search-input">搜索并选择链接</label>
+                        <input type="text" id="edit-link-search-input" placeholder="搜索标题、URL、分类..." autocomplete="off">
+                        <div id="edit-link-search-results"></div>
+                    </div>
+                    <div class="form-group"><label for="edit-link-title">标题*</label><input type="text" id="edit-link-title" name="title" required disabled></div>
+                    <div class="form-group"><label for="edit-link-url">链接*</label><input type="url" id="edit-link-url" name="url" required disabled></div>
+                    <div class="form-group"><label for="edit-link-category">分类</label><input type="text" id="edit-link-category" name="category" disabled></div>
+                    <div class="form-group"><label for="edit-link-icon">图标</label><div class="input-with-button"><input type="text" id="edit-link-icon" name="icon" disabled><button type="button" id="upload-edit-icon-button" class="btn icon-button" disabled><i data-feather="upload"></i></button><input type="file" id="edit-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group span-two"><label for="edit-link-description">描述</label><textarea id="edit-link-description" name="description" disabled></textarea></div>
+                </form>
+            </div>
+        </div>`;
+    }
+
     function _getBulkAddHTML() {
         return `
         <div id="content-bulk-add" class="settings-content-panel">
@@ -102,11 +224,11 @@ App.settings = (function () {
         </div>`;
     }
 
-    function _getManageLinksHTML() {
+    function _getCategoryManagementHTML() {
         return `
-        <div id="content-manage-links" class="settings-content-panel">
-            <div class="modal-header"><h2>链接管理</h2></div>
-            <div class="modal-body" id="link-management-body"></div>
+        <div id="content-category-management" class="settings-content-panel">
+            <div class="modal-header"><h2>分类管理</h2></div>
+            <div class="modal-body" id="category-management-body"></div>
         </div>`;
     }
 
@@ -130,6 +252,8 @@ App.settings = (function () {
     function createModalAndEvents() {
         if (document.getElementById('settings-modal')) return;
 
+        _injectSearchableSelectStyles();
+
         const modalHTML = `
             <div id="settings-modal" class="modal">
                 <div class="modal-content">
@@ -138,19 +262,21 @@ App.settings = (function () {
                         <h3>设置</h3>
                         <a href="#" class="settings-nav-item active" data-target="content-add-link">添加链接</a>
                         <a href="#" class="settings-nav-item" data-target="content-bulk-add">批量添加</a>
-                        <a href="#" class="settings-nav-item" data-target="content-manage-links">链接管理</a>
+                        <a href="#" class="settings-nav-item" data-target="content-edit-link">编辑链接</a>
+                        <a href="#" class="settings-nav-item" data-target="content-category-management">分类管理</a>
                         <a href="#" class="settings-nav-item" data-target="content-site-settings">站点设置</a>
                         <a href="#" class="settings-nav-item" data-target="content-style-settings">外观设置</a>
                         <a href="#" class="settings-nav-item" data-target="content-advanced-settings">高级设置</a>
                         <a href="#" class="settings-nav-item" data-target="content-password-settings">访问密码</a>
                     </div>
                     <div id="settings-content">
+                        ${_getAddLinkHTML()}
+                        ${_getBulkAddHTML()}
+                        ${_getEditLinkHTML()}
+                        ${_getCategoryManagementHTML()}
                         ${_getSiteSettingsHTML()}
                         ${_getStyleSettingsHTML()}
                         ${_getAdvancedSettingsHTML()}
-                        ${_getAddLinkHTML()}
-                        ${_getBulkAddHTML()}
-                        ${_getManageLinksHTML()}
                         ${_getPasswordSettingsHTML()}
                     </div>
                     <div class="modal-footer">
@@ -182,6 +308,7 @@ App.settings = (function () {
         bindUploadButton('upload-avatar-button', 'avatar-file-input', 'avatar-url');
         bindUploadButton('upload-background-button', 'background-file-input', 'background-url');
         bindUploadButton('upload-icon-button', 'icon-file-input', 'link-icon');
+        bindUploadButton('upload-edit-icon-button', 'edit-icon-file-input', 'edit-link-icon');
 
         const navItems = modal.querySelectorAll('.settings-nav-item');
         navItems.forEach(item => {
@@ -197,6 +324,32 @@ App.settings = (function () {
         updateSliderValue('background-blur', 'background-blur-value');
         updateSliderValue('cards-per-row', 'cards-per-row-value');
 
+        const searchInput = document.getElementById('edit-link-search-input');
+        const searchWrapper = searchInput?.closest('.searchable-select-wrapper');
+        const searchResults = document.getElementById('edit-link-search-results');
+
+        if (searchInput && searchWrapper && searchResults) {
+            searchInput.addEventListener('input', filterAndPopulateResults);
+            searchInput.addEventListener('focus', () => {
+                searchWrapper.classList.add('active');
+                filterAndPopulateResults();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!searchWrapper.contains(e.target)) {
+                    searchWrapper.classList.remove('active');
+                }
+            }, true);
+
+            searchResults.addEventListener('click', (e) => {
+                const item = e.target.closest('.search-result-item');
+                if (item) {
+                    const linkId = item.dataset.id;
+                    handleLinkSelectionChange(linkId);
+                    searchWrapper.classList.remove('active');
+                }
+            });
+        }
     }
 
     // 切换设置模态框中的主内容面板
@@ -209,25 +362,174 @@ App.settings = (function () {
         modal.querySelector(`.settings-nav-item[data-target="${targetId}"]`)?.classList.add('active');
         modal.querySelector(`#${targetId}`)?.classList.add('active');
 
-        if (targetId === 'content-manage-links') {
-            const container = document.getElementById('link-management-body');
-            App.manage.loadAndRender(container);
+        if (targetId === 'content-category-management') {
+            const container = document.getElementById('category-management-body');
+            App.categories.loadAndRender(container);
+        } else if (targetId === 'content-edit-link') {
+            loadLinksForEditing();
         }
     }
 
-    // 从后端加载设置数据并显示模态框
+    // 使编辑链接的缓存失效
+    function invalidateLinksCache() {
+        linksForEditing = [];
+    }
+
+    // 为编辑链接面板加载并扁平化链接列表
+    async function loadLinksForEditing() {
+        const searchInput = document.getElementById('edit-link-search-input');
+        const resultsContainer = document.getElementById('edit-link-search-results');
+        if (!searchInput || !resultsContainer) return;
+
+        toggleEditForm(false);
+        searchInput.value = '';
+        currentEditingLinkId = null;
+
+        if (linksForEditing.length > 0) {
+            filterAndPopulateResults();
+            return;
+        }
+
+        resultsContainer.innerHTML = '<div class="search-result-item">正在加载...</div>';
+
+        try {
+            const panelsToRender = await App.api.request('/api/links');
+            const flatLinks = [];
+
+            if (panelsToRender && typeof panelsToRender === 'object' && !Array.isArray(panelsToRender)) {
+                for (const panelName in panelsToRender) {
+                    const categories = panelsToRender[panelName];
+                    if (Array.isArray(categories)) {
+                        categories.forEach(category => {
+                            if (category.links && Array.isArray(category.links)) {
+                                category.links.forEach(link => {
+                                    flatLinks.push({
+                                        id: link.id,
+                                        title: link.title || '',
+                                        url: link.url || '',
+                                        panel: panelName,
+                                        category: category.name || '',
+                                        icon: link.icon_url || '',
+                                        description: link.desc || ''
+                                    });
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            
+            flatLinks.sort((a, b) => a.title.localeCompare(b.title));
+            linksForEditing = flatLinks;
+            filterAndPopulateResults();
+
+        } catch (error) {
+            if (error.message !== 'Unauthorized') {
+                console.error('Error loading links for editing:', error);
+                resultsContainer.innerHTML = '<div class="search-result-item">加载失败</div>';
+                App.toast.show('加载链接列表失败', 'error');
+            }
+        }
+    }
+    
+    // 筛选并填充链接搜索结果
+    function filterAndPopulateResults() {
+        const searchTerm = document.getElementById('edit-link-search-input').value.toLowerCase();
+        const resultsContainer = document.getElementById('edit-link-search-results');
+        
+        const filteredLinks = linksForEditing.filter(link => {
+            return (link.title.toLowerCase().includes(searchTerm) ||
+                    link.url.toLowerCase().includes(searchTerm) ||
+                    link.category.toLowerCase().includes(searchTerm));
+        });
+
+        resultsContainer.innerHTML = '';
+        if (filteredLinks.length > 0) {
+            filteredLinks.forEach(link => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.dataset.id = link.id;
+
+                const panelKey = (link.panel || '').toLowerCase();
+                const categoryText = link.category || '未分类';
+                let panelHTML = '';
+
+                if (panelKey === 'primary') {
+                    panelHTML = `<span class="panel primary">主面板</span>`;
+                } else if (panelKey === 'secondary') {
+                    panelHTML = `<span class="panel secondary">副面板</span>`;
+                }
+
+                item.innerHTML = `
+                    <div class="top-row">
+                        <span class="title" title="${App.helpers.escapeHTML(link.title)}">${App.helpers.escapeHTML(link.title)}</span>
+                        <span class="url" title="${App.helpers.escapeHTML(link.url)}">${App.helpers.escapeHTML(link.url)}</span>
+                    </div>
+                    <div class="bottom-row">
+                        ${panelHTML}
+                        ${panelHTML ? '<span class="separator">-</span>' : ''}
+                        <span class="category">${App.helpers.escapeHTML(categoryText)}</span>
+                    </div>
+                `;
+                resultsContainer.appendChild(item);
+            });
+        } else {
+            resultsContainer.innerHTML = '<div class="search-result-item">无匹配结果</div>';
+        }
+    }
+
+    // 在用户从搜索结果中选择链接后，填充表单
+    function handleLinkSelectionChange(selectedId) {
+        const link = linksForEditing.find(l => l.id === selectedId);
+        if (link) {
+            currentEditingLinkId = selectedId;
+            document.getElementById('edit-link-search-input').value = link.title;
+
+            App.helpers.setFormValue('edit-link-title', link.title);
+            App.helpers.setFormValue('edit-link-url', link.url);
+            App.helpers.setFormValue('edit-link-category', link.category);
+            App.helpers.setFormValue('edit-link-icon', link.icon);
+            App.helpers.setFormValue('edit-link-description', link.description);
+            
+            toggleEditForm(true);
+        } else {
+            toggleEditForm(false);
+        }
+    }
+
+    // 切换编辑表单的禁用状态
+    function toggleEditForm(isEnabled) {
+        const form = document.getElementById('edit-link-form');
+        if (!form) return;
+
+        const elements = form.querySelectorAll('input, textarea, button');
+        elements.forEach(el => {
+            if (el.id !== 'edit-link-search-input') {
+                el.disabled = !isEnabled;
+            }
+        });
+
+        if (!isEnabled) {
+            currentEditingLinkId = null;
+            const fieldsToReset = ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description'];
+            fieldsToReset.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+    }
+
     async function loadAndShow(initialPanelId) {
         createModalAndEvents();
-
         const panelToShow = initialPanelId || lastActivePanelId;
-
+    
         const openSettingsPanel = async () => {
             try {
                 if (Object.keys(originalSettings).length === 0) {
                     const data = await App.api.request('/api/settings');
                     originalSettings = data;
                 }
-
+    
                 App.helpers.setFormValue('site-name', originalSettings.siteName);
                 App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
                 App.helpers.setFormValue('site-title', originalSettings.siteTitle);
@@ -240,17 +542,19 @@ App.settings = (function () {
                 
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
-
+    
                 App.modal.open('settings-modal');
                 switchPanel(panelToShow);
             } catch (error) {
-                if (error.message !== 'Unauthorized') {
+                if (error.message === 'Unauthorized') {
+                    App.auth.handleUnauthorized();
+                } else {
                     console.error('Error loading settings:', error);
                     App.toast.show('配置加载失败，请刷新页面重试', 'error');
                 }
             }
         };
-
+    
         if (App.auth.isAuthenticated()) {
             openSettingsPanel();
         } else {
@@ -272,21 +576,66 @@ App.settings = (function () {
             case 'content-add-link':
                 App.links.saveSingle();
                 break;
+            case 'content-edit-link':
+                saveEditedLink();
+                break;
             case 'content-bulk-add':
                 App.links.saveBulk();
                 break;
-            case 'content-manage-links':
-                App.manage.saveChanges().then(success => {
-                    if (success) App.modal.close();
-                });
+            case 'content-category-management':
+                App.categories.saveChanges();
                 break;
             case 'content-password-settings':
                 handleChangePassword();
                 break;
         }
     }
+    
+    // 保存编辑后的链接
+    async function saveEditedLink() {
+        if (!currentEditingLinkId) {
+            App.toast.show('请先从列表中搜索并选择一个链接', 'warning');
+            return;
+        }
 
-    // 处理密码修改。若表单为空则关闭面板；若校验失败则不关闭；若成功则关闭。
+        const title = App.helpers.getFormValue('edit-link-title');
+        const url = App.helpers.getFormValue('edit-link-url');
+
+        if (!title || !url) {
+            App.toast.show('标题和 URL 是必填项', 'error');
+            return;
+        }
+        
+        const payload = {
+            title: title,
+            url: url,
+            category: App.helpers.getFormValue('edit-link-category'),
+            icon_url: App.helpers.getFormValue('edit-link-icon'),
+            desc: App.helpers.getFormValue('edit-link-description'),
+        };
+
+        try {
+            const response = await App.api.request(`/api/links/${currentEditingLinkId}`, {
+                method: 'PATCH',
+                body: JSON.stringify(payload)
+            });
+            if (response.status === 'success') {
+                App.toast.show('链接已成功更新', 'success');
+                document.dispatchEvent(new CustomEvent('links-updated'));
+                if (App.categories && App.categories.invalidateCache) {
+                    App.categories.invalidateCache();
+                }
+                App.modal.close();
+            } else {
+                throw new Error(response.message || '更新失败');
+            }
+        } catch (error) {
+            App.toast.show(`链接更新失败: ${error.message}`, 'error');
+            console.error('Error updating link:', error);
+        }
+    }
+
+    // 处理密码修改
     async function handleChangePassword() {
         const currentPasswordInput = document.getElementById('current-password');
         const newPasswordInput = document.getElementById('new-password-change');
@@ -453,6 +802,9 @@ App.settings = (function () {
 
         App.helpers.updateCardOverflow();
     }
+
+    // 监听全局的 links-updated 事件，以便在链接数据发生变更时清空缓存
+    document.addEventListener('links-updated', invalidateLinksCache);
 
     return { loadAndShow, apply };
 })();

@@ -4,6 +4,23 @@ window.App = window.App || {};
 // 辅助函数模块
 App.helpers = (function () {
 
+    // 转义 HTML 字符串中的特殊字符，防止 XSS 攻击
+    function escapeHTML(str) {
+        if (str === null || str === undefined) {
+            return '';
+        }
+        return String(str).replace(/[&<>'"]/g, function (tag) {
+            const chars = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            };
+            return chars[tag] || tag;
+        });
+    }
+
     // 将文件转换为 Base64 字符串
     function fileToBase64(fileInputElement, targetInputId) {
         if (fileInputElement.files.length > 0) {
@@ -66,9 +83,17 @@ App.helpers = (function () {
         }
     };
 
+    // 获取表单元素的值
+    const getFormValue = (id) => {
+        const element = document.getElementById(id);
+        return element ? element.value : '';
+    };
+
     return {
+        escapeHTML,
         fileToBase64,
         updateCardOverflow,
-        setFormValue
+        setFormValue,
+        getFormValue
     };
 })();

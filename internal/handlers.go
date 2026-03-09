@@ -14,6 +14,17 @@ import (
 // RenderPage 使用数据渲染主 HTML 页面。
 func RenderPage(w http.ResponseWriter, r *http.Request) {
 	pageData := LoadPageData()
+	publicCSS, publicJS := LoadPublicAssets()
+
+	cookie, err := r.Cookie("session_token")
+	if err == nil && IsSessionValid(cookie.Value) {
+		authCSS, authJS := LoadAuthAssets()
+		pageData.CSS = publicCSS + "\n" + authCSS
+		pageData.JS = publicJS + "\n" + authJS
+	} else {
+		pageData.CSS = publicCSS
+		pageData.JS = publicJS
+	}
 
 	templatePath := "web/index.html"
 	t, err := template.New("index.html").Funcs(template.FuncMap{

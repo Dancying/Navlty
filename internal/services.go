@@ -44,8 +44,6 @@ func LoadPageData() *PageData {
 	pageData.PrimaryLinks = panels["primary"]
 	pageData.SecondaryLinks = panels["secondary"]
 
-	pageData.CSS, pageData.JS = loadAllStaticAssets()
-
 	return pageData
 }
 

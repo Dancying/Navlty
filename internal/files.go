@@ -15,9 +15,11 @@ import (
 )
 
 const (
-	dataDirectory = "data"
-	cssDirectory  = "web/css"
-	jsDirectory   = "web/js"
+	dataDirectory      = "data"
+	publicCSSDirectory = "web/css/public"
+	publicJSDirectory  = "web/js/public"
+	authCSSDirectory   = "web/css/auth"
+	authJSDirectory    = "web/js/auth"
 )
 
 var m *minify.M
@@ -100,9 +102,16 @@ func loadStaticAssets(dir, suffix string) string {
 	return builder.String()
 }
 
-// loadAllStaticAssets 加载并返回所有 CSS 和 JavaScript 资源。
-func loadAllStaticAssets() (string, string) {
-	css := loadStaticAssets(cssDirectory, ".css")
-	js := loadStaticAssets(jsDirectory, ".js")
+// LoadPublicAssets 加载并返回所有公共的 CSS 和 JavaScript 资源。
+func LoadPublicAssets() (string, string) {
+	css := loadStaticAssets(publicCSSDirectory, ".css")
+	js := loadStaticAssets(publicJSDirectory, ".js")
+	return css, js
+}
+
+// LoadAuthAssets 加载并返回所有需要认证的 CSS 和 JavaScript 资源。
+func LoadAuthAssets() (string, string) {
+	css := loadStaticAssets(authCSSDirectory, ".css")
+	js := loadStaticAssets(authJSDirectory, ".js")
 	return css, js
 }

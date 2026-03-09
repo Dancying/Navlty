@@ -32,14 +32,8 @@ App.auth = (function () {
 
             if (result.success) {
                 isAuthorized = true;
-                // 登录成功后，将状态保存到 localStorage
                 localStorage.setItem("isAuthorized", "true");
-                App.modal.close();
-                App.toast.show("密码验证通过", "success");
-                if (typeof onSuccessCallback === 'function') {
-                    onSuccessCallback();
-                }
-                onSuccessCallback = null;
+                window.location.reload();
             } else {
                 isAuthorized = false;
                 localStorage.removeItem("isAuthorized");

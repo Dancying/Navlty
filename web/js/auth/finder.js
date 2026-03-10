@@ -2,6 +2,7 @@ window.App = window.App || {};
 
 App.finder = (function() {
     let linksForEditing = [];
+    let currentEditingLinkId = null;
 
     // loadLinksForEditing 为编辑链接面板加载并扁平化链接列表
     async function loadLinksForEditing() {
@@ -101,8 +102,10 @@ App.finder = (function() {
 
     // handleLinkSelectionChange 在用户从搜索结果中选择链接后填充表单
     function handleLinkSelectionChange(selectedId) {
+        currentEditingLinkId = null;
         const link = linksForEditing.find(l => l.id === selectedId);
         if (link) {
+            currentEditingLinkId = selectedId;
             document.getElementById('edit-link-search-input').value = link.title;
 
             App.helpers.setFormValue('edit-link-title', link.title);
@@ -130,6 +133,7 @@ App.finder = (function() {
         });
 
         if (!isEnabled) {
+            currentEditingLinkId = null;
             const fieldsToReset = ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description'];
             fieldsToReset.forEach(id => {
                 const el = document.getElementById(id);
@@ -138,9 +142,15 @@ App.finder = (function() {
         }
     }
 
+    // getCurrentEditingLinkId 返回当前正在编辑的链接 ID
+    function getCurrentEditingLinkId() {
+        return currentEditingLinkId;
+    }
+
     return {
         loadLinksForEditing,
         filterAndPopulateResults,
-        handleLinkSelectionChange
+        handleLinkSelectionChange,
+        getCurrentEditingLinkId
     };
 })();

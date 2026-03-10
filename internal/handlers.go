@@ -338,6 +338,10 @@ func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			if payload.Category == "" {
+				payload.Category = "Uncategorized"
+			}
+
 			targetPanel, panelExists := panels[payload.Panel]
 			if !panelExists {
 				targetPanel = []LinkCategory{}
@@ -389,23 +393,88 @@ func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
 				respondWithError(w, http.StatusBadRequest, "Invalid UPDATE_LINKS payload: "+err.Error())
 				return
 			}
+
 			updatesMap := make(map[string]json.RawMessage)
 			for _, item := range payload {
 				updatesMap[item.ID] = item.Updates
 			}
 
-			for _, categories := range panels {
+			type LinkMove struct {
+				Link        Link
+				PanelKey    string
+				NewCategory string
+			}
+			var linksToMove []LinkMove
+
+			for panelKey, categories := range panels {
 				for i := range categories {
 					for j := range categories[i].Links {
-						link := &categories[i].Links[j]
-						if updates, found := updatesMap[link.ID]; found {
-							if err := json.Unmarshal(updates, link); err != nil {
+						link := &panels[panelKey][i].Links[j]
+
+						if updatesJSON, found := updatesMap[link.ID]; found {
+							var linkUpdates map[string]interface{}
+							if err := json.Unmarshal(updatesJSON, &linkUpdates); err != nil {
+								respondWithError(w, http.StatusBadRequest, "Failed to decode update for link "+link.ID)
+								return
+							}
+
+							if err := json.Unmarshal(updatesJSON, link); err != nil {
 								respondWithError(w, http.StatusBadRequest, "Failed to apply updates to link "+link.ID)
 								return
 							}
+
+							if newCategory, ok := linkUpdates["category"].(string); ok {
+								if newCategory == "" {
+									newCategory = "Uncategorized"
+								}
+
+								currentCategory := panels[panelKey][i].Name
+								if newCategory != currentCategory {
+									linksToMove = append(linksToMove, LinkMove{
+										Link:        *link,
+										PanelKey:    panelKey,
+										NewCategory: newCategory,
+									})
+								}
+							}
+							delete(updatesMap, link.ID)
 						}
 					}
 				}
+			}
+
+			if len(linksToMove) > 0 {
+				movesMap := make(map[string]bool)
+				for _, move := range linksToMove {
+					movesMap[move.Link.ID] = true
+				}
+
+				for panelKey, categories := range panels {
+					for i := range categories {
+						var remainingLinks []Link
+						for _, link := range categories[i].Links {
+							if !movesMap[link.ID] {
+								remainingLinks = append(remainingLinks, link)
+							}
+						}
+						panels[panelKey][i].Links = remainingLinks
+					}
+				}
+			}
+
+			for _, move := range linksToMove {
+				targetPanel, _ := panels[move.PanelKey]
+				targetCategory := findOrCreateCategory(&targetPanel, move.NewCategory)
+
+				maxSort := -1
+				for _, l := range targetCategory.Links {
+					if l.Sort > maxSort {
+						maxSort = l.Sort
+					}
+				}
+				move.Link.Sort = maxSort + 1
+				targetCategory.Links = append(targetCategory.Links, move.Link)
+				panels[move.PanelKey] = targetPanel
 			}
 
 		case "MOVE_LINKS":

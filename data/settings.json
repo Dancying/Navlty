@@ -4,8 +4,8 @@
   "siteTitle": "Navlty Dashboard",
   "avatarURL": "",
   "backgroundURL": "",
-  "backgroundBlur": 3,
+  "backgroundBlur": 8,
   "cardsPerRow": 2,
   "customCSS": "",
-  "externalJS": []
+  "externalJS": null
 }

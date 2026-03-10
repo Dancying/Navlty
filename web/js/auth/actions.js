@@ -128,7 +128,8 @@ App.actions = (function() {
 
     // updateLink 更新当前正在编辑的链接
     async function updateLink() {
-        if (!currentEditingLinkId) {
+        const linkId = App.finder.getCurrentEditingLinkId();
+        if (!linkId) {
             App.toast.show('请先从列表中搜索并选择一个链接', 'warning');
             return;
         }
@@ -144,26 +145,29 @@ App.actions = (function() {
         const payload = {
             title: title,
             url: url,
-            category: App.helpers.getFormValue('edit-link-category'),
+            category: App.helpers.getFormValue('edit-link-category') || 'Uncategorized',
             icon_url: App.helpers.getFormValue('edit-link-icon'),
             desc: App.helpers.getFormValue('edit-link-description'),
         };
 
+        const action = {
+            action: 'UPDATE_LINKS',
+            payload: [{
+                id: linkId,
+                updates: payload
+            }]
+        };
+
         try {
-            const response = await App.api.request(`/api/links/${currentEditingLinkId}`, {
-                method: 'PATCH',
-                body: JSON.stringify(payload)
+            await App.api.request('/api/links/actions', {
+                method: 'POST',
+                body: JSON.stringify([action])
             });
-            if (response.status === 'success') {
-                App.toast.show('链接已成功更新', 'success');
-                document.dispatchEvent(new CustomEvent('links-updated'));
-                if (App.categories && App.categories.invalidateCache) {
-                    App.categories.invalidateCache();
-                }
-                App.modal.close('settings-modal');
-            } else {
-                throw new Error(response.message || '更新失败');
-            }
+
+            App.toast.show('链接已成功更新', 'success');
+            document.dispatchEvent(new CustomEvent('links-updated'));
+            App.modal.close('settings-modal');
+
         } catch (error) {
             App.toast.show(`链接更新失败: ${error.message}`, 'error');
             console.error('Error updating link:', error);

@@ -1,24 +1,24 @@
-
-// 定义全局 App 命名空间
 window.App = window.App || {};
 
-// 分类管理模块
-App.categories = (function () {
-
-    // 链接数据和状态
+App.editor = (function() {
     let initialLinks = [];
     let currentLinks = [];
-    let dom = { container: null }; // DOM 容器引用
-    let openCategories = new Set(); // 记录展开的分类，使用 panel-category 复合键
-    let linkIdCounter = 0; // 用于生成客户端唯一的链接 ID
-    let cachedPanels = null; // 缓存从服务器加载的面板数据
+    let dom = { container: null };
+    let openCategories = new Set();
+    let linkIdCounter = 0;
+    let cachedPanels = null;
 
-    // 使缓存失效
+    // invalidateCache 使缓存的面板数据失效
     function invalidateCache() {
         cachedPanels = null;
     }
 
-    // 处理拖放操作
+    // getLinkData 返回初始和当前的链接数据
+    function getLinkData() {
+        return { initialLinks, currentLinks };
+    }
+
+    // handleDrop 处理拖放操作
     function handleDrop(event) {
         const { item, target, nextElement } = event.detail;
         const isCategory = item.dataset.dndType === 'category';
@@ -81,7 +81,7 @@ App.categories = (function () {
         renderPanels();
     }
 
-    // 加载链接数据并渲染管理界面
+    // loadAndRender 加载链接数据并渲染管理界面
     async function loadAndRender(container) {
         dom.container = container;
         if (!dom.container.dataset.dndListenerAttached) {
@@ -132,7 +132,7 @@ App.categories = (function () {
         renderPanels();
     }
 
-    // 重新渲染所有面板
+    // renderPanels 重新渲染所有面板
     function renderPanels() {
         if (!dom.container) return;
         dom.container.innerHTML = '';
@@ -154,7 +154,7 @@ App.categories = (function () {
         App.dnd.init(gridContainer);
     }
 
-    // 创建一个面板（主面板或副面板）
+    // createPanel 创建一个面板（主面板或副面板）
     function createPanel(title, panelName, links) {
         const panel = document.createElement('div');
         panel.className = 'management-panel';
@@ -189,7 +189,7 @@ App.categories = (function () {
         return panel;
     }
 
-    // 创建一个分类组
+    // createCategory 创建一个分类组
     function createCategory(categoryName, links, panelName) {
         const group = document.createElement('div');
         group.className = 'management-category-group';
@@ -213,7 +213,7 @@ App.categories = (function () {
         return group;
     }
 
-    // 创建分类的头部，包含标题和操作按钮
+    // createCategoryHeader 创建分类的头部，包含标题和操作按钮
     function createCategoryHeader(categoryName, panelName) {
         const header = document.createElement('div');
         header.className = 'management-category-header';
@@ -278,7 +278,7 @@ App.categories = (function () {
         return header;
     }
 
-    // 切换分类的展开/折叠状态
+    // toggleCategory 切换分类的展开/折叠状态
     function toggleCategory(header, categoryKey) {
         const linkList = header.nextElementSibling;
         if (!linkList || !linkList.classList.contains('management-link-list')) return;
@@ -297,7 +297,7 @@ App.categories = (function () {
         }
     }
 
-    // 创建包含链接项的列表
+    // createLinkList 创建包含链接项的列表
     function createLinkList(links) {
         const list = document.createElement('ul');
         list.className = 'management-link-list';
@@ -311,7 +311,7 @@ App.categories = (function () {
         return list;
     }
 
-    // 创建单个链接项
+    // createLinkItem 创建单个链接项
     function createLinkItem(link) {
         const item = document.createElement('li');
         item.className = 'management-link-item';
@@ -339,7 +339,7 @@ App.categories = (function () {
 
         const fullEditButton = document.createElement('button');
         fullEditButton.title = '完整编辑链接';
-        fullEditButton.innerHTML = '<i data-feather="edit-2"></i>'; // 使用新图标
+        fullEditButton.innerHTML = '<i data-feather="edit-2"></i>';
         fullEditButton.addEventListener('click', (e) => {
             e.stopPropagation();
             showFullEditForm(item);
@@ -366,8 +366,8 @@ App.categories = (function () {
             deleteLink(link.clientId);
         });
 
-        actions.appendChild(editTitleButton); // 保留旧的编辑按钮
-        actions.appendChild(fullEditButton); // 添加新的完整编辑按钮
+        actions.appendChild(editTitleButton);
+        actions.appendChild(fullEditButton);
         actions.appendChild(copyButton);
         actions.appendChild(deleteButton);
         item.appendChild(title);
@@ -375,7 +375,7 @@ App.categories = (function () {
         return item;
     }
 
-    // 显示完整的编辑表单
+    // showFullEditForm 显示完整的编辑表单
     function showFullEditForm(originalItem) {
         const clientId = originalItem.dataset.linkId;
         const link = currentLinks.find(l => l.clientId === clientId);
@@ -387,7 +387,7 @@ App.categories = (function () {
         editForm.querySelector('input[name="title"]').focus();
     }
 
-    // 创建完整的编辑表单元素
+    // createFullEditForm 创建完整的编辑表单元素
     function createFullEditForm(link) {
         const item = document.createElement('li');
         item.className = 'management-link-item is-editing';
@@ -418,7 +418,7 @@ App.categories = (function () {
         return item;
     }
 
-    // 保存完整编辑的更改
+    // saveFullEdit 保存完整编辑的更改
     function saveFullEdit(editItem) {
         const clientId = editItem.dataset.linkId;
         const link = currentLinks.find(l => l.clientId === clientId);
@@ -440,7 +440,7 @@ App.categories = (function () {
         renderPanels();
     }
 
-    // 从数组中查找最后一个符合条件的元素的索引
+    // findLastIndex 从数组中查找最后一个符合条件的元素的索引
     function findLastIndex(arr, predicate) {
         for (let i = arr.length - 1; i >= 0; i--) {
             if (predicate(arr[i])) {
@@ -450,7 +450,7 @@ App.categories = (function () {
         return -1;
     }
     
-    // 编辑链接标题（原有功能）
+    // editLinkTitle 编辑链接标题
     function editLinkTitle(titleElement, clientId) {
         if (titleElement.querySelector('input')) return;
         const linkToEdit = currentLinks.find(l => l.clientId === clientId);
@@ -478,7 +478,7 @@ App.categories = (function () {
         });
     }
 
-    // 编辑分类名称
+    // editCategoryName 编辑分类名称
     function editCategoryName(titleElement, oldCategoryName, panelName) {
         if (titleElement.querySelector('input')) return;
         const originalName = oldCategoryName;
@@ -515,7 +515,7 @@ App.categories = (function () {
         });
     }
 
-    // 删除分类
+    // deleteCategory 删除一个分类及其所有链接
     function deleteCategory(categoryName, panelName) {
         const categoryKey = `${panelName}-${categoryName}`;
         openCategories.delete(categoryKey);
@@ -525,11 +525,10 @@ App.categories = (function () {
         renderPanels();
     }
 
-    // 删除链接
+    // deleteLink 删除单个链接
     function deleteLink(clientId) {
         const itemToRemove = dom.container.querySelector(`li[data-link-id="${clientId}"]`);
         
-        // 从数据模型中移除链接
         currentLinks = currentLinks.filter(link => link.clientId !== clientId);
 
         if (itemToRemove) {
@@ -537,126 +536,26 @@ App.categories = (function () {
             const categoryGroup = linkList.closest('.management-category-group');
             const header = categoryGroup?.querySelector('.management-category-header');
 
-            // 直接从 DOM 中移除元素
             itemToRemove.remove();
 
-            // 检查分类是否因此变空
             if (linkList.children.length === 0) {
                 categoryGroup?.remove();
             } else {
-                // 如果分类未空且处于展开状态，则更新其 maxHeight
                 if (header?.classList.contains('open')) {
                     linkList.style.maxHeight = linkList.scrollHeight + 'px';
                 }
             }
         } else {
-            // 如果出于某种原因未在 DOM 中找到元素，则退回至完全重新渲染
             renderPanels();
         }
     }
 
-    // 保存所有更改到服务器
-    async function saveChanges() {
-        const actions = [];
-        const initialLinksMap = new Map(initialLinks.map(link => [link.id, link]));
-        const currentLinksMap = new Map(currentLinks.map(link => [link.id, link]));
-
-        const deletedIds = [];
-        for (const id of initialLinksMap.keys()) {
-            if (!currentLinksMap.has(id)) {
-                deletedIds.push(id);
-            }
-        }
-        if (deletedIds.length > 0) {
-            actions.push({
-                action: 'DELETE_LINKS',
-                payload: { ids: deletedIds }
-            });
-        }
-
-        const updates = [];
-        const moves = new Map();
-
-        currentLinks.forEach(link => {
-            const initialLink = initialLinksMap.get(link.id);
-            if (initialLink) {
-                let hasUpdate = false;
-                const linkUpdates = {};
-
-                if (link.title !== initialLink.title) {
-                    linkUpdates.title = link.title;
-                    hasUpdate = true;
-                }
-                if (link.url !== initialLink.url) {
-                    linkUpdates.url = link.url;
-                    hasUpdate = true;
-                }
-                
-                if (hasUpdate) {
-                    updates.push({ id: link.id, updates: linkUpdates });
-                }
-
-                const categoryChanged = (link.category || '') !== (initialLink.category || '');
-                const panelChanged = link.panel !== initialLink.panel;
-
-                if (categoryChanged || panelChanged) {
-                    const targetKey = `${link.panel}:${link.category || ''}`;
-                    if (!moves.has(targetKey)) {
-                        moves.set(targetKey, {
-                            target: { panel: link.panel, category: link.category || '' },
-                            ids: []
-                        });
-                    }
-                    moves.get(targetKey).ids.push(link.id);
-                }
-            } else {
-                // 新链接不应在此面板中处理，批量添加有单独的面板
-            }
-        });
-
-        if (updates.length > 0) {
-            actions.push({
-                action: 'UPDATE_LINKS',
-                payload: updates
-            });
-        }
-
-        for (const move of moves.values()) {
-            actions.push({
-                action: 'MOVE_LINKS',
-                payload: move
-            });
-        }
-
-        if (actions.length === 0) {
-            App.modal.close();
-            return;
-        }
-
-        try {
-            await App.api.request('/api/links/actions', {
-                method: 'POST',
-                body: JSON.stringify(actions),
-            });
-            invalidateCache();
-            App.toast.show('链接更改已成功保存', 'success');
-            document.dispatchEvent(new CustomEvent('links-updated'));
-            App.modal.close();
-        } catch (error) {
-            if (error.message !== 'Unauthorized') {
-                console.error('Error saving changes:', error);
-                App.toast.show('链接更改保存失败，请刷新后重试', 'error');
-            }
-        }
-    }
-
-    // 监听外部事件以更新缓存
     document.addEventListener('links-updated', invalidateCache);
 
-    // 暴露公共接口
     return {
+        getLinkData,
         loadAndRender,
-        saveChanges,
         invalidateCache
     };
+
 })();

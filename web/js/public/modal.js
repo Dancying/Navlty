@@ -1,15 +1,13 @@
-// 定义全局 App 命名空间
 window.App = window.App || {};
 
-// 模态框管理模块
 App.modal = (function() {
 
-  // 监听窗口大小变化，以确保显示的模态框能够始终保持居中
+  // 监听窗口大小变化以保持模态框居中
   window.addEventListener('resize', () => {
     document.querySelectorAll('.modal.show').forEach(center);
   });
 
-  // 根据 ID 打开一个模态框，并处理滚动条问题
+  // open 打开指定 ID 的模态框
   function open(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
@@ -28,7 +26,7 @@ App.modal = (function() {
     document.body.classList.add('modal-open');
   }
 
-  // 关闭当前显示的模态框，并在过渡动画结束后恢复页面状态
+  // close 关闭当前活动的模态框
   function close() {
     const modal = document.querySelector('.modal.show');
     if (!modal) return;
@@ -45,7 +43,7 @@ App.modal = (function() {
     }, { once: true });
   }
 
-  // 计算并设置模态框的 top 和 left 样式，使其在视口中居中显示
+  // center 将模态框在视口中居中
   function center(modal) {
     const modalContent = modal.querySelector('.modal-content');
     if (modalContent) {

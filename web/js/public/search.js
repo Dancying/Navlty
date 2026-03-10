@@ -1,11 +1,9 @@
-// 定义全局 App 命名空间
 window.App = window.App || {};
 
-// 搜索功能模块
 App.search = (function () {
     let searchWrapper, searchInput, searchButton;
 
-    // 初始化搜索相关的元素和事件
+    // init 初始化搜索功能
     function init() {
         searchWrapper = document.getElementById('search-wrapper');
         searchInput = document.getElementById('search-input');
@@ -19,7 +17,7 @@ App.search = (function () {
         }
     }
 
-    // 显示搜索框
+    // showSearch 显示搜索框
     function showSearch() {
         if (searchWrapper) {
             searchWrapper.classList.add('active');
@@ -27,7 +25,7 @@ App.search = (function () {
         }
     }
 
-    // 隐藏搜索框并清空内容
+    // hideSearch 隐藏搜索框
     function hideSearch() {
         if (searchWrapper) {
             searchWrapper.classList.remove('active');
@@ -37,7 +35,7 @@ App.search = (function () {
         }
     }
 
-    // 切换搜索框的显示和隐藏状态
+    // toggleSearch 切换搜索框的显示状态
     function toggleSearch() {
         if (searchWrapper.classList.contains('active')) {
             hideSearch();
@@ -46,7 +44,7 @@ App.search = (function () {
         }
     }
 
-    // 执行搜索操作，过滤卡片
+    // performSearch 执行搜索并过滤卡片
     function performSearch() {
         const searchTerm = searchInput.value.toLowerCase();
         if (searchTerm.trim() === '') {
@@ -59,7 +57,6 @@ App.search = (function () {
 
         const isPrimary = activePanel.id === 'primary-panel';
 
-        // 遍历所有分类容器
         activePanel.querySelectorAll('.card-container').forEach(container => {
             let categoryHasVisibleCards = false;
             container.querySelectorAll('.card').forEach(card => {
@@ -82,7 +79,7 @@ App.search = (function () {
         });
     }
 
-    // 清除搜索结果，恢复所有卡片和分类标题的显示
+    // clearSearch 清除搜索结果
     function clearSearch() {
         document.querySelectorAll('.panel.active .card').forEach(card => {
             card.style.display = '';

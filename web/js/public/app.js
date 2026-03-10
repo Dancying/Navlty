@@ -1,14 +1,14 @@
-// 定义全局 App 命名空间
 window.App = window.App || {};
 
-// DOM 加载完成后执行
+// 页面加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', function () {
 
+    // 初始化认证、搜索和消息提示模块
     App.auth.init();
     App.search.init();
     App.toast.init();
 
-    // 主副面板切换
+    // 为面板切换按钮绑定点击事件
     const togglePanelButton = document.getElementById('toggle-panel-button');
     if (togglePanelButton) {
         togglePanelButton.addEventListener('click', () => {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 设置按钮点击事件
+    // 为设置按钮绑定点击事件
     const settingsButton = document.getElementById('settings-button');
     if (settingsButton) {
         settingsButton.addEventListener('click', () => {
@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 全局键盘快捷键
+    // 绑定全局键盘快捷键
     window.addEventListener('keydown', (event) => {
-        // ESC 键关闭所有激活的模态框和搜索框
+        // 当按下 ESC 键时，关闭所有激活的模态框和搜索框
         if (event.key === 'Escape') {
             if (document.querySelector('.modal.show')) {
                 App.modal.close();
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // '/' 键激活搜索框 (当焦点不在输入框时)
+        // 当焦点不在输入框时，按下 '/' 键以激活搜索框
         if (event.key === '/') {
             const activeElement = document.activeElement.tagName.toLowerCase();
             if (activeElement !== 'input' && activeElement !== 'textarea') {
@@ -52,6 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 检查卡片标题、描述是否溢出
+    // 更新卡片内容的溢出状态
     App.helpers.updateCardOverflow();
 });

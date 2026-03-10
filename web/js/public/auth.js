@@ -1,19 +1,17 @@
-// 定义全局 App 命名空间
 window.App = window.App || {};
 
-// 授权模块
 App.auth = (function () {
     let isAuthorized = false;
     let onSuccessCallback = null;
 
-    // 初始化模块
+    // init 初始化认证模块
     function init() {
         if (localStorage.getItem("isAuthorized") === "true") {
             isAuthorized = true;
         }
     }
     
-    // 处理未授权的情况
+    // handleUnauthorized 处理未授权的情况
     function handleUnauthorized() {
         isAuthorized = false;
         localStorage.removeItem("isAuthorized");
@@ -21,7 +19,7 @@ App.auth = (function () {
         checkAuthStatus();
     }
 
-    // 验证用户密码
+    // authUser 验证用户密码
     async function authUser(password) {
         try {
             const result = await App.api.request("/auth/login", {
@@ -48,7 +46,7 @@ App.auth = (function () {
         }
     }
     
-    // 用户登出
+    // logout 用户登出
     async function logout() {
         try {
             await App.api.request("/auth/logout", { method: "POST" });
@@ -60,7 +58,7 @@ App.auth = (function () {
         }
     }
 
-    // 创建并显示一个通用的认证模态框
+    // _showAuthModal 创建并显示一个通用的认证模态框
     function _showAuthModal(config) {
         const modalContent = `
             <div class="modal-content" id="auth-modal-content">
@@ -108,7 +106,7 @@ App.auth = (function () {
         });
     }
 
-    // 显示设置初始密码的模态框
+    // showSetInitialPassword 显示设置初始密码的模态框
     function showSetInitialPassword() {
         _showAuthModal({
             modalId: 'auth-modal',
@@ -121,7 +119,7 @@ App.auth = (function () {
         });
     }
 
-    // 显示验证密码的模态框
+    // showVerifyPassword 显示验证密码的模态框
     function showVerifyPassword() {
         _showAuthModal({
             modalId: 'auth-modal',
@@ -134,7 +132,7 @@ App.auth = (function () {
         });
     }
 
-    // 检查授权状态（交互式）
+    // checkAuthStatus 检查授权状态（交互式）
     async function checkAuthStatus(callback) {
         if (isAuthorized) {
             if (callback) callback();
@@ -158,7 +156,7 @@ App.auth = (function () {
         }
     }
 
-    // 检查用户是否已通过身份验证
+    // isAuthenticated 检查用户是否已通过身份验证
     function isAuthenticated() {
         return isAuthorized;
     }

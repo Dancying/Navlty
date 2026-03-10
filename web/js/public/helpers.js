@@ -1,10 +1,8 @@
-// 定义全局 App 命名空间
 window.App = window.App || {};
 
-// 辅助函数模块
 App.helpers = (function () {
 
-    // 转义 HTML 字符串中的特殊字符，防止 XSS 攻击
+    // escapeHTML 转义 HTML 字符串以防止 XSS
     function escapeHTML(str) {
         if (str === null || str === undefined) {
             return '';
@@ -21,13 +19,12 @@ App.helpers = (function () {
         });
     }
 
-    // 将文件转换为 Base64 字符串
+    // fileToBase64 将文件输入转换为 Base64 字符串
     function fileToBase64(fileInputElement, targetInputId) {
         if (fileInputElement.files.length > 0) {
             const file = fileInputElement.files[0];
             const reader = new FileReader();
 
-            // 文件读取成功
             reader.onload = function (e) {
                 const targetInput = document.getElementById(targetInputId);
                 if (targetInput) {
@@ -36,7 +33,6 @@ App.helpers = (function () {
                 App.toast.show('文件已成功加载', 'success');
             };
 
-            // 文件读取失败
             reader.onerror = function (error) {
                 App.toast.show('文件加载失败，请检查文件格式或重试', 'error');
                 console.error('File could not be read: ' + error.message);
@@ -46,28 +42,25 @@ App.helpers = (function () {
         }
     }
 
-    // 检查卡片描述和标题是否溢出，并为溢出的元素添加对应的滚动类
+    // updateCardOverflow 检查并更新卡片标题和描述的溢出状态
     function updateCardOverflow() {
         document.querySelectorAll('.card').forEach(card => {
             const title = card.querySelector('.title');
             const desc = card.querySelector('.desc');
 
-            // 首先重置类
             card.classList.remove('scrolling-title', 'scrolling-desc');
 
-            // 检查标题是否溢出
             if (title && title.scrollWidth > title.clientWidth) {
                 card.classList.add('scrolling-title');
             }
 
-            // 检查描述是否溢出
             if (desc && desc.scrollWidth > desc.clientWidth) {
                 card.classList.add('scrolling-desc');
             }
         });
     }
 
-    // 设置表单元素的值，适配不同类型
+    // setFormValue 设置表单字段的值
     const setFormValue = (id, value) => {
         const element = document.getElementById(id);
         if (element) {
@@ -83,7 +76,7 @@ App.helpers = (function () {
         }
     };
 
-    // 获取表单元素的值
+    // getFormValue 获取表单字段的值
     const getFormValue = (id) => {
         const element = document.getElementById(id);
         return element ? element.value : '';

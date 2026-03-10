@@ -47,6 +47,22 @@
           "desc": "",
           "icon_url": "globe",
           "sort": 0
+        },
+        {
+          "id": "de51e302-daad-4caa-b529-360818635ff7",
+          "title": "11",
+          "url": "222",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 1
+        },
+        {
+          "id": "a2679244-f523-4188-9327-62bc687867b4",
+          "title": "11",
+          "url": "222",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 2
         }
       ]
     },
@@ -69,253 +85,11 @@
     },
     {
       "name": "Development",
-      "links": [
-        {
-          "id": "e7429c06-911b-4163-8981-4810943ca172",
-          "title": "GitHub",
-          "url": "https://github.com",
-          "desc": "The world's leading platform for software development.",
-          "icon_url": "https://api.iconify.design/logos:github-icon.svg",
-          "sort": 0
-        },
-        {
-          "id": "a3b708ff-a42e-4f51-a0da-d26f98d51eaf",
-          "title": "GitLab",
-          "url": "https://gitlab.com",
-          "desc": "DevSecOps platform for the entire software lifecycle.",
-          "icon_url": "https://api.iconify.design/logos:gitlab.svg",
-          "sort": 1
-        },
-        {
-          "id": "59b94887-592f-48f9-b042-15bd11d7bb8f",
-          "title": "React",
-          "url": "https://react.dev",
-          "desc": "JavaScript library for building user interfaces.",
-          "icon_url": "https://api.iconify.design/logos:react.svg",
-          "sort": 2
-        },
-        {
-          "id": "c50de392-9702-436e-a694-14bbb7e82c75",
-          "title": "Vue.js",
-          "url": "https://vuejs.org",
-          "desc": "Progressive JavaScript framework for the web.",
-          "icon_url": "https://api.iconify.design/logos:vue.svg",
-          "sort": 3
-        },
-        {
-          "id": "08715d62-722e-4ccf-bd89-4db55dced791",
-          "title": "Angular",
-          "url": "https://angular.io",
-          "desc": "Platform for building mobile and desktop web apps.",
-          "icon_url": "https://api.iconify.design/logos:angular-icon.svg",
-          "sort": 4
-        },
-        {
-          "id": "d27b6aa5-5f49-48a9-91c1-842076fb2c26",
-          "title": "TypeScript",
-          "url": "https://www.typescriptlang.org",
-          "desc": "Typed superset of JavaScript that scales.",
-          "icon_url": "https://api.iconify.design/logos:typescript-icon.svg",
-          "sort": 5
-        },
-        {
-          "id": "5185ef8f-fb6c-43f9-9053-7cd9d96481c3",
-          "title": "Vite",
-          "url": "https://vitejs.dev",
-          "desc": "Next generation frontend tool for fast builds.",
-          "icon_url": "https://api.iconify.design/logos:vitejs.svg",
-          "sort": 6
-        },
-        {
-          "id": "96c9ced8-a8cd-4498-aaf7-daf9730b9325",
-          "title": "Next.js",
-          "url": "https://nextjs.org",
-          "desc": "React framework for production-grade applications.",
-          "icon_url": "https://api.iconify.design/logos:nextjs-icon.svg",
-          "sort": 7
-        },
-        {
-          "id": "0bfdc3f1-68f6-410d-8ee1-f0a9a0952328",
-          "title": "Nuxt",
-          "url": "https://nuxt.com",
-          "desc": "Intuitive Vue framework for web development.",
-          "icon_url": "https://api.iconify.design/logos:nuxt-icon.svg",
-          "sort": 8
-        },
-        {
-          "id": "151cd8ad-f107-4e7d-b524-f603ca12e658",
-          "title": "Svelte",
-          "url": "https://svelte.dev",
-          "desc": "Cybernetically enhanced web apps.",
-          "icon_url": "https://api.iconify.design/logos:svelte-icon.svg",
-          "sort": 9
-        },
-        {
-          "id": "b2028872-0d60-485c-b85c-8dce348aa18a",
-          "title": "Tailwind CSS",
-          "url": "https://tailwindcss.com",
-          "desc": "Utility-first CSS framework for rapid UI development.",
-          "icon_url": "https://api.iconify.design/logos:tailwindcss-icon.svg",
-          "sort": 10
-        },
-        {
-          "id": "85428938-2e3f-45f4-a2ad-412b6ef8b5d2",
-          "title": "Node.js",
-          "url": "https://nodejs.org",
-          "desc": "JavaScript runtime built on Chrome's V8.",
-          "icon_url": "https://api.iconify.design/logos:nodejs-icon.svg",
-          "sort": 11
-        },
-        {
-          "id": "c8f517a0-5a72-42cb-ab3a-da9739b46196",
-          "title": "Bun",
-          "url": "https://bun.sh",
-          "desc": "Fast all-in-one JavaScript runtime.",
-          "icon_url": "https://api.iconify.design/logos:bun.svg",
-          "sort": 12
-        },
-        {
-          "id": "a582dcb8-4a18-4585-aaae-e6a5328e0756",
-          "title": "Deno",
-          "url": "https://deno.com",
-          "desc": "Modern secure runtime for JavaScript and TypeScript.",
-          "icon_url": "https://api.iconify.design/logos:deno.svg",
-          "sort": 13
-        },
-        {
-          "id": "b2746aaf-9720-4b9e-a94b-547e9d51d374",
-          "title": "Rust",
-          "url": "https://www.rust-lang.org",
-          "desc": "Language empowering everyone to build reliable software.",
-          "icon_url": "https://api.iconify.design/logos:rust.svg",
-          "sort": 14
-        },
-        {
-          "id": "25d088fb-2ebb-4936-8dd5-4b0235a9d193",
-          "title": "Go",
-          "url": "https://go.dev",
-          "desc": "Open source programming language by Google.",
-          "icon_url": "https://api.iconify.design/logos:gopher.svg",
-          "sort": 15
-        },
-        {
-          "id": "2572e44d-1f4e-4109-b556-5edc308e94f0",
-          "title": "Python",
-          "url": "https://www.python.org",
-          "desc": "Versatile language for web, data, and AI.",
-          "icon_url": "https://api.iconify.design/logos:python.svg",
-          "sort": 16
-        },
-        {
-          "id": "c9079fff-6873-44bd-9209-3801b4174db1",
-          "title": "FastAPI",
-          "url": "https://fastapi.tiangolo.com",
-          "desc": "High performance web framework for Python.",
-          "icon_url": "https://api.iconify.design/logos:fastapi-icon.svg",
-          "sort": 17
-        },
-        {
-          "id": "248a64ae-03c9-4098-ad88-097ce08fea78",
-          "title": "Django",
-          "url": "https://www.djangoproject.com",
-          "desc": "The Web framework for perfectionists with deadlines.",
-          "icon_url": "https://api.iconify.design/logos:django-icon.svg",
-          "sort": 18
-        },
-        {
-          "id": "644653c8-b947-4920-b4c1-d16d4e6e3453",
-          "title": "Spring Boot",
-          "url": "https://spring.io",
-          "desc": "Create stand-alone, production-grade Spring apps.",
-          "icon_url": "https://api.iconify.design/logos:spring-icon.svg",
-          "sort": 19
-        }
-      ]
+      "links": null
     },
     {
       "name": "Cloud",
-      "links": [
-        {
-          "id": "a58dd3a3-2542-485a-b546-635cabef25c4",
-          "title": "Docker",
-          "url": "https://docker.com",
-          "desc": "OS-level virtualization for developing containers.",
-          "icon_url": "https://api.iconify.design/logos:docker-icon.svg",
-          "sort": 0
-        },
-        {
-          "id": "f77bf5f3-fc8b-4bc3-84d0-65187657719c",
-          "title": "Kubernetes",
-          "url": "https://kubernetes.io",
-          "desc": "Automating deployment and scaling of containers.",
-          "icon_url": "https://api.iconify.design/logos:kubernetes.svg",
-          "sort": 1
-        },
-        {
-          "id": "fbdf0ae7-b98f-4e94-9ad9-bf9e998cac81",
-          "title": "AWS",
-          "url": "https://aws.amazon.com",
-          "desc": "Comprehensive cloud computing services.",
-          "icon_url": "https://api.iconify.design/logos:aws.svg",
-          "sort": 2
-        },
-        {
-          "id": "901d0f35-f5a7-4f8c-bf02-52b67c74ea96",
-          "title": "Google Cloud",
-          "url": "https://cloud.google.com",
-          "desc": "Cloud infrastructure and platform by Google.",
-          "icon_url": "https://api.iconify.design/logos:google-cloud.svg",
-          "sort": 3
-        },
-        {
-          "id": "7a7b9376-27dd-4a90-ab7e-f87ff4bea0d2",
-          "title": "Azure",
-          "url": "https://azure.microsoft.com",
-          "desc": "Enterprise-grade cloud computing services.",
-          "icon_url": "https://api.iconify.design/logos:microsoft-azure.svg",
-          "sort": 4
-        },
-        {
-          "id": "6e860bdc-9c22-453e-95d1-9e643cbbb0a2",
-          "title": "Vercel",
-          "url": "https://vercel.com",
-          "desc": "Platform for frontend frameworks and static sites.",
-          "icon_url": "https://api.iconify.design/logos:vercel-icon.svg",
-          "sort": 5
-        },
-        {
-          "id": "79791826-a7bd-4af8-a57e-edc27c4249d5",
-          "title": "Netlify",
-          "url": "https://netlify.com",
-          "desc": "All-in-one platform for modern web projects.",
-          "icon_url": "https://api.iconify.design/logos:netlify-icon.svg",
-          "sort": 6
-        },
-        {
-          "id": "124b7a4e-5947-4d23-9abb-ae057b5cbe12",
-          "title": "DigitalOcean",
-          "url": "https://digitalocean.com",
-          "desc": "Cloud computing designed for developers.",
-          "icon_url": "https://api.iconify.design/logos:digitalocean-icon.svg",
-          "sort": 7
-        },
-        {
-          "id": "5cd07a5c-b4ac-42a5-b766-307162fce847",
-          "title": "Terraform",
-          "url": "https://terraform.io",
-          "desc": "Infrastructure as code to manage cloud resources.",
-          "icon_url": "https://api.iconify.design/logos:terraform-icon.svg",
-          "sort": 8
-        },
-        {
-          "id": "55796884-ad25-4120-8c95-d0e0a99487f4",
-          "title": "Cloudflare",
-          "url": "https://cloudflare.com",
-          "desc": "Web security and performance company.",
-          "icon_url": "https://api.iconify.design/logos:cloudflare.svg",
-          "sort": 9
-        }
-      ]
+      "links": null
     },
     {
       "name": "Database",

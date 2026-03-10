@@ -1,27 +1,36 @@
-
 /* 当模态框打开时，为 body 添加此类，以防止背景滚动 */
 body.modal-open {
     overflow: hidden;
 }
 
-/* 模态框的背景遮罩 */
+/* 模态框的背景遮罩，使用 Flexbox 居中并为动画做准备 */
 .modal {
-    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 }
 
-/* 模态框的主要内容区域 */
+/* 当模态框显示时，改变透明度和可交互性 */
+.modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 模态框的主要内容区域，应用进入动画 */
 .modal-content {
-    position: absolute;
+    position: relative;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -31,14 +40,12 @@ body.modal-open {
     flex-direction: column;
     height: 650px;
     max-height: 90vh;
-    opacity: 0;
     transform: scale(0.95);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 /* 模态框内容的动画效果 */
 .modal.show .modal-content {
-    opacity: 1;
     transform: scale(1);
 }
 
@@ -171,8 +178,6 @@ body.modal-open {
         height: 100%;
         max-height: 100vh;
         border-radius: 0;
-        top: 0;
-        left: 0;
     }
 
     /* 减小模态框主体内边距 */

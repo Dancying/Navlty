@@ -2,7 +2,6 @@ window.App = window.App || {};
 
 App.finder = (function() {
     let linksForEditing = [];
-    let currentEditingLinkId = null;
 
     // invalidateLinksCache 使编辑链接的缓存失效
     function invalidateLinksCache() {
@@ -17,7 +16,6 @@ App.finder = (function() {
 
         toggleEditForm(false);
         searchInput.value = '';
-        currentEditingLinkId = null;
 
         if (linksForEditing.length > 0) {
             filterAndPopulateResults();
@@ -116,7 +114,6 @@ App.finder = (function() {
     function handleLinkSelectionChange(selectedId) {
         const link = linksForEditing.find(l => l.id === selectedId);
         if (link) {
-            currentEditingLinkId = selectedId;
             document.getElementById('edit-link-search-input').value = link.title;
 
             App.helpers.setFormValue('edit-link-title', link.title);
@@ -144,7 +141,6 @@ App.finder = (function() {
         });
 
         if (!isEnabled) {
-            currentEditingLinkId = null;
             const fieldsToReset = ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description'];
             fieldsToReset.forEach(id => {
                 const el = document.getElementById(id);

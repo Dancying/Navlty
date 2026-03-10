@@ -34,8 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('keydown', (event) => {
         // 当按下 ESC 键时，关闭所有激活的模态框和搜索框
         if (event.key === 'Escape') {
-            if (document.querySelector('.modal.show')) {
-                App.modal.close();
+            const activeModal = document.querySelector('.modal.show');
+            if (activeModal) {
+                App.modal.close(activeModal.id);
             }
             if (document.getElementById('search-wrapper')?.classList.contains('active')) {
                 App.search.hideSearch();

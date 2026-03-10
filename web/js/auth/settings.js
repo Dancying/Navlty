@@ -8,10 +8,26 @@ App.settings = (function () {
     function bindUploadButton(buttonId, inputId, targetId) {
         const button = document.getElementById(buttonId);
         const input = document.getElementById(inputId);
-        if (button && input) {
-            button.addEventListener('click', () => input.click());
-            input.addEventListener('change', () => App.helpers.fileToBase64(input, targetId));
-        }
+        if (!button || !input) return;
+
+        button.addEventListener('click', () => input.click());
+
+        input.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const base64String = await App.helpers.fileToBase64(file);
+                const targetInput = document.getElementById(targetId);
+                if (targetInput) {
+                    targetInput.value = base64String;
+                }
+                App.toast.show('文件已成功加载', 'success');
+            } catch (error) {
+                console.error('File could not be read:', error);
+                App.toast.show(error.message || '文件加载失败，请检查文件格式或重试', 'error');
+            }
+        });
     }
     
     // updateSliderValue 更新滑块值的显示
@@ -67,16 +83,16 @@ App.settings = (function () {
             contentContainer.insertAdjacentHTML('beforeend', contentHTML);
         });
 
-        modal.querySelector('.close-button').addEventListener('click', () => App.modal.close());
-        modal.querySelector('.cancel-button').addEventListener('click', () => App.modal.close());
+        modal.querySelector('.close-button').addEventListener('click', () => App.modal.close('settings-modal'));
+        modal.querySelector('.cancel-button').addEventListener('click', () => App.modal.close('settings-modal'));
         modal.addEventListener('click', (event) => {
-            if (event.target === modal) App.modal.close();
+            if (event.target === modal) App.modal.close('settings-modal');
         });
 
         document.getElementById('settings-save-button')?.addEventListener('click', handleSave);
         document.getElementById('logout-button')?.addEventListener('click', () => {
             App.auth.logout();
-            App.modal.close();
+            App.modal.close('settings-modal');
             location.reload();
         });
 

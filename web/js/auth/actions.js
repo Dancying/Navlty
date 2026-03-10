@@ -62,7 +62,7 @@ App.actions = (function() {
             const iconInput = document.getElementById('link-icon');
 
             if (!singleTitle.value && !urlInput.value && !categoryInput.value && !descInput.value && !iconInput.value) {
-                App.modal.close();
+                App.modal.close('settings-modal');
                 return;
             }
 
@@ -85,13 +85,13 @@ App.actions = (function() {
             };
 
             if (await submitLinks([newLink])) {
-                App.modal.close();
+                App.modal.close('settings-modal');
             }
         } else if (bulkLinks) {
             const bulkContent = bulkLinks.value.trim();
 
             if (!bulkContent) {
-                App.modal.close();
+                App.modal.close('settings-modal');
                 return;
             }
             
@@ -99,7 +99,7 @@ App.actions = (function() {
             bulkLinks.classList.remove('input-error');
 
             if (lines.length === 0) {
-                App.modal.close();
+                App.modal.close('settings-modal');
                 return;
             }
             
@@ -121,7 +121,7 @@ App.actions = (function() {
             }
 
             if (await submitLinks(newLinks)) {
-                App.modal.close();
+                App.modal.close('settings-modal');
             }
         }
     }
@@ -160,7 +160,7 @@ App.actions = (function() {
                 if (App.categories && App.categories.invalidateCache) {
                     App.categories.invalidateCache();
                 }
-                App.modal.close();
+                App.modal.close('settings-modal');
             } else {
                 throw new Error(response.message || '更新失败');
             }
@@ -242,7 +242,7 @@ App.actions = (function() {
         }
 
         if (actions.length === 0) {
-            App.modal.close();
+            App.modal.close('settings-modal');
             return;
         }
 
@@ -253,7 +253,7 @@ App.actions = (function() {
             });
             App.toast.show('链接更改已成功保存', 'success');
             document.dispatchEvent(new CustomEvent('links-updated'));
-            App.modal.close();
+            App.modal.close('settings-modal');
         } catch (error) {
             if (error.message !== 'Unauthorized') {
                 console.error('Error saving changes:', error);
@@ -273,7 +273,7 @@ App.actions = (function() {
         const confirmPassword = confirmPasswordInput.value;
 
         if (!currentPassword && !newPassword && !confirmPassword) {
-            App.modal.close();
+            App.modal.close('settings-modal');
             return;
         }
     
@@ -307,7 +307,7 @@ App.actions = (function() {
             });
             if (data.success) {
                 App.toast.show('密码已更新，下次请使用新密码登录', 'success');
-                App.modal.close();
+                App.modal.close('settings-modal');
             } else {
                 throw new Error(data.message || '密码修改失败');
             }
@@ -358,7 +358,7 @@ App.actions = (function() {
         }
 
         if (Object.keys(updates).length === 0) {
-            App.modal.close();
+            App.modal.close('settings-modal');
             return;
         }
 
@@ -376,7 +376,7 @@ App.actions = (function() {
             apply(originalSettings);
             document.dispatchEvent(new CustomEvent('settings-updated', { detail: originalSettings }));
             
-            App.modal.close();
+            App.modal.close('settings-modal');
         } catch (error) {
             App.toast.show('设置保存失败，请检查网络并重试', 'error');
             console.error('Error saving settings:', error);

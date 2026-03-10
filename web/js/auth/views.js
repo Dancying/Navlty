@@ -72,7 +72,7 @@ App.views = (function() {
             <div class="modal-body">
                 <form id="edit-link-form" class="form-grid">
                     <div class="form-group span-two searchable-select-wrapper">
-                        <label for="edit-link-search-input">搜索并选择链接</label>
+                        <label for="edit-link-search-input">选择链接</label>
                         <input type="text" id="edit-link-search-input" placeholder="搜索标题、URL、分类..." autocomplete="off">
                         <div id="edit-link-search-results"></div>
                     </div>

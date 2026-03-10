@@ -2,145 +2,118 @@ window.App = window.App || {};
 
 App.actions = (function() {
 
+    // _handleApiSubmit 封装了向服务器提交操作的通用逻辑
+    function _handleApiSubmit({ endpoint, method = 'POST', payload, successMessage, modalId, onSuccess }) {
+        if (!payload || (Array.isArray(payload) && payload.length === 0)) {
+            modalId && App.modal.close(modalId);
+            return Promise.resolve(true);
+        }
+
+        return App.api.request(endpoint, { method, body: JSON.stringify(payload) })
+            .then(result => {
+                if (result.success === false || result.status === 'error') {
+                    throw new Error(result.message || '操作失败');
+                }
+                App.toast.show(successMessage, 'success');
+                onSuccess && onSuccess(result);
+                return true;
+            })
+            .catch(error => {
+                if (error.message !== 'Unauthorized') {
+                    const errorMessage = error.message.includes("failed to fetch") ? '网络错误，请检查您的连接' : error.message;
+                    App.toast.show(`操作失败: ${errorMessage}`, 'error');
+                    console.error(`Error with ${endpoint}:`, error);
+                }
+                return false;
+            })
+            .finally(() => {
+                modalId && App.modal.close(modalId);
+            });
+    }
+
     // getActivePanel 获取当前激活的面板名称
     function getActivePanel() {
         const primaryPanel = document.getElementById('primary-panel');
-        if (primaryPanel && primaryPanel.classList.contains('active')) {
-            return 'primary';
-        }
-        return 'secondary';
+        return primaryPanel && primaryPanel.classList.contains('active') ? 'primary' : 'secondary';
     }
 
-    // submitLinks 将链接数据提交到后端 API
-    async function submitLinks(links) {
-        const linksByCategory = links.reduce((acc, link) => {
-            const category = link.category || 'Uncategorized';
-            if (!acc[category]) {
-                acc[category] = [];
-            }
-            const { category: _, ...linkData } = link;
-            acc[category].push(linkData);
-            return acc;
-        }, {});
-
-        const panel = getActivePanel();
-        const actions = Object.entries(linksByCategory).map(([category, categoryLinks]) => {
-            return {
-                action: 'CREATE_LINKS',
-                payload: {
-                    panel: panel,
-                    category: category,
-                    links: categoryLinks
-                }
-            };
-        });
-
-        try {
-            await App.api.request('/api/links/actions', {
-                method: 'POST',
-                body: JSON.stringify(actions)
-            });
-            App.toast.show('链接已成功添加', 'success');
-            document.dispatchEvent(new CustomEvent('links-updated'));
-            return true;
-        } catch (error) {
-            App.toast.show(`链接保存失败: ${error.message}`, 'error');
-            console.error('Error submitting links:', error);
-            return false;
-        }
-    }
-
-    // addLinks 处理单个或批量添加链接的逻辑
+    // addLinks 将链接添加到数据库
     async function addLinks() {
-        const singleTitle = document.getElementById('link-title');
-        const bulkLinks = document.getElementById('bulk-links');
+        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
+        if (!activePanel) return App.modal.close('settings-modal');
 
-        if (singleTitle) {
-            const urlInput = document.getElementById('link-url');
-            const categoryInput = document.getElementById('link-category');
-            const descInput = document.getElementById('link-description');
-            const iconInput = document.getElementById('link-icon');
+        let linksToAdd = [];
+        const singleTitleInput = activePanel.querySelector('#link-title');
+        const bulkLinksInput = activePanel.querySelector('#bulk-links');
 
-            if (!singleTitle.value && !urlInput.value && !categoryInput.value && !descInput.value && !iconInput.value) {
-                App.modal.close('settings-modal');
-                return;
+        if (singleTitleInput) {
+            const urlInput = activePanel.querySelector('#link-url');
+            const categoryInput = activePanel.querySelector('#link-category');
+            const descInput = activePanel.querySelector('#link-description');
+            const iconInput = activePanel.querySelector('#link-icon');
+
+            if (![singleTitleInput, urlInput, categoryInput, descInput, iconInput].some(i => i && i.value)) {
+                return App.modal.close('settings-modal');
             }
-
-            singleTitle.classList.remove('input-error');
-            urlInput.classList.remove('input-error');
-
-            if (!singleTitle.value || !urlInput.value) {
+            if (!singleTitleInput.value || !urlInput.value) {
                 App.toast.show('标题和链接是必填项', 'error');
-                if (!singleTitle.value) singleTitle.classList.add('input-error');
-                if (!urlInput.value) urlInput.classList.add('input-error');
+                singleTitleInput.classList.toggle('input-error', !singleTitleInput.value);
+                urlInput.classList.toggle('input-error', !urlInput.value);
                 return;
             }
-
-            const newLink = {
-                title: singleTitle.value,
+            linksToAdd.push({
+                title: singleTitleInput.value,
                 url: urlInput.value,
                 category: categoryInput.value || 'Uncategorized',
                 desc: descInput.value,
                 icon_url: iconInput.value || 'globe',
-            };
+            });
+        } else if (bulkLinksInput) {
+            const bulkContent = bulkLinksInput.value.trim();
+            if (!bulkContent) return App.modal.close('settings-modal');
 
-            if (await submitLinks([newLink])) {
-                App.modal.close('settings-modal');
-            }
-        } else if (bulkLinks) {
-            const bulkContent = bulkLinks.value.trim();
-
-            if (!bulkContent) {
-                App.modal.close('settings-modal');
-                return;
-            }
-            
-            const lines = bulkContent.split('\n').filter(line => line.trim() !== '');
-            bulkLinks.classList.remove('input-error');
-
-            if (lines.length === 0) {
-                App.modal.close('settings-modal');
-                return;
-            }
-            
-            const newLinks = lines.map(line => {
+            const lines = bulkContent.split('\n').filter(line => line.trim());
+            const parsedLinks = lines.map(line => {
                 const [title, url, category, icon_url, desc] = line.split('|').map(part => part.trim());
-                if (!title || !url) return null;
-                return { 
-                    title, 
-                    url, 
-                    category: category || 'Uncategorized', 
-                    icon_url: icon_url || 'globe', 
-                    desc: desc || '' 
-                };
-            }).filter(link => link !== null);
+                return (title && url) ? { title, url, category: category || 'Uncategorized', icon_url: icon_url || 'globe', desc: desc || '' } : null;
+            }).filter(Boolean);
 
-            if (newLinks.length === 0) {
+            if (parsedLinks.length === 0) {
                 App.toast.show('未找到有效链接，请检查格式是否正确 (标题 | 链接)', 'error');
                 return;
             }
-
-            if (await submitLinks(newLinks)) {
-                App.modal.close('settings-modal');
-            }
+            linksToAdd = parsedLinks;
         }
+        if (linksToAdd.length === 0) return;
+
+        const linksByCategory = linksToAdd.reduce((acc, link) => {
+            const { category = 'Uncategorized', ...linkData } = link;
+            (acc[category] = acc[category] || []).push(linkData);
+            return acc;
+        }, {});
+
+        const actions = Object.entries(linksByCategory).map(([category, links]) => ({
+            action: 'CREATE_LINKS',
+            payload: { panel: getActivePanel(), category, links }
+        }));
+
+        await _handleApiSubmit({
+            endpoint: '/api/links/actions',
+            payload: actions,
+            successMessage: '链接已成功添加',
+            modalId: 'settings-modal',
+            onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
+        });
     }
 
     // updateLink 更新当前正在编辑的链接
     async function updateLink() {
         const linkId = App.finder.getCurrentEditingLinkId();
-        if (!linkId) {
-            App.toast.show('请先从列表中搜索并选择一个链接', 'warning');
-            return;
-        }
+        if (!linkId) return App.toast.show('请先从列表中搜索并选择一个链接', 'warning');
 
         const title = App.helpers.getFormValue('edit-link-title');
         const url = App.helpers.getFormValue('edit-link-url');
-
-        if (!title || !url) {
-            App.toast.show('标题和 URL 是必填项', 'error');
-            return;
-        }
+        if (!title || !url) return App.toast.show('标题和 URL 是必填项', 'error');
         
         const payload = {
             title: title,
@@ -150,175 +123,130 @@ App.actions = (function() {
             desc: App.helpers.getFormValue('edit-link-description'),
         };
 
-        const action = {
-            action: 'UPDATE_LINKS',
-            payload: [{
-                id: linkId,
-                updates: payload
-            }]
-        };
+        await _handleApiSubmit({
+            endpoint: '/api/links/actions',
+            payload: [{ action: 'UPDATE_LINKS', payload: [{ id: linkId, updates: payload }] }],
+            successMessage: '链接已成功更新',
+            modalId: 'settings-modal',
+            onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
+        });
+    }
 
-        try {
-            await App.api.request('/api/links/actions', {
-                method: 'POST',
-                body: JSON.stringify([action])
+    function _detectDeletions(initialLinks, currentLinksMap) {
+        const deletedIds = initialLinks.filter(link => !currentLinksMap.has(link.id)).map(link => link.id);
+        return deletedIds.length > 0 ? { action: 'DELETE_LINKS', payload: { ids: deletedIds } } : null;
+    }
+    
+    function _detectMoves(currentLinks, initialLinksMap) {
+        return Array.from(currentLinks.reduce((moves, currentLink) => {
+            const initialLink = initialLinksMap.get(currentLink.id);
+            if (!initialLink) return moves;
+            const initialTarget = `${initialLink.panel || 'primary'}:${initialLink.category || 'Uncategorized'}`;
+            const currentTarget = `${currentLink.panel || 'primary'}:${currentLink.category || 'Uncategorized'}`;
+            if (initialTarget !== currentTarget) {
+                if (!moves.has(currentTarget)) {
+                    moves.set(currentTarget, { target: { panel: currentLink.panel || 'primary', category: currentLink.category || 'Uncategorized' }, ids: [] });
+                }
+                moves.get(currentTarget).ids.push(currentLink.id);
+            }
+            return moves;
+        }, new Map()).values()).map(move => ({ action: 'MOVE_LINKS', payload: move }));
+    }
+    
+    function _detectCategoryReorders(initialLinks, currentLinks) {
+        const getPanelData = links => links.reduce((acc, link) => {
+            const panelName = link.panel || 'primary';
+            if (!acc[panelName]) acc[panelName] = { order: [], catSet: new Set() };
+            if (link.category && !acc[panelName].catSet.has(link.category)) {
+                acc[panelName].order.push(link.category);
+                acc[panelName].catSet.add(link.category);
+            }
+            return acc;
+        }, {});
+    
+        const initial = getPanelData(initialLinks);
+        const current = getPanelData(currentLinks);
+        return ['primary', 'secondary'].reduce((actions, panelName) => {
+            const initialOrder = initial[panelName]?.order.join('|') || '';
+            const currentOrder = current[panelName]?.order.join('|') || '';
+            if (initialOrder !== currentOrder) {
+                actions.push({ action: 'REORDER_CATEGORIES', payload: { panel: panelName, orderedCategoryNames: current[panelName]?.order || [] } });
+            }
+            return actions;
+        }, []);
+    }
+    
+    function _detectLinkUpdates(initialLinks, currentLinks, initialLinksMap) {
+        const groupLinks = links => links.reduce((acc, link) => {
+            const key = `${link.panel || 'primary'}:${link.category || 'Uncategorized'}`;
+            (acc[key] = acc[key] || []).push(link);
+            return acc;
+        }, {});
+    
+        const initialGroups = groupLinks(initialLinks);
+        const currentGroups = groupLinks(currentLinks);
+        const updates = Object.entries(currentGroups).flatMap(([key, currentLinksInCat]) => {
+            const initialLinksInCat = initialGroups[key] || [];
+            const orderChanged = initialLinksInCat.map(l => l.id).join() !== currentLinksInCat.map(l => l.id).join();
+            return currentLinksInCat.map((currentLink, index) => {
+                const initialLink = initialLinksMap.get(currentLink.id);
+                if (!initialLink) return null;
+                const linkUpdates = {};
+                if (orderChanged) linkUpdates.sort = index;
+                ['title', 'url', 'desc', 'icon_url'].forEach(field => {
+                    if (currentLink[field] !== initialLink[field]) linkUpdates[field] = currentLink[field];
+                });
+                return Object.keys(linkUpdates).length > 0 ? { id: currentLink.id, updates: linkUpdates } : null;
             });
+        }).filter(Boolean);
 
-            App.toast.show('链接已成功更新', 'success');
-            document.dispatchEvent(new CustomEvent('links-updated'));
-            App.modal.close('settings-modal');
-
-        } catch (error) {
-            App.toast.show(`链接更新失败: ${error.message}`, 'error');
-            console.error('Error updating link:', error);
-        }
+        return updates.length > 0 ? { action: 'UPDATE_LINKS', payload: updates } : null;
     }
 
     // updateStructure 将链接结构的更改保存到服务器
     async function updateStructure(initialLinks, currentLinks) {
-        const actions = [];
         const initialLinksMap = new Map(initialLinks.map(link => [link.id, link]));
-        const currentLinksMap = new Map(currentLinks.map(link => [link.id, link]));
+        const actions = [
+            _detectDeletions(initialLinks, new Map(currentLinks.map(link => [link.id, link]))),
+            ..._detectMoves(currentLinks, initialLinksMap),
+            ..._detectCategoryReorders(initialLinks, currentLinks),
+            _detectLinkUpdates(initialLinks, currentLinks, initialLinksMap)
+        ].filter(Boolean);
 
-        const deletedIds = [];
-        for (const id of initialLinksMap.keys()) {
-            if (!currentLinksMap.has(id)) {
-                deletedIds.push(id);
-            }
-        }
-        if (deletedIds.length > 0) {
-            actions.push({
-                action: 'DELETE_LINKS',
-                payload: { ids: deletedIds }
-            });
-        }
-
-        const updates = [];
-        const moves = new Map();
-
-        currentLinks.forEach(link => {
-            const initialLink = initialLinksMap.get(link.id);
-            if (initialLink) {
-                let hasUpdate = false;
-                const linkUpdates = {};
-
-                if (link.title !== initialLink.title) {
-                    linkUpdates.title = link.title;
-                    hasUpdate = true;
-                }
-                if (link.url !== initialLink.url) {
-                    linkUpdates.url = link.url;
-                    hasUpdate = true;
-                }
-                
-                if (hasUpdate) {
-                    updates.push({ id: link.id, updates: linkUpdates });
-                }
-
-                const categoryChanged = (link.category || '') !== (initialLink.category || '');
-                const panelChanged = link.panel !== initialLink.panel;
-
-                if (categoryChanged || panelChanged) {
-                    const targetKey = `${link.panel}:${link.category || ''}`;
-                    if (!moves.has(targetKey)) {
-                        moves.set(targetKey, {
-                            target: { panel: link.panel, category: link.category || '' },
-                            ids: []
-                        });
-                    }
-                    moves.get(targetKey).ids.push(link.id);
-                }
-            }
-        });
-
-        if (updates.length > 0) {
-            actions.push({
-                action: 'UPDATE_LINKS',
-                payload: updates
-            });
-        }
-
-        for (const move of moves.values()) {
-            actions.push({
-                action: 'MOVE_LINKS',
-                payload: move
-            });
-        }
-
-        if (actions.length === 0) {
-            App.modal.close('settings-modal');
-            return;
-        }
-
-        try {
-            await App.api.request('/api/links/actions', {
-                method: 'POST',
-                body: JSON.stringify(actions),
-            });
-            App.toast.show('链接更改已成功保存', 'success');
-            document.dispatchEvent(new CustomEvent('links-updated'));
-            App.modal.close('settings-modal');
-        } catch (error) {
-            if (error.message !== 'Unauthorized') {
-                console.error('Error saving changes:', error);
-                App.toast.show('链接更改保存失败，请刷新后重试', 'error');
-            }
-        }
+        return (actions.length > 0)
+            ? _handleApiSubmit({
+                endpoint: '/api/links/actions',
+                payload: actions,
+                successMessage: '链接更改已成功保存',
+                modalId: 'settings-modal',
+                onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
+            })
+            : (App.modal.close('settings-modal'), Promise.resolve(true));
     }
 
     // changePassword 处理用户密码修改请求
     async function changePassword() {
-        const currentPasswordInput = document.getElementById('current-password');
-        const newPasswordInput = document.getElementById('new-password-change');
-        const confirmPasswordInput = document.getElementById('confirm-password');
+        const current = document.getElementById('current-password');
+        const newPass = document.getElementById('new-password-change');
+        const confirm = document.getElementById('confirm-password');
     
-        const currentPassword = currentPasswordInput.value;
-        const newPassword = newPasswordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
+        if (![current, newPass, confirm].some(i => i.value)) return App.modal.close('settings-modal');
 
-        if (!currentPassword && !newPassword && !confirmPassword) {
-            App.modal.close('settings-modal');
-            return;
-        }
-    
-        const inputs = [currentPasswordInput, newPasswordInput, confirmPasswordInput];
-        let allFieldsFilled = true;
-    
-        inputs.forEach(input => {
-            input.classList.remove('input-error');
-            if (!input.value) {
-                input.classList.add('input-error');
-                allFieldsFilled = false;
-            }
-        });
-    
-        if (!allFieldsFilled) {
-            App.toast.show('所有字段均为必填项', 'error');
-            return;
-        }
+        const allFilled = [current, newPass, confirm].every(input => (input.classList.toggle('input-error', !input.value), !!input.value));
+        if (!allFilled) return App.toast.show('所有字段均为必填项', 'error');
         
-        if (newPassword !== confirmPassword) {
-            App.toast.show('新密码和确认密码不匹配', 'error');
-            newPasswordInput.classList.add('input-error');
-            confirmPasswordInput.classList.add('input-error');
-            return;
+        if (newPass.value !== confirm.value) {
+            newPass.classList.add('input-error');
+            confirm.classList.add('input-error');
+            return App.toast.show('新密码和确认密码不匹配', 'error');
         }
-    
-        try {
-            const data = await App.api.request('/api/auth/passwd', {
-                method: 'POST',
-                body: JSON.stringify({ currentPassword, newPassword })
-            });
-            if (data.success) {
-                App.toast.show('密码已更新，下次请使用新密码登录', 'success');
-                App.modal.close('settings-modal');
-            } else {
-                throw new Error(data.message || '密码修改失败');
-            }
-        } catch (error) {
-            App.toast.show(`密码修改失败: ${error.message}`, 'error');
-            console.error('Error changing password:', error);
-        }
+
+        await _handleApiSubmit({
+            endpoint: '/api/auth/passwd',
+            payload: { currentPassword: current.value, newPassword: newPass.value },
+            successMessage: '密码已更新，下次请使用新密码登录',
+            modalId: 'settings-modal'
+        });
     }
 
     // saveSettings 保存应用程序的设置
@@ -327,73 +255,34 @@ App.actions = (function() {
         if (!activePanel) return;
 
         const originalSettings = App.settings.get();
-
-        const getValue = (id, defaultValue = '') => document.getElementById(id)?.value || defaultValue;
-        const getIntValue = (id, defaultValue) => parseInt(getValue(id, defaultValue), 10) || 0;
-        const getLinesValue = (id) => getValue(id).split('\n').filter(line => line.trim() !== '');
-
-        let currentValues = {};
-        const formFields = activePanel.querySelectorAll('input, textarea');
-        
-        formFields.forEach(field => {
+        const formFields = activePanel.querySelectorAll('input[name], textarea[name]');
+        const currentValues = Array.from(formFields).reduce((acc, field) => {
             const key = field.name;
-            if (key) {
-                switch (field.type) {
-                    case 'range':
-                        currentValues[key] = getIntValue(field.id, field.defaultValue);
-                        break;
-                    case 'textarea':
-                         if (key === 'externalJS') {
-                            currentValues[key] = getLinesValue(field.id);
-                        } else {
-                            currentValues[key] = getValue(field.id);
-                        }
-                        break;
-                    default:
-                        currentValues[key] = getValue(field.id);
-                }
-            }
-        });
+            if (field.type === 'range') acc[key] = parseInt(field.value, 10) || 0;
+            else if (field.type === 'textarea' && key === 'externalJS') acc[key] = field.value.split('\n').filter(line => line.trim());
+            else acc[key] = field.value;
+            return acc;
+        }, {});
 
-        const updates = {};
-        for (const key in currentValues) {
-            const original = originalSettings[key] || (Array.isArray(currentValues[key]) ? [] : '');
-            if (JSON.stringify(original) !== JSON.stringify(currentValues[key])) {
-                updates[key] = currentValues[key];
-            }
-        }
+        const updates = Object.entries(currentValues).reduce((acc, [key, value]) => {
+            if (JSON.stringify(originalSettings[key] || (Array.isArray(value) ? [] : '')) !== JSON.stringify(value)) acc[key] = value;
+            return acc;
+        }, {});
 
-        if (Object.keys(updates).length === 0) {
-            App.modal.close('settings-modal');
-            return;
-        }
-
-        try {
-            const data = await App.api.request('/api/settings', {
+        return (Object.keys(updates).length > 0)
+            ? _handleApiSubmit({
+                endpoint: '/api/settings',
                 method: 'PATCH',
-                body: JSON.stringify(updates)
-            });
-
-            if (data.status !== 'success') throw new Error(data.message || '保存失败');
-            
-            App.toast.show('设置已保存，部分更改可能需要刷新页面生效', 'success');
-
-            App.settings.update(updates);
-            const newSettings = App.settings.get();
-            document.dispatchEvent(new CustomEvent('settings-updated', { detail: newSettings }));
-            
-            App.modal.close('settings-modal');
-        } catch (error) {
-            App.toast.show('设置保存失败，请检查网络并重试', 'error');
-            console.error('Error saving settings:', error);
-        }
+                payload: updates,
+                successMessage: '设置已保存，部分更改可能需要刷新页面生效',
+                modalId: 'settings-modal',
+                onSuccess: () => {
+                    App.settings.update(updates);
+                    document.dispatchEvent(new CustomEvent('settings-updated', { detail: App.settings.get() }));
+                }
+            })
+            : (App.modal.close('settings-modal'), Promise.resolve(true));
     }
 
-    return { 
-        addLinks, 
-        updateLink, 
-        updateStructure, 
-        changePassword, 
-        saveSettings 
-    };
+    return { addLinks, updateLink, updateStructure, changePassword, saveSettings };
 })();

@@ -1,37 +1,49 @@
 {
   "primary": [
     {
-      "name": "Demo",
+      "name": "AI",
       "links": [
         {
-          "id": "7b92de71-35e1-48e7-bef5-9bc87756190c",
-          "title": "Google",
-          "url": "https://www.google.com",
-          "desc": "The world's most popular search engine.",
-          "icon_url": "https://api.iconify.design/logos/google-icon.svg",
+          "id": "4d855e56-b4a2-49df-919a-cf14b35812d1",
+          "title": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "desc": "Leading AI conversational model by OpenAI.",
+          "icon_url": "https://api.iconify.design/logos:openai.svg",
           "sort": 0
         },
         {
-          "id": "760144eb-293c-49c3-9323-394336561da7",
-          "title": "GitHub",
-          "url": "https://www.github.com",
-          "desc": "Platform for software development and version control.",
-          "icon_url": "https://api.iconify.design/logos/github-icon.svg",
+          "id": "85a219b6-e75a-4190-9cd7-58133e52e7d1",
+          "title": "Claude",
+          "url": "https://claude.ai",
+          "desc": "Next-generation AI assistant by Anthropic.",
+          "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
           "sort": 1
+        },
+        {
+          "id": "f65ecbd5-06d3-4098-9ecf-52046ac154e8",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 2
         }
       ]
-    },
-    {
-      "name": "Uncategorized",
-      "links": null
     },
     {
       "name": "111",
       "links": [
         {
-          "id": "d786c9d5-0601-46b0-b236-bdfe2f603556",
-          "title": "222",
-          "url": "222",
+          "id": "21ac3f17-6388-4863-b2af-b72f1afa7787",
+          "title": "111",
+          "url": "111",
+          "desc": "",
+          "icon_url": "globe",
+          "sort": 0
+        },
+        {
+          "id": "5f7c415b-05fc-4762-838e-4851c4721f07",
+          "title": "111222",
+          "url": "111222",
           "desc": "",
           "icon_url": "globe",
           "sort": 1
@@ -39,80 +51,62 @@
       ]
     },
     {
-      "name": "111222",
-      "links": null
-    },
-    {
-      "name": "555",
+      "name": "Development",
       "links": [
         {
-          "id": "cc812a8a-f623-4e1d-a29c-610770cd3b94",
-          "title": "555",
-          "url": "555",
-          "desc": "",
-          "icon_url": "globe",
+          "id": "f0965f70-cdbd-45ed-aac1-31de22e7d873",
+          "title": "Node.js",
+          "url": "https://nodejs.org",
+          "desc": "JavaScript runtime built on Chrome's V8.",
+          "icon_url": "https://api.iconify.design/logos:nodejs-icon.svg",
           "sort": 0
         },
         {
-          "id": "4e66da73-f9c9-4a75-a11e-fb79c834a930",
-          "title": "555666",
-          "url": "55566",
-          "desc": "",
-          "icon_url": "globe",
+          "id": "33b9de46-f382-4e24-9e34-01321c25d08a",
+          "title": "Bun",
+          "url": "https://bun.sh",
+          "desc": "Fast all-in-one JavaScript runtime.",
+          "icon_url": "https://api.iconify.design/logos:bun.svg",
           "sort": 1
+        },
+        {
+          "id": "fca4a0fb-0974-41d4-9d69-281694b49ff3",
+          "title": "Deno",
+          "url": "https://deno.com",
+          "desc": "Modern secure runtime for JavaScript and TypeScript.",
+          "icon_url": "https://api.iconify.design/logos:deno.svg",
+          "sort": 2
         }
       ]
     }
   ],
   "secondary": [
     {
-      "name": "Uncategorized",
+      "name": "AI",
       "links": [
         {
-          "id": "dc5fcedd-55f8-4e9d-9204-671342eb167f",
-          "title": "333",
-          "url": "333",
-          "desc": "",
-          "icon_url": "globe",
+          "id": "31dbddf6-762a-4237-93b3-a6f98491a910",
+          "title": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "desc": "Leading AI conversational model by OpenAI.",
+          "icon_url": "https://api.iconify.design/logos:openai.svg",
           "sort": 0
         },
         {
-          "id": "f87fc456-d455-48c9-8f8a-add2403debca",
-          "title": "11122",
-          "url": "11122",
-          "desc": "",
-          "icon_url": "globe",
+          "id": "248428fd-63f1-49c9-996f-289c3b6628bb",
+          "title": "Claude",
+          "url": "https://claude.ai",
+          "desc": "Next-generation AI assistant by Anthropic.",
+          "icon_url": "https://api.iconify.design/logos:claude-icon.svg",
           "sort": 1
-        }
-      ]
-    },
-    {
-      "name": "444",
-      "links": [
+        },
         {
-          "id": "407db17c-d0f8-493f-8959-c575e6642b99",
-          "title": "444",
-          "url": "444",
-          "desc": "",
-          "icon_url": "globe",
-          "sort": 0
-        }
-      ]
-    },
-    {
-      "name": "555",
-      "links": null
-    },
-    {
-      "name": "111222",
-      "links": [
-        {
-          "id": "96508125-d626-4c23-bcb3-3bf8de3a8eaa",
-          "title": "222",
-          "url": "222",
-          "desc": "1111111111111111111111111111111111111111111111111111111111",
-          "icon_url": "globe",
-          "sort": 0
+          "id": "853fa6cd-ece0-4fa8-8fee-65ccbd4ad153",
+          "title": "Gemini",
+          "url": "https://gemini.google.com",
+          "desc": "Google's most capable AI model for multimodal tasks.",
+          "icon_url": "https://api.iconify.design/logos:google-gemini.svg",
+          "sort": 2
         }
       ]
     }

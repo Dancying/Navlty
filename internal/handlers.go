@@ -574,6 +574,16 @@ func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	for panelKey, categories := range panels {
+		var filteredCategories []LinkCategory
+		for _, category := range categories {
+			if len(category.Links) > 0 {
+				filteredCategories = append(filteredCategories, category)
+			}
+		}
+		panels[panelKey] = filteredCategories
+	}
+
 	if err := SaveLinks(panels); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to save links after batch update: "+err.Error())
 		return

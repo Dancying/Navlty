@@ -3,11 +3,6 @@ window.App = window.App || {};
 App.finder = (function() {
     let linksForEditing = [];
 
-    // invalidateLinksCache 使编辑链接的缓存失效
-    function invalidateLinksCache() {
-        linksForEditing = [];
-    }
-
     // loadLinksForEditing 为编辑链接面板加载并扁平化链接列表
     async function loadLinksForEditing() {
         const searchInput = document.getElementById('edit-link-search-input');
@@ -17,18 +12,13 @@ App.finder = (function() {
         toggleEditForm(false);
         searchInput.value = '';
 
-        if (linksForEditing.length > 0) {
-            filterAndPopulateResults();
-            return;
-        }
-
         resultsContainer.innerHTML = '<div class="search-result-item">正在加载...</div>';
 
         try {
-            const panelsToRender = await App.api.request('/api/links');
+            const panelsToRender = await App.cache.fetchLinks();
             const flatLinks = [];
 
-            if (panelsToRender && typeof panelsToRender === 'object' && !Array.isArray(panelsToRender)) {
+            if (panelsToRender && typeof panelsToRender === 'object') {
                 for (const panelName in panelsToRender) {
                     const categories = panelsToRender[panelName];
                     if (Array.isArray(categories)) {
@@ -87,9 +77,9 @@ App.finder = (function() {
                 let panelHTML = '';
 
                 if (panelKey === 'primary') {
-                    panelHTML = `<span class="panel primary">主面板</span>`;
+                    panelHTML = `<span class="item-panel-badge primary">主面板</span>`;
                 } else if (panelKey === 'secondary') {
-                    panelHTML = `<span class="panel secondary">副面板</span>`;
+                    panelHTML = `<span class="item-panel-badge secondary">副面板</span>`;
                 }
 
                 item.innerHTML = `
@@ -98,8 +88,7 @@ App.finder = (function() {
                         <span class="url" title="${App.helpers.escapeHTML(link.url)}">${App.helpers.escapeHTML(link.url)}</span>
                     </div>
                     <div class="bottom-row">
-                        ${panelHTML}
-                        ${panelHTML ? '<span class="separator">-</span>' : ''}
+                        <div class="panel-container">${panelHTML}</div>
                         <span class="category">${App.helpers.escapeHTML(categoryText)}</span>
                     </div>
                 `;
@@ -148,8 +137,6 @@ App.finder = (function() {
             });
         }
     }
-
-    document.addEventListener('links-updated', invalidateLinksCache);
 
     return {
         loadLinksForEditing,

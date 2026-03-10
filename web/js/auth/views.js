@@ -2,6 +2,8 @@ window.App = window.App || {};
 
 App.views = (function() {
 
+    const uploadIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`;
+
     // getSiteSettingsHTML 返回站点设置的 HTML 结构
     function getSiteSettingsHTML() {
         return `
@@ -10,9 +12,9 @@ App.views = (function() {
             <div class="modal-body">
                 <form id="site-settings-form" class="form-grid">
                     <div class="form-group"><label for="site-name">站点名称</label><input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称"></div>
-                    <div class="form-group"><label for="site-icon">站点图标</label><div class="input-with-button"><input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-site-icon-button" class="btn icon-button"><i data-feather="upload"></i></button><input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="site-icon">站点图标</label><div class="input-with-button"><input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-site-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group"><label for="site-title">网站标题</label><input type="text" id="site-title" name="siteTitle" placeholder="显示在主页的标题"></div>
-                    <div class="form-group"><label for="avatar-url">网站头像</label><div class="input-with-button"><input type="text" id="avatar-url" name="avatarURL" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-avatar-button" class="btn icon-button"><i data-feather="upload"></i></button><input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="avatar-url">网站头像</label><div class="input-with-button"><input type="text" id="avatar-url" name="avatarURL" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-avatar-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*"></div></div>
                 </form>
             </div>
         </div>`;
@@ -25,7 +27,7 @@ App.views = (function() {
             <div class="modal-header"><h2>外观设置</h2></div>
             <div class="modal-body">
                 <form id="style-settings-form" class="form-grid">
-                    <div class="form-group span-two"><label for="background-url">背景图片</label><div class="input-with-button"><input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64"><button type="button" id="upload-background-button" class="btn icon-button"><i data-feather="upload"></i></button><input type="file" id="background-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group span-two"><label for="background-url">背景图片</label><div class="input-with-button"><input type="text" id="background-url" name="backgroundURL" placeholder="图片 URL 或 Base64"><button type="button" id="upload-background-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="background-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group span-two slider-group"><label for="background-blur">背景模糊: <span id="background-blur-value">5</span>px</label><input type="range" id="background-blur" name="backgroundBlur" min="0" max="50" value="5" class="slider"></div>
                     <div class="form-group span-two slider-group"><label for="cards-per-row">每行链接卡片数量: <span id="cards-per-row-value">4</span></label><input type="range" id="cards-per-row" name="cardsPerRow" min="1" max="20" value="4" class="slider"></div>
                 </form>
@@ -57,7 +59,7 @@ App.views = (function() {
                     <div class="form-group"><label for="link-title">标题*</label><input type="text" id="link-title" name="title" placeholder="Google" required></div>
                     <div class="form-group"><label for="link-url">链接*</label><input type="url" id="link-url" name="url" placeholder="https://google.com" required></div>
                     <div class="form-group"><label for="link-category">分类</label><input type="text" id="link-category" name="category" placeholder="搜索引擎"></div>
-                    <div class="form-group"><label for="link-icon">图标</label><div class="input-with-button"><input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-icon-button" class="btn icon-button"><i data-feather="upload"></i></button><input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="link-icon">图标</label><div class="input-with-button"><input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group span-two"><label for="link-description">描述</label><textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea></div>
                 </form>
             </div>
@@ -79,7 +81,7 @@ App.views = (function() {
                     <div class="form-group"><label for="edit-link-title">标题*</label><input type="text" id="edit-link-title" name="title" required disabled></div>
                     <div class="form-group"><label for="edit-link-url">链接*</label><input type="url" id="edit-link-url" name="url" required disabled></div>
                     <div class="form-group"><label for="edit-link-category">分类</label><input type="text" id="edit-link-category" name="category" disabled></div>
-                    <div class="form-group"><label for="edit-link-icon">图标</label><div class="input-with-button"><input type="text" id="edit-link-icon" name="icon" disabled><button type="button" id="upload-edit-icon-button" class="btn icon-button" disabled><i data-feather="upload"></i></button><input type="file" id="edit-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="edit-link-icon">图标</label><div class="input-with-button"><input type="text" id="edit-link-icon" name="icon" disabled><button type="button" id="upload-edit-icon-button" class="btn icon-button" disabled>${uploadIconSVG}</button><input type="file" id="edit-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group span-two"><label for="edit-link-description">描述</label><textarea id="edit-link-description" name="description" disabled></textarea></div>
                 </form>
             </div>

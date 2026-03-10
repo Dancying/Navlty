@@ -234,5 +234,19 @@ App.settings = (function () {
         }
     }
 
-    return { loadAndShow };
+    // get 获取原始设置
+    function get() {
+        return originalSettings;
+    }
+
+    // update 更新原始设置
+    function update(newSettings) {
+        originalSettings = { ...originalSettings, ...newSettings };
+    }
+
+    return { 
+        loadAndShow,
+        get,
+        update
+    };
 })();

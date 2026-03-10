@@ -6,12 +6,6 @@ App.editor = (function() {
     let dom = { container: null };
     let openCategories = new Set();
     let linkIdCounter = 0;
-    let cachedPanels = null;
-
-    // invalidateCache 使缓存的面板数据失效
-    function invalidateCache() {
-        cachedPanels = null;
-    }
 
     // getLinkData 返回初始和当前的链接数据
     function getLinkData() {
@@ -89,47 +83,41 @@ App.editor = (function() {
             dom.container.dataset.dndListenerAttached = 'true';
         }
 
-        let panelsToRender = cachedPanels;
-
-        if (!panelsToRender) {
-            dom.container.innerHTML = '<div class="loading-spinner"></div>';
-            try {
-                panelsToRender = await App.api.request('/api/links');
-                cachedPanels = JSON.parse(JSON.stringify(panelsToRender));
-            } catch (error) {
-                if (error.message !== 'Unauthorized') {
-                    console.error('Error loading links:', error);
-                    App.toast.show('加载链接列表失败，请刷新重试', 'error');
-                    dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
-                }
-                return;
-            }
-        }
-
-        const flatLinks = [];
-        linkIdCounter = 0;
-        if (panelsToRender && typeof panelsToRender === 'object') {
-            for (const panelName in panelsToRender) {
-                const categories = panelsToRender[panelName];
-                if (Array.isArray(categories)) {
-                    categories.forEach(category => {
-                        if (category.links && Array.isArray(category.links)) {
-                            category.links.forEach(link => {
-                                flatLinks.push({
-                                    ...link,
-                                    clientId: `client-link-${linkIdCounter++}`,
-                                    panel: panelName,
-                                    category: category.name || ''
+        dom.container.innerHTML = '<div class="loading-spinner"></div>';
+        try {
+            const panelsToRender = await App.cache.fetchLinks();
+            const flatLinks = [];
+            linkIdCounter = 0;
+            if (panelsToRender && typeof panelsToRender === 'object') {
+                for (const panelName in panelsToRender) {
+                    const categories = panelsToRender[panelName];
+                    if (Array.isArray(categories)) {
+                        categories.forEach(category => {
+                            if (category.links && Array.isArray(category.links)) {
+                                category.links.forEach(link => {
+                                    flatLinks.push({
+                                        ...link,
+                                        clientId: `client-link-${linkIdCounter++}`,
+                                        panel: panelName,
+                                        category: category.name || ''
+                                    });
                                 });
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
             }
+            currentLinks = flatLinks;
+            initialLinks = JSON.parse(JSON.stringify(flatLinks));
+            renderPanels();
+        } catch (error) {
+            if (error.message !== 'Unauthorized') {
+                console.error('Error loading links:', error);
+                App.toast.show('加载链接列表失败，请刷新重试', 'error');
+                dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
+            }
+            return;
         }
-        currentLinks = flatLinks;
-        initialLinks = JSON.parse(JSON.stringify(flatLinks));
-        renderPanels();
     }
 
     // renderPanels 重新渲染所有面板
@@ -550,12 +538,9 @@ App.editor = (function() {
         }
     }
 
-    document.addEventListener('links-updated', invalidateCache);
-
     return {
         getLinkData,
-        loadAndRender,
-        invalidateCache
+        loadAndRender
     };
 
 })();

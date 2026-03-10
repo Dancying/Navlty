@@ -1,15 +1,18 @@
-
-/* 设置模态框特定样式 */
+/* 切换到网格布局以更好地控制结构 */
 #settings-modal .modal-content {
     --nav-width: 130px;
-    flex-direction: row;
-    height: 700px;
+    display: grid;
+    grid-template-columns: var(--nav-width) 1fr;
+    grid-template-rows: 1fr auto;
+    max-height: 85vh;
 }
 
-/* 设置导航栏的样式，确保其在页脚上方以显示边框 */
+/* 将导航栏定位到网格的第一列并使其跨越两行 */
 #settings-nav {
     position: relative;
     z-index: 1;
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
     width: var(--nav-width);
     padding: 1rem;
     flex-shrink: 0;
@@ -19,7 +22,6 @@
     border-bottom-left-radius: 12px;
     overflow-y: auto;
 }
-
 
 /* 为标题添加一些底部边距 */
 #settings-nav h3 {
@@ -52,12 +54,13 @@
     font-weight: 600;
 }
 
-/* 设置面板的内容区域，确保滚动内容不会被页脚遮挡 */
+/* 为内容区添加水平内边距以创建视觉间距 */
 #settings-content {
-    flex-grow: 1;
-    padding-bottom: 5rem;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
     overflow-y: auto;
     position: relative;
+    padding: 0 2rem;
 }
 
 .settings-content-panel {
@@ -68,16 +71,19 @@
     display: block;
 }
 
-/* 调整页脚位置以匹配导航栏宽度并修正圆角 */
+/* 将页脚定位到网格的第二列第二行 */
 #settings-modal .modal-footer {
-    position: absolute;
-    bottom: 0;
-    left: var(--nav-width);
-    right: 0;
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
     border-bottom-left-radius: 0;
+    border-top: 1px solid #e2e8f0;
 }
 
-/* 恢复分类管理主体的标准内边距，确保与其他面板完全一致 */
+/* 恢复分类管理主体的标准内边距 */
 div#settings-modal>.modal-content>div#category-management-body.modal-body {
     padding: 2rem;
     overflow: hidden;
@@ -86,7 +92,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     min-height: 0;
 }
 
-/* 分类管理容器，作为网格布局容器，不再负责间距 */
+/* 分类管理容器作为网格布局容器 */
 #category-management-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -96,7 +102,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     padding: 0;
 }
 
-/* 管理面板，用于包含主、次链接的管理区域 */
+/* 用于包含主次链接的管理面板 */
 .management-panel {
     display: flex;
     flex-direction: column;
@@ -104,7 +110,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     min-height: 0;
 }
 
-/* 管理面板的标题，作为清晰的次级标题 */
+/* 管理面板的次级标题 */
 .management-panel-title {
     font-size: 1rem;
     color: #333;
@@ -128,7 +134,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     margin-bottom: 0.5rem;
 }
 
-/* 分类标题栏，采用更紧凑的内边距 */
+/* 分类标题栏的样式 */
 .management-category-header {
     display: flex;
     justify-content: space-between;
@@ -161,12 +167,12 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     min-width: 0;
 }
 
-/* 分类折叠/展开的雪佛龙图标 */
+/* 分类折叠展开的雪佛龙图标 */
 .category-chevron {
     transition: transform 0.3s;
 }
 
-/* 展开状态下的雪佛龙图标旋转效果 */
+/* 展开状态下雪佛龙图标的旋转效果 */
 .management-category-header.open .category-chevron {
     transform: rotate(90deg);
 }
@@ -227,7 +233,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     margin: 0;
 }
 
-/* 单个链接项，采用更紧凑的内边距 */
+/* 单个链接项的样式 */
 .management-link-item {
     display: flex;
     justify-content: space-between;
@@ -269,7 +275,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     background-color: #f0f8ff !important;
 }
 
-/* 拖拽元素经过管理面板内容区域时的效果 */
+/* 拖拽元素经过管理面板内容区时的效果 */
 .management-panel-content-wrapper.drag-over {
     box-shadow: inset 0 0 0 2px #007bff;
 }
@@ -304,27 +310,34 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
         gap: 2rem;
     }
 
+    /* 在移动端恢复flex布局并取消网格设置 */
     #settings-modal .modal-content {
+        display: flex;
         flex-direction: column;
+        grid-template-columns: unset;
+        grid-template-rows: unset;
     }
 
-    /* 在移动设备上，导航栏变为顶部栏 */
+    /* 取消导航栏的网格定位 */
     #settings-nav {
+        grid-column: unset;
+        grid-row: unset;
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #e0e0e0;
         border-radius: 0;
     }
 
+    /* 取消页脚的网格定位 */
     #settings-modal .modal-footer {
+        grid-column: unset;
+        grid-row: unset;
         width: 100%;
         position: relative;
         left: 0;
     }
 
-    /* --- 移动端分类管理面板布局调整 --- */
-
-    /* 在移动端，为分类管理主体恢复标准内边距 */
+    /* 移动端分类管理面板布局调整 */
     div#settings-modal>.modal-content>div#category-management-body.modal-body {
         display: block;
         overflow-y: auto;
@@ -336,7 +349,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
         min-height: auto;
     }
 
-    /* 移除内部滚动条，让内容自然撑开高度 */
+    /* 移除内部滚动条让内容自然撑开 */
     .management-panel-content-wrapper {
         overflow-y: visible;
         flex-grow: 0;

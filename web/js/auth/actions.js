@@ -322,6 +322,8 @@ App.actions = (function() {
         const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
         if (!activePanel) return;
 
+        const originalSettings = App.settings.get();
+
         const getValue = (id, defaultValue = '') => document.getElementById(id)?.value || defaultValue;
         const getIntValue = (id, defaultValue) => parseInt(getValue(id, defaultValue), 10) || 0;
         const getLinesValue = (id) => getValue(id).split('\n').filter(line => line.trim() !== '');
@@ -372,9 +374,9 @@ App.actions = (function() {
             
             App.toast.show('设置已保存，部分更改可能需要刷新页面生效', 'success');
 
-            originalSettings = { ...originalSettings, ...updates };
-            apply(originalSettings);
-            document.dispatchEvent(new CustomEvent('settings-updated', { detail: originalSettings }));
+            App.settings.update(updates);
+            const newSettings = App.settings.get();
+            document.dispatchEvent(new CustomEvent('settings-updated', { detail: newSettings }));
             
             App.modal.close('settings-modal');
         } catch (error) {

@@ -3,6 +3,7 @@ package internal
 import (
 	"log"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/google/uuid"
@@ -98,6 +99,15 @@ func LoadLinks() map[string][]LinkCategory {
 	if panels == nil {
 		return make(map[string][]LinkCategory)
 	}
+
+	for _, categories := range panels {
+		for i := range categories {
+			sort.Slice(categories[i].Links, func(j, k int) bool {
+				return categories[i].Links[j].Sort < categories[i].Links[k].Sort
+			})
+		}
+	}
+
 	return panels
 }
 

@@ -33,10 +33,15 @@ App.auth = (function () {
         }
     }
 
-    // handleUnauthorized 处理未授权的情况
-    function handleUnauthorized() {
+    // invalidateSession 静默地使前端会话失效
+    function invalidateSession() {
         isAuthorized = false;
         localStorage.removeItem("isAuthorized");
+    }
+
+    // handleUnauthorized 处理未授权的情况
+    function handleUnauthorized() {
+        invalidateSession();
         App.toast.show("登录状态已失效，请重新验证", "error");
         checkAuthStatus();
     }
@@ -63,8 +68,7 @@ App.auth = (function () {
             window.location.reload();
 
         } catch (error) {
-            isAuthorized = false;
-            localStorage.removeItem("isAuthorized");
+            invalidateSession();
             console.error("Auth failed:", error);
 
             if (error.message === '密码验证失败') {
@@ -82,8 +86,7 @@ App.auth = (function () {
         } catch (error) {
             console.error("Logout failed:", error);
         } finally {
-            isAuthorized = false;
-            localStorage.removeItem("isAuthorized");
+            invalidateSession();
             window.location.reload();
         }
     }
@@ -187,5 +190,6 @@ App.auth = (function () {
         checkAuthStatus,
         isAuthenticated,
         handleUnauthorized,
+        invalidateSession,
     };
 })();

@@ -106,7 +106,9 @@ App.views = (function() {
         return `
         <div id="content-category-management" class="settings-content-panel">
             <div class="modal-header"><h2>分类管理</h2></div>
-            <div class="modal-body" id="category-management-body"></div>
+            <div class="modal-body" id="category-management-body" data-dnd-target="category-container">
+                 <ul class="management-link-list" data-dnd-target="link-container"></ul>
+            </div>
         </div>`;
     }
 

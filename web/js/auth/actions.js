@@ -154,26 +154,39 @@ App.actions = (function() {
     }
     
     function _detectCategoryReorders(initialLinks, currentLinks) {
-        const getPanelData = links => links.reduce((acc, link) => {
-            const panelName = link.panel || 'primary';
-            if (!acc[panelName]) acc[panelName] = { order: [], catSet: new Set() };
-            if (link.category && !acc[panelName].catSet.has(link.category)) {
-                acc[panelName].order.push(link.category);
-                acc[panelName].catSet.add(link.category);
-            }
-            return acc;
-        }, {});
+        const getOrderedCategories = (links) => {
+            const panels = { primary: { order: [], set: new Set() }, secondary: { order: [], set: new Set() } };
+            links.forEach(link => {
+                const panelName = link.panel || 'primary';
+                const categoryName = link.category || 'Uncategorized';
+                if (!panels[panelName].set.has(categoryName)) {
+                    panels[panelName].set.add(categoryName);
+                    panels[panelName].order.push(categoryName);
+                }
+            });
+            return panels;
+        };
     
-        const initial = getPanelData(initialLinks);
-        const current = getPanelData(currentLinks);
-        return ['primary', 'secondary'].reduce((actions, panelName) => {
-            const initialOrder = initial[panelName]?.order.join('|') || '';
-            const currentOrder = current[panelName]?.order.join('|') || '';
-            if (initialOrder !== currentOrder) {
-                actions.push({ action: 'REORDER_CATEGORIES', payload: { panel: panelName, orderedCategoryNames: current[panelName]?.order || [] } });
+        const initialPanels = getOrderedCategories(initialLinks);
+        const currentPanels = getOrderedCategories(currentLinks);
+        const actions = [];
+    
+        ['primary', 'secondary'].forEach(panelName => {
+            const initialOrder = initialPanels[panelName].order;
+            const currentOrder = currentPanels[panelName].order;
+    
+            if (JSON.stringify(initialOrder) !== JSON.stringify(currentOrder)) {
+                actions.push({
+                    action: 'REORDER_CATEGORIES',
+                    payload: {
+                        panel: panelName,
+                        orderedCategoryNames: currentOrder.map(name => name === 'Uncategorized' ? '' : name)
+                    }
+                });
             }
-            return actions;
-        }, []);
+        });
+    
+        return actions;
     }
     
     function _detectLinkUpdates(initialLinks, currentLinks, initialLinksMap) {
@@ -185,29 +198,43 @@ App.actions = (function() {
     
         const initialGroups = groupLinks(initialLinks);
         const currentGroups = groupLinks(currentLinks);
+    
         const updates = Object.entries(currentGroups).flatMap(([key, currentLinksInCat]) => {
             const initialLinksInCat = initialGroups[key] || [];
             const orderChanged = initialLinksInCat.map(l => l.id).join() !== currentLinksInCat.map(l => l.id).join();
+    
             return currentLinksInCat.map((currentLink, index) => {
                 const initialLink = initialLinksMap.get(currentLink.id);
                 if (!initialLink) return null;
-                const linkUpdates = {};
-                if (orderChanged) linkUpdates.sort = index;
-                ['title', 'url', 'desc', 'icon_url'].forEach(field => {
-                    if (currentLink[field] !== initialLink[field]) linkUpdates[field] = currentLink[field];
+    
+                const updatePayload = {};
+                let hasChange = false;
+
+                if (orderChanged && initialLink.sort !== index) {
+                    updatePayload.sort = index;
+                    hasChange = true;
+                }
+
+                ['title', 'url', 'desc', 'icon_url', 'category'].forEach(field => {
+                    if (currentLink[field] !== initialLink[field]) {
+                        updatePayload[field] = currentLink[field];
+                        hasChange = true;
+                    }
                 });
-                return Object.keys(linkUpdates).length > 0 ? { id: currentLink.id, updates: linkUpdates } : null;
+    
+                return hasChange ? { id: currentLink.id, updates: updatePayload } : null;
             });
         }).filter(Boolean);
-
+    
         return updates.length > 0 ? { action: 'UPDATE_LINKS', payload: updates } : null;
     }
 
     // updateStructure 将链接结构的更改保存到服务器
     async function updateStructure(initialLinks, currentLinks) {
         const initialLinksMap = new Map(initialLinks.map(link => [link.id, link]));
+        const currentLinksMap = new Map(currentLinks.map(link => [link.id, link]));
         const actions = [
-            _detectDeletions(initialLinks, new Map(currentLinks.map(link => [link.id, link]))),
+            _detectDeletions(initialLinks, currentLinksMap),
             ..._detectMoves(currentLinks, initialLinksMap),
             ..._detectCategoryReorders(initialLinks, currentLinks),
             _detectLinkUpdates(initialLinks, currentLinks, initialLinksMap)
@@ -244,8 +271,9 @@ App.actions = (function() {
         await _handleApiSubmit({
             endpoint: '/api/auth/passwd',
             payload: { currentPassword: current.value, newPassword: newPass.value },
-            successMessage: '密码已更新，下次请使用新密码登录',
-            modalId: 'settings-modal'
+            successMessage: '密码已更新，请重新登录',
+            modalId: 'settings-modal',
+            onSuccess: App.auth.invalidateSession
         });
     }
 

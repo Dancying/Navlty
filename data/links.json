@@ -1,23 +1,173 @@
 {
   "primary": [
     {
-      "name": "Demo",
+      "name": "Development",
       "links": [
         {
-          "id": "212f6916-ed20-4eb0-b470-ef5c7e6e08e8",
-          "title": "Google",
-          "url": "https://www.google.com",
-          "desc": "The world's most popular search engine.",
-          "icon_url": "https://api.iconify.design/logos/google-icon.svg",
+          "id": "268bfe29-b653-43dc-a70e-62e5bc96ae0e",
+          "title": "Python",
+          "url": "https://www.python.org",
+          "desc": "Versatile language for web, data, and AI.",
+          "icon_url": "https://api.iconify.design/logos:python.svg",
           "sort": 0
         },
+        {
+          "id": "a61ec19f-0c15-4e14-ae23-51915f48e71a",
+          "title": "Django",
+          "url": "https://www.djangoproject.com",
+          "desc": "The Web framework for perfectionists with deadlines.",
+          "icon_url": "https://api.iconify.design/logos:django-icon.svg",
+          "sort": 1
+        },
+        {
+          "id": "46788ab2-57c0-4bf0-80cc-02ebbc1298fb",
+          "title": "FastAPI",
+          "url": "https://fastapi.tiangolo.com",
+          "desc": "High performance web framework for Python.",
+          "icon_url": "https://api.iconify.design/logos:fastapi-icon.svg",
+          "sort": 2
+        },
+        {
+          "id": "859dcd61-f1b5-4ec3-b59c-5cc96f4537d0",
+          "title": "Go",
+          "url": "https://go.dev",
+          "desc": "Open source programming language by Google.",
+          "icon_url": "https://api.iconify.design/logos:gopher.svg",
+          "sort": 3
+        },
+        {
+          "id": "6b821f7f-460b-4153-9935-43b6380074fa",
+          "title": "Spring Boot",
+          "url": "https://spring.io",
+          "desc": "Create stand-alone, production-grade Spring apps.",
+          "icon_url": "https://api.iconify.design/logos:spring-icon.svg",
+          "sort": 4
+        }
+      ]
+    },
+    {
+      "name": "Tech",
+      "links": [
+        {
+          "id": "6d8278d2-ce9d-43a3-99a3-8279bda7bcb9",
+          "title": "Intel",
+          "url": "https://intel.com",
+          "desc": "Innovator in semiconductor manufacturing.",
+          "icon_url": "https://api.iconify.design/logos:intel.svg",
+          "sort": 0
+        },
+        {
+          "id": "778d5c82-b080-43bb-b88a-d261d4ad36ac",
+          "title": "Microsoft",
+          "url": "https://microsoft.com",
+          "desc": "Global leader in software and devices.",
+          "icon_url": "https://api.iconify.design/logos:microsoft-icon.svg",
+          "sort": 1
+        },
+        {
+          "id": "f1c57374-6329-4445-aea7-7a174a533a94",
+          "title": "Apple test",
+          "url": "https://apple.com",
+          "desc": "Innovator in personal technology. 11111111111",
+          "icon_url": "https://api.iconify.design/logos:apple.svg",
+          "sort": 2
+        },
+        {
+          "id": "58ee2079-d529-408f-b768-a23c357cba09",
+          "title": "NVIDIA",
+          "url": "https://nvidia.com",
+          "desc": "Leader in AI computing and graphics.",
+          "icon_url": "https://api.iconify.design/logos:nvidia.svg",
+          "sort": 3
+        }
+      ]
+    },
+    {
+      "name": "Demo",
+      "links": [
         {
           "id": "c92ef14c-e6e7-443c-adf0-237a3639603c",
           "title": "GitHub",
           "url": "https://www.github.com",
           "desc": "Platform for software development and version control.",
           "icon_url": "https://api.iconify.design/logos/github-icon.svg",
+          "sort": 0
+        },
+        {
+          "id": "212f6916-ed20-4eb0-b470-ef5c7e6e08e8",
+          "title": "Google",
+          "url": "https://www.google.com",
+          "desc": "The world's most popular search engine.",
+          "icon_url": "https://api.iconify.design/logos/google-icon.svg",
           "sort": 1
+        },
+        {
+          "id": "66f19f72-d484-44db-8a67-084f948eea35",
+          "title": "1111111",
+          "url": "111111111",
+          "desc": "1111111111111111111111111111111111111111",
+          "icon_url": "1111111111111",
+          "sort": 2
+        }
+      ]
+    }
+  ],
+  "secondary": [
+    {
+      "name": "Demo",
+      "links": [
+        {
+          "id": "4e61212c-9608-44e2-967e-03698eb3cf92",
+          "title": "GitHub",
+          "url": "https://www.github.com",
+          "desc": "Platform for software development and version control.",
+          "icon_url": "https://api.iconify.design/logos/github-icon.svg",
+          "sort": 0
+        },
+        {
+          "id": "cafdf59b-c699-48e3-bcc6-fd7a3b681cb2",
+          "title": "Google",
+          "url": "https://www.google.com",
+          "desc": "The world's most popular search engine.",
+          "icon_url": "https://api.iconify.design/logos/google-icon.svg",
+          "sort": 1
+        }
+      ]
+    },
+    {
+      "name": "Tech",
+      "links": [
+        {
+          "id": "59f16ce5-f556-4ba8-bf9b-e239c49bcf6c",
+          "title": "Intel",
+          "url": "https://intel.com",
+          "desc": "Innovator in semiconductor manufacturing.",
+          "icon_url": "https://api.iconify.design/logos:intel.svg",
+          "sort": 0
+        },
+        {
+          "id": "16c72843-aecd-44f6-b058-39754881beaf",
+          "title": "Apple",
+          "url": "https://apple.com",
+          "desc": "Innovator in personal technology.",
+          "icon_url": "https://api.iconify.design/logos:apple.svg",
+          "sort": 1
+        },
+        {
+          "id": "d918313a-69de-4e3d-9c73-f8f7c92ebd70",
+          "title": "Microsoft",
+          "url": "https://microsoft.com",
+          "desc": "Global leader in software and devices.",
+          "icon_url": "https://api.iconify.design/logos:microsoft-icon.svg",
+          "sort": 2
+        },
+        {
+          "id": "2e5f2577-e2ce-4ce3-b9d1-8e442b6a2f8c",
+          "title": "NVIDIA",
+          "url": "https://nvidia.com",
+          "desc": "Leader in AI computing and graphics.",
+          "icon_url": "https://api.iconify.design/logos:nvidia.svg",
+          "sort": 3
         }
       ]
     }

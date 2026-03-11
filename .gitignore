@@ -1,0 +1,13 @@
+# Go Binaries
+navlty
+*.exe
+*.test
+*.out
+
+# Data directory
+/data/
+
+# IDE settings & OS files
+.vscode/
+.idea/
+.DS_Store

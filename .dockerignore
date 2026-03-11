@@ -1,0 +1,19 @@
+# Git version control files
+.git
+.gitignore
+
+# Documentation and IDE files
+README.md
+docs/
+.vscode/
+.idea/
+
+# Docker related files
+Dockerfile
+.dockerignore
+
+# Go module cache
+/vendor/
+
+# OS-specific files
+.DS_Store

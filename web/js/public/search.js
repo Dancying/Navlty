@@ -9,16 +9,15 @@ App.search = (function () {
         searchInput = document.getElementById('search-input');
         searchButton = document.getElementById('search-button');
 
-        if (searchButton) {
-            searchButton.addEventListener('click', toggleSearch);
-        }
-        if (searchInput) {
+        searchButton?.addEventListener('click', toggleSearch);
+        
+        searchInput?.addEventListener('input', (() => {
             let debounceTimer;
-            searchInput.addEventListener('input', () => {
+            return () => {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(performSearch, 100);
-            });
-        }
+            };
+        })());
     }
 
     // showSearch 显示并聚焦搜索框
@@ -40,11 +39,7 @@ App.search = (function () {
     // toggleSearch 切换搜索框的显示或隐藏状态
     function toggleSearch() {
         if (!searchWrapper) return;
-        if (searchWrapper.classList.contains('active')) {
-            hideSearch();
-        } else {
-            showSearch();
-        }
+        searchWrapper.classList.contains('active') ? hideSearch() : showSearch();
     }
 
     // performSearch 根据输入框中的词语执行搜索，通过 CSS 类名过滤卡片
@@ -65,25 +60,14 @@ App.search = (function () {
             const title = card.querySelector('.title')?.textContent.toLowerCase() || '';
             const url = card.href?.toLowerCase() || '';
             const desc = isPrimary ? (card.querySelector('.desc span')?.textContent.toLowerCase() || '') : '';
-
-            if (title.includes(searchTerm) || url.includes(searchTerm) || (isPrimary && desc.includes(searchTerm))) {
-                card.classList.add('is-match');
-            } else {
-                card.classList.remove('is-match');
-            }
+            const isMatch = title.includes(searchTerm) || url.includes(searchTerm) || (isPrimary && desc.includes(searchTerm));
+            card.classList.toggle('is-match', isMatch);
         });
 
         activePanel.querySelectorAll('.card-container').forEach(container => {
-            const categoryHasVisibleCards = container.querySelector('.card.is-match');
             const categoryTitle = container.previousElementSibling;
-
-            if (categoryTitle && categoryTitle.classList.contains('category-title')) {
-                if (categoryHasVisibleCards) {
-                    categoryTitle.classList.add('is-match');
-                } else {
-                    categoryTitle.classList.remove('is-match');
-                }
-            }
+            const hasMatch = !!container.querySelector('.card.is-match');
+            categoryTitle?.classList.contains('category-title') && categoryTitle.classList.toggle('is-match', hasMatch);
         });
     }
 

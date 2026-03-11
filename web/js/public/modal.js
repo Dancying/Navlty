@@ -7,12 +7,11 @@ App.modal = (function() {
     const modal = document.getElementById(modalId);
     if (!modal) return;
 
-    const bodyHasScrollbar = document.body.scrollHeight > window.innerHeight;
-    if (bodyHasScrollbar) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    if (document.body.scrollHeight > window.innerHeight) {
+      const scrollbarWidth = `${window.innerWidth - document.documentElement.clientWidth}px`;
+      document.body.style.paddingRight = scrollbarWidth;
       const header = document.querySelector('.header-background');
-      if (header) header.style.paddingRight = `${scrollbarWidth}px`;
+      header && (header.style.paddingRight = scrollbarWidth);
     }
     
     document.body.classList.add('modal-open');
@@ -30,7 +29,7 @@ App.modal = (function() {
         document.body.classList.remove('modal-open');
         document.body.style.paddingRight = '';
         const header = document.querySelector('.header-background');
-        if (header) header.style.paddingRight = '';
+        header && (header.style.paddingRight = '');
     }
   }
 

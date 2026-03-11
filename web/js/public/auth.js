@@ -11,7 +11,7 @@ App.auth = (function () {
             title: '设置访问密码',
             label: '首次使用，请设置访问密码',
             inputId: 'new-password',
-            placeholder: '请输入...',
+            placeholder: '请输入密码...',
             autocomplete: 'new-password',
             buttonText: '保存'
         },
@@ -20,7 +20,7 @@ App.auth = (function () {
             title: '验证访问密码',
             label: '请输入访问密码',
             inputId: 'password',
-            placeholder: '请输入...',
+            placeholder: '请输入密码...',
             autocomplete: 'current-password',
             buttonText: '确认'
         }
@@ -28,9 +28,7 @@ App.auth = (function () {
 
     // init 初始化认证模块
     function init() {
-        if (localStorage.getItem("isAuthorized") === "true") {
-            isAuthorized = true;
-        }
+        isAuthorized = localStorage.getItem("isAuthorized") === "true";
     }
 
     // invalidateSession 静默地使前端会话失效
@@ -54,17 +52,14 @@ App.auth = (function () {
                 body: JSON.stringify({ password }),
             });
 
-            if (!result.success) {
-                throw new Error("密码验证失败");
-            }
+            if (!result.success) throw new Error("密码验证失败");
 
             isAuthorized = true;
             localStorage.setItem("isAuthorized", "true");
             App.modal.close(MODAL_CONFIG.VERIFY.modalId);
-            if (onSuccessCallback) {
-                onSuccessCallback();
-                onSuccessCallback = null;
-            }
+            
+            onSuccessCallback && (onSuccessCallback(), onSuccessCallback = null);
+            
             window.location.reload();
 
         } catch (error) {
@@ -113,9 +108,7 @@ App.auth = (function () {
             };
 
             modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    App.modal.close(modalId);
-                }
+                event.target === modal && App.modal.close(modalId);
             });
 
             modalElements.modalContent.addEventListener('click', async (event) => {
@@ -127,16 +120,13 @@ App.auth = (function () {
                         return;
                     }
                     await authUser(password);
-                } else if (target.closest('.cancel-button') || target.closest('.close-button')) {
+                } else if (target.closest('.cancel-button, .close-button')) {
                     App.modal.close(modalId);
                 }
             });
 
             modalElements.input.addEventListener('keyup', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    modalElements.confirmButton.click();
-                }
+                event.key === 'Enter' && (event.preventDefault(), modalElements.confirmButton.click());
             });
         }
 
@@ -156,7 +146,7 @@ App.auth = (function () {
     // checkAuthStatus 检查授权状态（交互式）
     async function checkAuthStatus(callback) {
         if (isAuthorized) {
-            if (callback) callback();
+            callback && callback();
             return;
         }
 
@@ -166,16 +156,12 @@ App.auth = (function () {
 
         try {
             const result = await App.api.request("/auth/status");
-            if (result.isPasswordSet) {
-                _showAuthModal(MODAL_CONFIG.VERIFY);
-            } else {
-                _showAuthModal(MODAL_CONFIG.SETUP);
-            }
+            _showAuthModal(result.isPasswordSet ? MODAL_CONFIG.VERIFY : MODAL_CONFIG.SETUP);
         } catch (error) {
-            if (error.message !== 'Unauthorized') {
-                console.error("Failed to check auth status:", error);
-                App.toast.show("无法检查状态", "error");
-            }
+            (error.message !== 'Unauthorized') && (
+                console.error("Failed to check auth status:", error),
+                App.toast.show("无法检查状态", "error")
+            );
         }
     }
 
@@ -184,12 +170,5 @@ App.auth = (function () {
         return isAuthorized;
     }
 
-    return {
-        init,
-        logout,
-        checkAuthStatus,
-        isAuthenticated,
-        handleUnauthorized,
-        invalidateSession,
-    };
+    return { init, logout, checkAuthStatus, isAuthenticated, handleUnauthorized, invalidateSession };
 })();

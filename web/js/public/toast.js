@@ -23,8 +23,8 @@ App.toast = (function () {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
 
-        const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
-        const iconSVG = feather.icons[iconName] ? feather.icons[iconName].toSvg({ width: '22px', height: '22px' }) : '';
+        const iconName = ({ success: 'check-circle' })[type] || 'alert-circle';
+        const iconSVG = feather.icons[iconName]?.toSvg({ width: '22px', height: '22px' }) ?? '';
 
         toast.innerHTML = `
             <div class="toast-icon">${iconSVG}</div>
@@ -33,23 +33,12 @@ App.toast = (function () {
 
         toastContainer.appendChild(toast);
 
-        requestAnimationFrame(() => {
-            toast.classList.add('show');
-        });
+        requestAnimationFrame(() => toast.classList.add('show'));
 
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, VISIBLE_DURATION);
+        setTimeout(() => toast.classList.remove('show'), VISIBLE_DURATION);
 
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-        }, VISIBLE_DURATION + ANIMATION_DURATION);
+        setTimeout(() => toast.remove(), VISIBLE_DURATION + ANIMATION_DURATION);
     }
 
-    return {
-        init,
-        show
-    };
+    return { init, show };
 })();

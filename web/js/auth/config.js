@@ -9,6 +9,6 @@ App.config = {
         { name: '站点设置', target: 'content-site-settings' },
         { name: '外观设置', target: 'content-style-settings' },
         { name: '高级设置', target: 'content-advanced-settings' },
-        { name: '访问密码', target: 'content-password-settings' }
+        { name: '密码管理', target: 'content-password-settings' }
     ]
 };

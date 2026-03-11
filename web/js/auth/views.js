@@ -42,7 +42,7 @@ App.views = (function() {
             <div class="modal-header"><h2>高级设置</h2></div>
             <div class="modal-body">
                 <form id="advanced-settings-form" class="form-grid">
-                    <div class="form-group span-two"><label for="custom-css">自定义 CSS</label><textarea id="custom-css" name="customCSS" rows="4" placeholder="此处输入自定义 CSS 代码"></textarea></div>
+                    <div class="form-group span-two"><label for="custom-css">自定义 CSS</label><textarea id="custom-css" name="customCSS" rows="4" placeholder="自定义 CSS 代码"></textarea></div>
                     <div class="form-group span-two"><label for="external-js">外部 JS</label><textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js\nhttps://another.com/script.js"></textarea></div>
                 </form>
             </div>
@@ -116,7 +116,7 @@ App.views = (function() {
     function getPasswordSettingsHTML() {
         return `
         <div id="content-password-settings" class="settings-content-panel">
-            <div class="modal-header"><h2>访问密码</h2></div>
+            <div class="modal-header"><h2>密码管理</h2></div>
             <div class="modal-body">
                 <form id="change-password-form" class="form-grid">
                     <div class="form-group span-two"><label for="current-password">当前密码</label><input type="password" id="current-password" name="currentPassword" placeholder="请输入当前密码"></div>

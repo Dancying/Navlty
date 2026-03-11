@@ -42,7 +42,7 @@ App.auth = (function () {
     // handleUnauthorized 处理未授权的情况
     function handleUnauthorized() {
         invalidateSession();
-        App.toast.show("登录状态已失效，请重新验证", "error");
+        App.toast.show("登录已失效", "error");
         checkAuthStatus();
     }
 
@@ -72,9 +72,9 @@ App.auth = (function () {
             console.error("Auth failed:", error);
 
             if (error.message === '密码验证失败') {
-                App.toast.show(error.message, "error");
+                App.toast.show("密码错误", "error");
             } else if (error.message !== 'Unauthorized') {
-                App.toast.show("验证请求失败，请检查网络或稍后重试", "error");
+                App.toast.show("验证失败请重试", "error");
             }
         }
     }
@@ -174,7 +174,7 @@ App.auth = (function () {
         } catch (error) {
             if (error.message !== 'Unauthorized') {
                 console.error("Failed to check auth status:", error);
-                App.toast.show("无法检查认证状态，请稍后重试", "error");
+                App.toast.show("无法检查状态", "error");
             }
         }
     }

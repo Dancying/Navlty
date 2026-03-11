@@ -22,10 +22,10 @@ App.settings = (function () {
                 if (targetInput) {
                     targetInput.value = base64String;
                 }
-                App.toast.show('文件已成功加载', 'success');
+                App.toast.show('文件加载成功', 'success');
             } catch (error) {
                 console.error('File could not be read:', error);
-                App.toast.show(error.message || '文件加载失败，请检查文件格式或重试', 'error');
+                App.toast.show(error.message || '文件加载失败', 'error');
             }
         });
     }
@@ -194,7 +194,7 @@ App.settings = (function () {
                     App.auth.handleUnauthorized();
                 } else {
                     console.error('Error loading settings:', error);
-                    App.toast.show('配置加载失败，请刷新页面重试', 'error');
+                    App.toast.show('配置加载失败', 'error');
                 }
             }
         };

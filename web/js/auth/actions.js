@@ -56,7 +56,7 @@ App.actions = (function() {
                 return App.modal.close('settings-modal');
             }
             if (!singleTitleInput.value || !urlInput.value) {
-                App.toast.show('标题和链接是必填项', 'error');
+                App.toast.show('标题链接必填', 'error');
                 singleTitleInput.classList.toggle('input-error', !singleTitleInput.value);
                 urlInput.classList.toggle('input-error', !urlInput.value);
                 return;
@@ -79,7 +79,7 @@ App.actions = (function() {
             }).filter(Boolean);
 
             if (parsedLinks.length === 0) {
-                App.toast.show('未找到有效链接，请检查格式是否正确 (标题 | 链接)', 'error');
+                App.toast.show('无有效链接', 'error');
                 return;
             }
             linksToAdd = parsedLinks;
@@ -100,7 +100,7 @@ App.actions = (function() {
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
             payload: actions,
-            successMessage: '链接已成功添加',
+            successMessage: '链接已添加',
             modalId: 'settings-modal',
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
         });
@@ -109,11 +109,11 @@ App.actions = (function() {
     // updateLink 更新当前正在编辑的链接
     async function updateLink() {
         const linkId = App.finder.getCurrentEditingLinkId();
-        if (!linkId) return App.toast.show('请先从列表中搜索并选择一个链接', 'warning');
+        if (!linkId) return App.toast.show('请先选择链接', 'warning');
 
         const title = App.helpers.getFormValue('edit-link-title');
         const url = App.helpers.getFormValue('edit-link-url');
-        if (!title || !url) return App.toast.show('标题和 URL 是必填项', 'error');
+        if (!title || !url) return App.toast.show('标题URL必填', 'error');
         
         const payload = {
             title: title,
@@ -126,7 +126,7 @@ App.actions = (function() {
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
             payload: [{ action: 'UPDATE_LINKS', payload: [{ id: linkId, updates: payload }] }],
-            successMessage: '链接已成功更新',
+            successMessage: '链接已更新',
             modalId: 'settings-modal',
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
         });
@@ -244,7 +244,7 @@ App.actions = (function() {
             ? _handleApiSubmit({
                 endpoint: '/api/links/actions',
                 payload: actions,
-                successMessage: '链接更改已成功保存',
+                successMessage: '链接保存成功',
                 modalId: 'settings-modal',
                 onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
             })
@@ -260,18 +260,18 @@ App.actions = (function() {
         if (![current, newPass, confirm].some(i => i.value)) return App.modal.close('settings-modal');
 
         const allFilled = [current, newPass, confirm].every(input => (input.classList.toggle('input-error', !input.value), !!input.value));
-        if (!allFilled) return App.toast.show('所有字段均为必填项', 'error');
+        if (!allFilled) return App.toast.show('所有字段必填', 'error');
         
         if (newPass.value !== confirm.value) {
             newPass.classList.add('input-error');
             confirm.classList.add('input-error');
-            return App.toast.show('新密码和确认密码不匹配', 'error');
+            return App.toast.show('新密码不匹配', 'error');
         }
 
         await _handleApiSubmit({
             endpoint: '/api/auth/passwd',
             payload: { currentPassword: current.value, newPassword: newPass.value },
-            successMessage: '密码已更新，请重新登录',
+            successMessage: '密码已更新',
             modalId: 'settings-modal',
             onSuccess: App.auth.invalidateSession
         });
@@ -302,7 +302,7 @@ App.actions = (function() {
                 endpoint: '/api/settings',
                 method: 'PATCH',
                 payload: updates,
-                successMessage: '设置已保存，部分更改可能需要刷新页面生效',
+                successMessage: '设置已保存',
                 modalId: 'settings-modal',
                 onSuccess: () => {
                     App.settings.update(updates);

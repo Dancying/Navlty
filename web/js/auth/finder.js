@@ -50,7 +50,7 @@ App.finder = (function() {
             if (error.message !== 'Unauthorized') {
                 console.error('Error loading links for editing:', error);
                 resultsContainer.innerHTML = '<div class="search-result-item">加载失败</div>';
-                App.toast.show('加载链接列表失败', 'error');
+                App.toast.show('链接加载失败', 'error');
             }
         }
     }

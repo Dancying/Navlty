@@ -167,8 +167,6 @@ body.modal-open {
     min-width: 100px;
 }
 
-/* --- 响应式调整 --- */
-
 /* 768px断点样式 */
 @media (max-width: 768px) {
 

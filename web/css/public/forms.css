@@ -1,0 +1,41 @@
+/* 表单中的字段组 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 表单字段的标签 */
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+/* 表单中的文本输入框、URL 输入框、下拉选择框和文本域 */
+.form-group input:not(.slider):not(.hidden-file-input),
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    resize: none;
+}
+
+/* 表单输入元素在聚焦时的样式 */
+.form-group input:not(.slider):not(.hidden-file-input):focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* 验证失败的输入框 */
+.input-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.55) !important;
+}

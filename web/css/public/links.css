@@ -1,0 +1,200 @@
+/* 链接分类标题 */
+.category-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+/* 链接卡片的网格容器 */
+.card-container {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* 主面板中的链接卡片容器 */
+#primary-panel .card-container {
+    grid-template-columns: repeat(var(--cards-per-row, 4), 1fr);
+}
+
+/* 次要面板中的链接卡片容器 */
+#secondary-panel .card-container {
+    grid-template-columns: repeat(auto-fill, 200px);
+}
+
+/* 链接卡片的基本样式 */
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 80px;
+    text-decoration: none;
+    color: inherit;
+    box-sizing: border-box;
+    min-width: 200px;
+}
+
+/* 链接卡片悬浮时的变换和阴影效果 */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* 当标题需要滚动时，鼠标悬浮时改变 overflow 以允许动画 */
+.card.scrolling-title:hover .title {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* 为需要滚动的标题和描述的 span 应用滚动动画 */
+.card.scrolling-title:hover .title > span,
+.card.scrolling-desc:hover .desc span {
+    display: inline-block; /* 确保标题的 span 也能正确应用 transform */
+    animation: scroll 10s linear infinite;
+}
+
+/* 卡片图标样式 */
+.card .icon {
+    width: 48px;
+    height: 48px;
+    margin-right: 15px;
+    flex-shrink: 0;
+    color: #00a1f1;
+}
+
+/* 卡片内容区域 */
+.card .content {
+    overflow: hidden;
+    min-width: 0;
+}
+
+/* 卡片标题样式 */
+.card .title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #00a1f1;
+}
+
+/* 卡片描述样式 */
+.card .desc {
+    font-size: 0.9rem;
+    color: #333;
+    margin: 0px;
+    white-space: nowrap;
+    overflow: hidden; /* 与标题对齐，确保溢出检测正常工作 */
+}
+
+/* 卡片描述的文本容器 */
+.card .desc span {
+    display: inline-block;
+    transform: translateX(0);
+}
+
+/* 描述文本的横向滚动动画 */
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(calc(50px - 100%));
+    }
+}
+
+/* 次要面板中链接卡片的特殊样式 */
+.sub-nav .card {
+    height: 56px;
+}
+
+/* 次要面板中链接卡片的描述 (不显示) */
+.sub-nav .card .desc {
+    display: none;
+}
+
+/* 次要面板中链接卡片的图标 */
+.sub-nav .card .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+/* 次要面板中链接卡片的内容区域 */
+.sub-nav .card .content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* --- 响应式布局 --- */
+
+/* 1200px断点样式 */
+@media (max-width: 1200px) {
+
+    /* 主面板链接卡片容器 */
+    #primary-panel .card-container {
+        grid-template-columns: repeat(var(--cards-per-row, 3), 1fr);
+    }
+}
+
+/* 992px断点样式 */
+@media (max-width: 992px) {
+
+    /* 主面板链接卡片容器 */
+    #primary-panel .card-container {
+        grid-template-columns: repeat(var(--cards-per-row, 2), 1fr);
+    }
+}
+
+/* 768px断点样式 */
+@media (max-width: 768px) {
+
+    /* 减小卡片容器间距 */
+    .card-container {
+        gap: 1rem;
+    }
+
+    /* 主面板链接卡片容器 */
+    #primary-panel .card-container {
+        grid-template-columns: 1fr;
+    }
+
+    /* 次要面板链接卡片容器 */
+    #secondary-panel .card-container {
+        grid-template-columns: 1fr;
+    }
+
+    /* 减小卡片图标尺寸 */
+    .card .icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* --- 搜索功能样式 --- */
+
+/* 当面板处于搜索状态时，默认隐藏所有卡片和分类标题 */
+.panel.is-searching .card,
+.panel.is-searching .category-title {
+    display: none;
+}
+
+/* 仅显示标记为匹配的卡片和分类标题 */
+.panel.is-searching .card.is-match {
+    display: flex;
+}
+
+.panel.is-searching .category-title.is-match {
+    display: block;
+}

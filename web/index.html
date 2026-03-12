@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <!-- 页面头部元信息和资源引用区域开始 -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.SiteName}}</title>
+    <link rel="icon" href="{{.SiteIcon}}">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- 页面 CSS 样式区域开始 -->
+    <style>
+      :root {
+        --cards-per-row: {{.CardsPerRow}};
+        --background-url: {{if .BackgroundURL}}url('{{.BackgroundURL}}'){{else}}none{{end}};
+        --background-blur: {{.BackgroundBlur}}px;
+        --background-opacity: {{if .BackgroundURL}}1{{else}}0{{end}};
+      }
+      {{.CSS | safeCSS}}
+    </style>
+    {{if .CustomCSS}}
+    <style id="custom-css-style">
+      {{.CustomCSS | safeCSS}}
+    </style>
+    {{end}}
+    <!-- 页面 CSS 样式区域结束 -->
+  </head>
+  <!-- 页面头部元信息和资源引用区域结束 -->
+
+  <body>
+    <!-- 页面顶部导航和操作区域开始 -->
+    <div class="header-background">
+      <div class="container">
+        <header class="header">
+          <div class="header-left">
+            <img src="{{.AvatarURL}}" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;"{{end}}>
+            <h1 class="site-title">{{.SiteTitle}}</h1>
+          </div>
+          <div class="button-container">
+            <div class="search-wrapper" id="search-wrapper">
+              <input type="text" id="search-input" class="search-input" placeholder="按 / 搜索，按 Esc 退出">
+              <button id="search-button" class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </div>
+            <button id="toggle-panel-button" class="icon-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat">
+                <polyline points="17 1 21 5 17 9"></polyline>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                <polyline points="7 23 3 19 7 15"></polyline>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+              </svg>
+            </button>
+            <button id="settings-button" class="icon-button" data-modal-target="settings-modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
+          </div>
+        </header>
+      </div>
+    </div>
+    <!-- 页面顶部导航和操作区域结束 -->
+
+    <!-- 页面主内容区域开始 -->
+    <div class="container">
+      <main>
+        <!-- 主要链接卡片容器开始 -->
+        <div id="primary-panel" class="panel active">
+          {{range .PrimaryLinks}}
+          <h2 class="category-title">{{.Name}}</h2>
+          <div class="card-container">
+            {{range .Links}}
+            <a href="{{.URL}}" target="_blank" class="card">
+              {{if isURLOrBase64 .IconURL}}
+              <img src="{{.IconURL}}" class="icon">
+              {{else}}
+              <i data-feather="{{.IconURL}}" class="icon"></i>
+              {{end}}
+              <div class="content">
+                <h3 class="title"><span>{{.Title}}</span></h3>
+                {{if .Desc}}
+                <p class="desc"><span>{{.Desc}}</span></p>
+                {{end}}
+              </div>
+            </a>
+            {{end}}
+          </div>
+          {{end}}
+        </div>
+        <!-- 主要链接卡片容器结束 -->
+
+        <!-- 次要链接卡片容器开始 -->
+        <div id="secondary-panel" class="panel sub-nav">
+          {{range .SecondaryLinks}}
+          <h2 class="category-title">{{.Name}}</h2>
+          <div class="card-container">
+            {{range .Links}}
+            <a href="{{.URL}}" target="_blank" class="card">
+              {{if isURLOrBase64 .IconURL}}
+              <img src="{{.IconURL}}" class="icon">
+              {{else}}
+              <i data-feather="{{.IconURL}}" class="icon"></i>
+              {{end}}
+              <div class="content">
+                <h3 class="title"><span>{{.Title}}</span></h3>
+                {{if .Desc}}
+                <p class="desc"><span>{{.Desc}}</span></p>
+                {{end}}
+              </div>
+            </a>
+            {{end}}
+          </div>
+          {{end}}
+        </div>
+        <!-- 次要链接卡片容器结束 -->
+      </main>
+    </div>
+    <!-- 页面主内容区域结束 -->
+
+    <!-- 页面脚本和第三方库引用区域开始 -->
+    {{range .ExternalJS}}
+    <script src="{{.X}}"></script>
+    {{end}}
+    <script>{{.JS | safeJS}}</script>
+    <script>
+      feather.replace()
+    </script>
+    <!-- 页面脚本和第三方库引用区域结束 -->
+  </body>
+
+</html>

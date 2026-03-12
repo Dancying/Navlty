@@ -1,0 +1,214 @@
+/* 表单的网格布局容器 */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* 跨越两列表单网格的字段组 */
+.form-group.span-two {
+    grid-column: span 2;
+}
+
+/* 禁止调整大小的文本域 */
+#link-description,
+#bulk-links,
+#custom-css,
+#external-js {
+    resize: none;
+}
+
+/* “批量添加”中的文本域的最小高度 */
+#bulk-links {
+    min-height: 240px;
+}
+
+/* 包含输入框和按钮的组合控件 */
+.input-with-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 组合控件中的文本输入框 */
+.input-with-button input {
+    flex-grow: 1;
+}
+
+/* 组合控件中的图标按钮 */
+.input-with-button .btn.icon-button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* 组合控件中的图标按钮的悬浮样式 */
+.input-with-button .btn.icon-button:hover {
+    background-color: #0056b3;
+}
+
+/* 隐藏的文件选择输入框 */
+.hidden-file-input {
+    display: none;
+}
+
+/* “网站设置”表单中选项卡内容的容器 */
+#settings-form .tab-content-container {
+    height: calc(100% - 70px);
+}
+
+/* 激活的“高级”选项卡 */
+#advanced-settings-tab.active {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* “高级”选项卡中的表单网格 */
+#advanced-settings-tab .form-grid {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+}
+
+/* “高级”选项卡中的表单字段组 */
+#advanced-settings-tab .form-group {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* “高级”选项卡中的文本域 */
+#advanced-settings-tab textarea {
+    flex-grow: 1;
+    resize: none;
+}
+
+/* 表单字段下的提示性文字 */
+.form-group small {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* --- 可搜索下拉选择框 --- */
+
+/* 搜索组件的容器 */
+.searchable-select-wrapper {
+    position: relative;
+}
+
+/* 搜索结果容器 */
+#edit-link-search-results {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 当容器处于激活状态时显示结果 */
+.searchable-select-wrapper.active #edit-link-search-results {
+    display: block;
+}
+
+/* 单个搜索结果项 */
+.search-result-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+/* 结果项的悬浮样式 */
+.search-result-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* 结果项中的顶部行 */
+.search-result-item .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 结果项中的标题 */
+.search-result-item .title {
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+/* 结果项中的 URL */
+.search-result-item .url {
+    font-size: 0.85em;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+/* 结果项中的底部行（包含面板和分类） */
+.search-result-item .bottom-row {
+    margin-top: 5px;
+    font-size: 0.8em;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 面板标识 */
+.search-result-item .item-panel-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #fff;
+}
+
+/* 主面板标识的样式 */
+.search-result-item .item-panel-badge.primary {
+    background-color: #007bff;
+}
+
+/* 副面板标识的样式 */
+.search-result-item .item-panel-badge.secondary {
+    background-color: #6c757d;
+}
+
+/* --- 响应式布局 --- */
+
+/* 768px断点样式 */
+@media (max-width: 768px) {
+
+    /* 表单网格单列布局 */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* 表单组跨列 */
+    .form-group.span-two {
+        grid-column: span 1;
+    }
+
+    /* 减小标签底部边距 */
+    .form-group label {
+        margin-bottom: 0.5rem;
+    }
+}

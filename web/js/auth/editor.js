@@ -381,11 +381,29 @@ App.editor = (function() {
         item.className = 'management-link-item is-editing';
         item.dataset.linkId = link.clientId;
 
+        const uniqueCategoriesForDatalist = new Set();
+        currentLinks.forEach(l => {
+            if (l.category) {
+                const panelLabel = l.panel === 'primary' ? '主面板' : '副面板';
+                uniqueCategoriesForDatalist.add(`${l.category} (${panelLabel})`);
+            }
+        });
+
+        const categoryDatalistId = `category-list-${link.clientId}`;
+        const categoryDatalist = `
+            <datalist id="${categoryDatalistId}">
+                ${[...uniqueCategoriesForDatalist].map(catDisplay => `<option value="${App.helpers.escapeHTML(catDisplay)}"></option>`).join('')}
+            </datalist>
+        `;
+
+        const currentCategoryValue = link.category ? `${link.category} (${link.panel === 'primary' ? '主面板' : '副面板'})` : '';
+
         item.innerHTML = `
             <div class="edit-form-grid">
                 <input type="text" name="title" class="form-control" value="${App.helpers.escapeHTML(link.title)}" placeholder="标题">
                 <input type="url" name="url" class="form-control" value="${App.helpers.escapeHTML(link.url)}" placeholder="URL">
-                <input type="text" name="category" class="form-control" value="${App.helpers.escapeHTML(link.category || '')}" placeholder="分类 (选填)">
+                <input type="text" name="category" list="${categoryDatalistId}" class="form-control" value="${App.helpers.escapeHTML(currentCategoryValue)}" placeholder="分类 (选填)">
+                ${categoryDatalist}
             </div>
             <div class="management-link-actions">
                 <button title="保存" class="btn-save-full-edit"><i data-feather="check"></i></button>
@@ -414,16 +432,33 @@ App.editor = (function() {
 
         const title = editItem.querySelector('input[name="title"]').value.trim();
         const url = editItem.querySelector('input[name="url"]').value.trim();
-        const category = editItem.querySelector('input[name="category"]').value.trim();
+        const rawCategoryValue = editItem.querySelector('input[name="category"]').value.trim();
 
         if (!title || !url) {
-            App.toast.show('标题URL不能为空', 'error');
+            App.toast.show('标题和URL不能为空', 'error');
             return;
+        }
+
+        const panelMatch = rawCategoryValue.match(/\s*\((主面板|副面板)\)$/);
+        
+        let newCategory = rawCategoryValue;
+        let newPanel = link.panel;
+
+        if (panelMatch) {
+            const panelIdentifier = panelMatch[1];
+            newCategory = rawCategoryValue.replace(/\s*\((主面板|副面板)\)$/, '').trim();
+            
+            if (panelIdentifier === '主面板') {
+                newPanel = 'primary';
+            } else if (panelIdentifier === '副面板') {
+                newPanel = 'secondary';
+            }
         }
 
         link.title = title;
         link.url = url;
-        link.category = category;
+        link.category = newCategory;
+        link.panel = newPanel;
 
         renderPanels();
     }

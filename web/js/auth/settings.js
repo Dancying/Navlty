@@ -3,6 +3,49 @@ window.App = window.App || {};
 App.settings = (function () {
     let lastActivePanelId = 'content-add-link';
     let originalSettings = {};
+    let uniqueCategories = [];
+
+    // initSearchableSelect 初始化一个可搜索的下拉选择框
+    function initSearchableSelect(config) {
+        const { inputId, resultsId, source, renderItem, onSelect } = config;
+        const input = document.getElementById(inputId);
+        const resultsContainer = document.getElementById(resultsId);
+        const wrapper = input.closest('.searchable-select-wrapper');
+
+        if (!input || !resultsContainer || !wrapper) return;
+
+        const populateResults = () => {
+            const searchTerm = input.value.toLowerCase();
+            const items = source();
+            const filtered = items.filter(item => 
+                JSON.stringify(item).toLowerCase().includes(searchTerm)
+            );
+
+            resultsContainer.innerHTML = '';
+            if (filtered.length > 0) {
+                filtered.forEach(item => {
+                    resultsContainer.insertAdjacentHTML('beforeend', renderItem(item));
+                });
+            } else {
+                resultsContainer.innerHTML = '<div class="search-result-item">无匹配结果</div>';
+            }
+        };
+
+        input.addEventListener('input', populateResults);
+        input.addEventListener('focus', () => {
+            if (input.disabled) return;
+            wrapper.classList.add('active');
+            populateResults();
+        });
+
+        resultsContainer.addEventListener('click', (e) => {
+            const itemElement = e.target.closest('.search-result-item');
+            if (itemElement && itemElement.dataset.id) {
+                onSelect(itemElement.dataset.id);
+                wrapper.classList.remove('active');
+            }
+        });
+    }
 
     // bindUploadButton 绑定上传按钮和文件输入框
     function bindUploadButton(buttonId, inputId, targetId) {
@@ -79,8 +122,10 @@ App.settings = (function () {
                 .map(part => part.charAt(0).toUpperCase() + part.slice(1))
                 .join('');
             const functionName = `get${panelName}HTML`;
-            const contentHTML = App.views[functionName]();
-            contentContainer.insertAdjacentHTML('beforeend', contentHTML);
+
+            if (typeof App.views[functionName] === 'function') {
+                contentContainer.insertAdjacentHTML('beforeend', App.views[functionName]());
+            }
         });
 
         modal.querySelector('.close-button').addEventListener('click', () => App.modal.close('settings-modal'));
@@ -116,49 +161,149 @@ App.settings = (function () {
         updateSliderValue('background-blur', 'background-blur-value');
         updateSliderValue('cards-per-row', 'cards-per-row-value');
 
-        const searchInput = document.getElementById('edit-link-search-input');
-        const searchWrapper = searchInput?.closest('.searchable-select-wrapper');
-        const searchResults = document.getElementById('edit-link-search-results');
+        initSearchableSelect({
+            inputId: 'edit-link-search-input',
+            resultsId: 'edit-link-search-results',
+            source: () => App.finder.getLinksForEditing(),
+            renderItem: App.finder.renderLinkItem,
+            onSelect: (id) => App.finder.handleLinkSelectionChange(id)
+        });
 
-        if (searchInput && searchWrapper && searchResults) {
-            searchInput.addEventListener('input', App.finder.filterAndPopulateResults);
-            searchInput.addEventListener('focus', () => {
-                searchWrapper.classList.add('active');
-                App.finder.filterAndPopulateResults();
-            });
+        const categoryRenderItem = (item) => {
+            const name = App.helpers.escapeHTML(item.name);
+            const match = name.match(/^(.*) \((主面板|副面板)\)$/);
 
-            document.addEventListener('click', (e) => {
-                if (!searchWrapper.contains(e.target)) {
-                    searchWrapper.classList.remove('active');
+            if (match) {
+                const categoryName = match[1].trim();
+                const panelName = match[2];
+                const panelKey = panelName === '主面板' ? 'primary' : 'secondary';
+                const panelHTML = `<span class="item-panel-badge ${panelKey}">${panelName}</span>`;
+
+                return (
+                    `<div class="search-result-item" data-id="${App.helpers.escapeHTML(item.id)}">
+                        <div class="top-row">
+                            <span class="title">${categoryName}</span>
+                            <div class="badges-container">
+                                ${panelHTML}
+                            </div>
+                        </div>
+                    </div>`
+                );
+            }
+            return (
+                `<div class="search-result-item" data-id="${App.helpers.escapeHTML(item.id)}">
+                    <span class="title">${name}</span>
+                </div>`
+            );
+        };
+
+        const onCategorySelect = (inputId, targetPanelId) => (id) => {
+            const input = document.getElementById(inputId);
+            const targetPanelInput = document.getElementById(targetPanelId);
+            if (!input || !targetPanelInput) return;
+        
+            const match = id.match(/^(.*) \((主面板|副面板)\)$/);
+            if (match) {
+                const categoryName = match[1].trim();
+                const panelName = match[2];
+                const panelKey = panelName === '主面板' ? 'primary' : 'secondary';
+                input.value = categoryName;
+                targetPanelInput.value = panelKey;
+            } else {
+                input.value = id;
+            }
+        };
+
+        const categoryConfig = {
+            source: () => uniqueCategories.map(cat => ({ id: cat, name: cat })), 
+            renderItem: categoryRenderItem,
+        };
+
+        initSearchableSelect({
+            ...categoryConfig,
+            inputId: 'link-category',
+            resultsId: 'link-category-results',
+            onSelect: onCategorySelect('link-category', 'add-link-target-panel'),
+        });
+
+        initSearchableSelect({
+            ...categoryConfig,
+            inputId: 'edit-link-category',
+            resultsId: 'edit-link-category-results',
+            onSelect: onCategorySelect('edit-link-category', 'edit-link-target-panel'),
+        });
+
+        document.addEventListener('click', (e) => {
+            document.querySelectorAll('.searchable-select-wrapper.active').forEach(wrapper => {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.classList.remove('active');
                 }
-            }, true);
-
-            searchResults.addEventListener('click', (e) => {
-                const item = e.target.closest('.search-result-item');
-                if (item) {
-                    const linkId = item.dataset.id;
-                    App.finder.handleLinkSelectionChange(linkId);
-                    searchWrapper.classList.remove('active');
-                }
             });
-        }
+        }, true);
     }
 
     // switchPanel 切换设置模态框中的主内容面板
-    function switchPanel(targetId) {
+    async function switchPanel(targetId) {
         lastActivePanelId = targetId;
         const modal = document.getElementById('settings-modal');
         modal.querySelectorAll('.settings-nav-item').forEach(nav => nav.classList.remove('active'));
         modal.querySelectorAll('.settings-content-panel').forEach(panel => panel.classList.remove('active'));
 
         modal.querySelector(`.settings-nav-item[data-target="${targetId}"]`)?.classList.add('active');
-        modal.querySelector(`#${targetId}`)?.classList.add('active');
+        const activePanel = modal.querySelector(`#${targetId}`);
+        if (activePanel) activePanel.classList.add('active');
+
+        if (targetId === 'content-add-link') {
+            const targetPanelInput = document.getElementById('add-link-target-panel');
+            if (targetPanelInput) {
+                targetPanelInput.value = App.actions.getActivePanel ? App.actions.getActivePanel() : 'primary';
+            }
+        }
 
         if (targetId === 'content-category-management') {
             const container = document.getElementById('category-management-body');
             App.editor.loadAndRender(container);
-        } else if (targetId === 'content-edit-link') {
-            App.finder.loadLinksForEditing();
+        } else if (targetId === 'content-edit-link' || targetId === 'content-add-link') {
+            if (targetId === 'content-edit-link') {
+                 App.finder.loadLinksForEditing();
+            }
+            try {
+                const panelsToRender = await App.cache.fetchLinks();
+                const flatLinks = [];
+                if (panelsToRender && typeof panelsToRender === 'object') {
+                    for (const panelName in panelsToRender) {
+                        const categories = panelsToRender[panelName];
+                        if (Array.isArray(categories)) {
+                            categories.forEach(category => {
+                                if (category.links && Array.isArray(category.links)) {
+                                    category.links.forEach(link => {
+                                        flatLinks.push({ ...link, panel: panelName, category: category.name || '' });
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+                
+                const categorySet = new Set();
+                flatLinks.forEach(l => {
+                    if (l.category) {
+                        const panelLabel = l.panel === 'primary' ? '主面板' : '副面板';
+                        categorySet.add(`${l.category} (${panelLabel})`);
+                    }
+                });
+                uniqueCategories = [...categorySet];
+                if(activePanel.classList.contains('active')){
+                    const input = activePanel.querySelector('.searchable-select-wrapper input');
+                    if(input && document.activeElement === input) {
+                        input.dispatchEvent(new Event('focus'));
+                    }
+                }
+            } catch (error) {
+                if (error.message !== 'Unauthorized') {
+                     console.error(`Failed to populate categories for ${targetId} form:`, error);
+                }
+            }
         }
     }
 

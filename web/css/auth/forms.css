@@ -104,7 +104,7 @@
 }
 
 /* 搜索结果容器 */
-#edit-link-search-results {
+.search-results-list {
     display: none;
     position: absolute;
     top: 100%;
@@ -120,13 +120,13 @@
 }
 
 /* 当容器处于激活状态时显示结果 */
-.searchable-select-wrapper.active #edit-link-search-results {
+.searchable-select-wrapper.active .search-results-list {
     display: block;
 }
 
 /* 单个搜索结果项 */
 .search-result-item {
-    padding: 10px 15px;
+    padding: 8px 12px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
 }
@@ -141,6 +141,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
 }
 
 /* 结果项中的标题 */
@@ -150,44 +151,59 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 10px;
+}
+
+/* 结果项中的底部行 */
+.search-result-item .bottom-row {
+    margin-top: 4px;
 }
 
 /* 结果项中的 URL */
 .search-result-item .url {
     font-size: 0.85em;
-    color: #666;
+    color: #6c757d;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
+}
+
+/* 用于包含徽章的容器 */
+.badges-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     flex-shrink: 0;
 }
 
-/* 结果项中的底部行（包含面板和分类） */
-.search-result-item .bottom-row {
-    margin-top: 5px;
+/* 分类徽章的样式 */
+.item-category-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
     font-size: 0.8em;
-    color: #888;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: #e9ecef;
+    color: #495057;
 }
 
-/* 面板标识 */
-.search-result-item .item-panel-badge {
-    padding: 2px 6px;
+/* 面板徽章 */
+.item-panel-badge {
+    padding: 3px 8px;
     border-radius: 4px;
-    font-size: 0.9em;
+    font-size: 0.8em;
+    font-weight: 500;
+    white-space: nowrap;
     color: #fff;
 }
 
-/* 主面板标识的样式 */
-.search-result-item .item-panel-badge.primary {
+/* 主面板徽章 */
+.item-panel-badge.primary {
     background-color: #007bff;
 }
 
-/* 副面板标识的样式 */
-.search-result-item .item-panel-badge.secondary {
+/* 副面板徽章 */
+.item-panel-badge.secondary {
     background-color: #6c757d;
 }
 

@@ -56,9 +56,10 @@ App.views = (function() {
             <div class="modal-header"><h2>添加链接</h2></div>
             <div class="modal-body">
                 <form id="add-link-form" class="form-grid">
+                    <input type="hidden" id="add-link-target-panel" name="targetPanel">
                     <div class="form-group"><label for="link-title">标题*</label><input type="text" id="link-title" name="title" placeholder="Google" required></div>
                     <div class="form-group"><label for="link-url">链接*</label><input type="url" id="link-url" name="url" placeholder="https://google.com" required></div>
-                    <div class="form-group"><label for="link-category">分类</label><input type="text" id="link-category" name="category" placeholder="搜索引擎"></div>
+                    <div class="form-group searchable-select-wrapper"><label for="link-category">分类</label><input type="text" id="link-category" name="category" placeholder="搜索引擎" autocomplete="off"><div id="link-category-results" class="search-results-list"></div></div>
                     <div class="form-group"><label for="link-icon">图标</label><div class="input-with-button"><input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL、SVG 代码或 Base64"><button type="button" id="upload-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group span-two"><label for="link-description">描述</label><textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea></div>
                 </form>
@@ -73,14 +74,15 @@ App.views = (function() {
             <div class="modal-header"><h2>编辑链接</h2></div>
             <div class="modal-body">
                 <form id="edit-link-form" class="form-grid">
+                    <input type="hidden" id="edit-link-target-panel" name="targetPanel">
                     <div class="form-group span-two searchable-select-wrapper">
                         <label for="edit-link-search-input">选择链接</label>
                         <input type="text" id="edit-link-search-input" placeholder="搜索标题、URL、分类..." autocomplete="off">
-                        <div id="edit-link-search-results"></div>
+                        <div id="edit-link-search-results" class="search-results-list"></div>
                     </div>
                     <div class="form-group"><label for="edit-link-title">标题*</label><input type="text" id="edit-link-title" name="title" placeholder="Google" required disabled></div>
                     <div class="form-group"><label for="edit-link-url">链接*</label><input type="url" id="edit-link-url" name="url" placeholder="https://google.com" required disabled></div>
-                    <div class="form-group"><label for="edit-link-category">分类</label><input type="text" id="edit-link-category" name="category" placeholder="搜索引擎" disabled></div>
+                    <div class="form-group searchable-select-wrapper"><label for="edit-link-category">分类</label><input type="text" id="edit-link-category" name="category" placeholder="搜索引擎" autocomplete="off" disabled><div id="edit-link-category-results" class="search-results-list"></div></div>
                     <div class="form-group"><label for="edit-link-icon">图标</label><div class="input-with-button"><input type="text" id="edit-link-icon" name="icon" placeholder="Feather 图标名、URL、SVG 代码或 Base64" disabled><button type="button" id="upload-edit-icon-button" class="btn icon-button" disabled>${uploadIconSVG}</button><input type="file" id="edit-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group span-two"><label for="edit-link-description">描述</label><textarea id="edit-link-description" name="description" placeholder="全球最大的搜索引擎" disabled></textarea></div>
                 </form>

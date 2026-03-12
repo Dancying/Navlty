@@ -12,9 +12,9 @@ App.views = (function() {
             <div class="modal-body">
                 <form id="site-settings-form" class="form-grid">
                     <div class="form-group"><label for="site-name">站点名称</label><input type="text" id="site-name" name="siteName" placeholder="显示在标签页的名称"></div>
-                    <div class="form-group"><label for="site-icon">站点图标</label><div class="input-with-button"><input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-site-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="site-icon">站点图标</label><div class="input-with-button"><input type="text" id="site-icon" name="siteIcon" placeholder="Feather 图标名、URL、SVG 代码或 Base64"><button type="button" id="upload-site-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="site-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group"><label for="site-title">网站标题</label><input type="text" id="site-title" name="siteTitle" placeholder="显示在主页的标题"></div>
-                    <div class="form-group"><label for="avatar-url">网站头像</label><div class="input-with-button"><input type="text" id="avatar-url" name="avatarURL" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-avatar-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="avatar-url">网站头像</label><div class="input-with-button"><input type="text" id="avatar-url" name="avatarURL" placeholder="Feather 图标名、URL、SVG 代码或 Base64"><button type="button" id="upload-avatar-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="avatar-file-input" class="hidden-file-input" accept="image/*"></div></div>
                 </form>
             </div>
         </div>`;
@@ -59,7 +59,7 @@ App.views = (function() {
                     <div class="form-group"><label for="link-title">标题*</label><input type="text" id="link-title" name="title" placeholder="Google" required></div>
                     <div class="form-group"><label for="link-url">链接*</label><input type="url" id="link-url" name="url" placeholder="https://google.com" required></div>
                     <div class="form-group"><label for="link-category">分类</label><input type="text" id="link-category" name="category" placeholder="搜索引擎"></div>
-                    <div class="form-group"><label for="link-icon">图标</label><div class="input-with-button"><input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL 或 Base64"><button type="button" id="upload-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group"><label for="link-icon">图标</label><div class="input-with-button"><input type="text" id="link-icon" name="icon" placeholder="Feather 图标名、URL、SVG 代码或 Base64"><button type="button" id="upload-icon-button" class="btn icon-button">${uploadIconSVG}</button><input type="file" id="icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
                     <div class="form-group span-two"><label for="link-description">描述</label><textarea id="link-description" name="description" placeholder="全球最大的搜索引擎"></textarea></div>
                 </form>
             </div>
@@ -78,11 +78,11 @@ App.views = (function() {
                         <input type="text" id="edit-link-search-input" placeholder="搜索标题、URL、分类..." autocomplete="off">
                         <div id="edit-link-search-results"></div>
                     </div>
-                    <div class="form-group"><label for="edit-link-title">标题*</label><input type="text" id="edit-link-title" name="title" required disabled></div>
-                    <div class="form-group"><label for="edit-link-url">链接*</label><input type="url" id="edit-link-url" name="url" required disabled></div>
-                    <div class="form-group"><label for="edit-link-category">分类</label><input type="text" id="edit-link-category" name="category" disabled></div>
-                    <div class="form-group"><label for="edit-link-icon">图标</label><div class="input-with-button"><input type="text" id="edit-link-icon" name="icon" disabled><button type="button" id="upload-edit-icon-button" class="btn icon-button" disabled>${uploadIconSVG}</button><input type="file" id="edit-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
-                    <div class="form-group span-two"><label for="edit-link-description">描述</label><textarea id="edit-link-description" name="description" disabled></textarea></div>
+                    <div class="form-group"><label for="edit-link-title">标题*</label><input type="text" id="edit-link-title" name="title" placeholder="Google" required disabled></div>
+                    <div class="form-group"><label for="edit-link-url">链接*</label><input type="url" id="edit-link-url" name="url" placeholder="https://google.com" required disabled></div>
+                    <div class="form-group"><label for="edit-link-category">分类</label><input type="text" id="edit-link-category" name="category" placeholder="搜索引擎" disabled></div>
+                    <div class="form-group"><label for="edit-link-icon">图标</label><div class="input-with-button"><input type="text" id="edit-link-icon" name="icon" placeholder="Feather 图标名、URL、SVG 代码或 Base64" disabled><button type="button" id="upload-edit-icon-button" class="btn icon-button" disabled>${uploadIconSVG}</button><input type="file" id="edit-icon-file-input" class="hidden-file-input" accept="image/*"></div></div>
+                    <div class="form-group span-two"><label for="edit-link-description">描述</label><textarea id="edit-link-description" name="description" placeholder="全球最大的搜索引擎" disabled></textarea></div>
                 </form>
             </div>
         </div>`;

@@ -5,7 +5,7 @@ navlty
 *.out
 
 # Data directory
-/data/
+data/
 
 # IDE settings & OS files
 .vscode/

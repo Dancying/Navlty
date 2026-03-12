@@ -48,22 +48,6 @@ You can easily build a container image for Navlty using Podman:
 podman build -t navlty .
 ```
 
-## API Endpoints
-
-The following API endpoints are available:
-
-*   `GET /auth/status`: Check user authentication status.
-*   `POST /auth/login`: Log in a user.
-*   `POST /auth/logout`: Log out a user.
-*   `POST /api/auth/passwd`: Change user password (authenticated).
-*   `GET /api/settings`: Get application settings (authenticated).
-*   `POST /api/settings`: Update application settings (authenticated).
-*   `GET /api/links`: Get all links (authenticated).
-*   `POST /api/links`: Add a new link (authenticated).
-*   `PUT /api/links`: Update a link (authenticated).
-*   `DELETE /api/links`: Delete a link (authenticated).
-*   `POST /api/links/actions`: Perform batch actions on links (authenticated).
-
 ## ✨ Design Philosophy
 
 Navlty's core design philosophy revolves around three pillars for ultimate lightness, efficiency, and autonomy.
@@ -91,6 +75,22 @@ Navlty's core design philosophy revolves around three pillars for ultimate light
         *   No need to edit configuration files or restart the service.
     *   **Instant Effect:**
         *   All changes are saved instantly, providing a smooth, seamless management experience.
+
+## API Endpoints
+
+The following API endpoints are available:
+
+*   `GET /auth/status`: Check user authentication status.
+*   `POST /auth/login`: Log in a user.
+*   `POST /auth/logout`: Log out a user.
+*   `POST /api/auth/passwd`: Change user password (authenticated).
+*   `GET /api/settings`: Get application settings (authenticated).
+*   `POST /api/settings`: Update application settings (authenticated).
+*   `GET /api/links`: Get all links (authenticated).
+*   `POST /api/links`: Add a new link (authenticated).
+*   `PUT /api/links`: Update a link (authenticated).
+*   `DELETE /api/links`: Delete a link (authenticated).
+*   `POST /api/links/actions`: Perform batch actions on links (authenticated).
 
 ---
 

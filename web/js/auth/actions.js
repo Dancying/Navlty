@@ -86,6 +86,8 @@ App.actions = (function() {
         }
         if (linksToAdd.length === 0) return;
 
+        const targetPanel = App.helpers.getFormValue('add-link-target-panel') || getActivePanel();
+
         const linksByCategory = linksToAdd.reduce((acc, link) => {
             const { category = 'Uncategorized', ...linkData } = link;
             (acc[category] = acc[category] || []).push(linkData);
@@ -94,7 +96,7 @@ App.actions = (function() {
 
         const actions = Object.entries(linksByCategory).map(([category, links]) => ({
             action: 'CREATE_LINKS',
-            payload: { panel: getActivePanel(), category, links }
+            payload: { panel: targetPanel, category, links }
         }));
 
         await _handleApiSubmit({
@@ -109,24 +111,66 @@ App.actions = (function() {
     // updateLink 更新当前正在编辑的链接
     async function updateLink() {
         const linkId = App.finder.getCurrentEditingLinkId();
-        if (!linkId) return App.toast.show('请先选择链接', 'warning');
+        if (!linkId) {
+            App.toast.show('请先选择链接', 'warning');
+            return;
+        }
 
-        const title = App.helpers.getFormValue('edit-link-title');
-        const url = App.helpers.getFormValue('edit-link-url');
-        if (!title || !url) return App.toast.show('标题URL必填', 'error');
-        
-        const payload = {
-            title: title,
-            url: url,
-            category: App.helpers.getFormValue('edit-link-category') || 'Uncategorized',
-            icon_url: App.helpers.getFormValue('edit-link-icon'),
-            desc: App.helpers.getFormValue('edit-link-description'),
-        };
+        const originalLink = App.finder.getLinkById(linkId);
+        if (!originalLink) {
+            App.toast.show('找不到原始链接数据', 'error');
+            return;
+        }
+
+        const newTitle = App.helpers.getFormValue('edit-link-title');
+        const newUrl = App.helpers.getFormValue('edit-link-url');
+        if (!newTitle || !newUrl) {
+            App.toast.show('标题和URL是必填项', 'error');
+            return;
+        }
+
+        const newCategory = App.helpers.getFormValue('edit-link-category') || 'Uncategorized';
+        const newPanel = App.helpers.getFormValue('edit-link-target-panel');
+        const newIcon = App.helpers.getFormValue('edit-link-icon');
+        const newDesc = App.helpers.getFormValue('edit-link-description');
+
+        const actions = [];
+        const updatePayload = {};
+        let contentHasChanged = false;
+
+        if (originalLink.title !== newTitle) updatePayload.title = newTitle;
+        if (originalLink.url !== newUrl) updatePayload.url = newUrl;
+        if (originalLink.icon !== newIcon) updatePayload.icon_url = newIcon;
+        if (originalLink.description !== newDesc) updatePayload.desc = newDesc;
+
+        if (Object.keys(updatePayload).length > 0) {
+            contentHasChanged = true;
+            actions.push({
+                action: 'UPDATE_LINKS',
+                payload: [{ id: linkId, updates: updatePayload }]
+            });
+        }
+
+        const hasMoved = originalLink.panel !== newPanel || originalLink.category !== newCategory;
+        if (hasMoved) {
+            actions.push({
+                action: 'MOVE_LINKS',
+                payload: {
+                    target: { panel: newPanel, category: newCategory },
+                    ids: [linkId]
+                }
+            });
+        }
+
+        if (actions.length === 0) {
+            App.modal.close('settings-modal');
+            return;
+        }
 
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
-            payload: [{ action: 'UPDATE_LINKS', payload: [{ id: linkId, updates: payload }] }],
-            successMessage: '链接已更新',
+            payload: actions,
+            successMessage: '链接已成功更新',
             modalId: 'settings-modal',
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
         });
@@ -312,5 +356,5 @@ App.actions = (function() {
             : (App.modal.close('settings-modal'), Promise.resolve(true));
     }
 
-    return { addLinks, updateLink, updateStructure, changePassword, saveSettings };
+    return { addLinks, updateLink, updateStructure, changePassword, saveSettings, getActivePanel };
 })();

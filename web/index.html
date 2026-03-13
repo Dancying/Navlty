@@ -76,11 +76,7 @@
           <div class="card-container">
             {{range .Links}}
             <a href="{{.URL}}" target="_blank" class="card">
-              {{if isURLOrBase64 .IconURL}}
-              <img src="{{.IconURL}}" class="icon">
-              {{else}}
-              <i data-feather="{{.IconURL}}" class="icon"></i>
-              {{end}}
+              {{renderIcon .IconURL}}
               <div class="content">
                 <h3 class="title"><span>{{.Title}}</span></h3>
                 {{if .Desc}}
@@ -101,11 +97,7 @@
           <div class="card-container">
             {{range .Links}}
             <a href="{{.URL}}" target="_blank" class="card">
-              {{if isURLOrBase64 .IconURL}}
-              <img src="{{.IconURL}}" class="icon">
-              {{else}}
-              <i data-feather="{{.IconURL}}" class="icon"></i>
-              {{end}}
+              {{renderIcon .IconURL}}
               <div class="content">
                 <h3 class="title"><span>{{.Title}}</span></h3>
                 {{if .Desc}}

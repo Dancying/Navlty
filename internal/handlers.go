@@ -3,6 +3,7 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -10,6 +11,20 @@ import (
 
 	"github.com/google/uuid"
 )
+
+// renderIcon 根据图标字符串的类型生成相应的 HTML。
+func renderIcon(icon string) template.HTML {
+	if strings.HasPrefix(icon, "http") || strings.HasPrefix(icon, "data:image") {
+		return template.HTML(fmt.Sprintf(`<img src="%s" class="icon">`, icon))
+	}
+	if strings.HasPrefix(icon, "<svg") && strings.HasSuffix(icon, "</svg>") {
+		if !strings.Contains(icon, "class=") {
+			return template.HTML(strings.Replace(icon, "<svg", `<svg class="icon"`, 1))
+		}
+		return template.HTML(icon)
+	}
+	return template.HTML(fmt.Sprintf(`<i data-feather="%s" class="icon"></i>`, icon))
+}
 
 // RenderPage 使用数据渲染主 HTML 页面。
 func RenderPage(w http.ResponseWriter, r *http.Request) {
@@ -28,11 +43,9 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 
 	templatePath := "web/index.html"
 	t, err := template.New("index.html").Funcs(template.FuncMap{
-		"safeCSS": func(s string) template.CSS { return template.CSS(s) },
-		"safeJS":  func(s string) template.JS { return template.JS(s) },
-		"isURLOrBase64": func(s string) bool {
-			return strings.HasPrefix(s, "http") || strings.HasPrefix(s, "data:image")
-		},
+		"safeCSS":    func(s string) template.CSS { return template.CSS(s) },
+		"safeJS":     func(s string) template.JS { return template.JS(s) },
+		"renderIcon": renderIcon,
 	}).ParseFiles(templatePath)
 
 	if err != nil {

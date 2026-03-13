@@ -6,14 +6,9 @@ App.finder = (function() {
 
     // loadLinksForEditing 为编辑链接面板加载并扁平化链接列表
     async function loadLinksForEditing() {
-        const searchInput = document.getElementById('edit-link-search-input');
-        const resultsContainer = document.getElementById('edit-link-search-results');
-        if (!searchInput || !resultsContainer) return;
-
         toggleEditForm(false);
-        searchInput.value = '';
-
-        resultsContainer.innerHTML = '<div class="search-result-item">正在加载...</div>';
+        document.getElementById('edit-link-search-input').value = '';
+        linksForEditing = [];
 
         try {
             const panelsToRender = await App.cache.fetchLinks();
@@ -44,60 +39,46 @@ App.finder = (function() {
             
             flatLinks.sort((a, b) => a.title.localeCompare(b.title));
             linksForEditing = flatLinks;
-            filterAndPopulateResults();
 
         } catch (error) {
             if (error.message !== 'Unauthorized') {
                 console.error('Error loading links for editing:', error);
-                resultsContainer.innerHTML = '<div class="search-result-item">加载失败</div>';
                 App.toast.show('链接加载失败', 'error');
             }
         }
     }
+
+    // renderLinkItem 渲染单个链接项的 HTML
+    function renderLinkItem(link) {
+        const categoryText = link.category || '未分类';
+        const panelKey = (link.panel || '').toLowerCase();
+        let panelHTML = '';
     
-    // filterAndPopulateResults 筛选并填充链接搜索结果
-    function filterAndPopulateResults() {
-        const searchTerm = document.getElementById('edit-link-search-input').value.toLowerCase();
-        const resultsContainer = document.getElementById('edit-link-search-results');
-        
-        const filteredLinks = linksForEditing.filter(link => {
-            return (link.title.toLowerCase().includes(searchTerm) ||
-                    link.url.toLowerCase().includes(searchTerm) ||
-                    link.category.toLowerCase().includes(searchTerm));
-        });
-
-        resultsContainer.innerHTML = '';
-        if (filteredLinks.length > 0) {
-            filteredLinks.forEach(link => {
-                const item = document.createElement('div');
-                item.className = 'search-result-item';
-                item.dataset.id = link.id;
-
-                const panelKey = (link.panel || '').toLowerCase();
-                const categoryText = link.category || '未分类';
-                let panelHTML = '';
-
-                if (panelKey === 'primary') {
-                    panelHTML = `<span class="item-panel-badge primary">主面板</span>`;
-                } else if (panelKey === 'secondary') {
-                    panelHTML = `<span class="item-panel-badge secondary">副面板</span>`;
-                }
-
-                item.innerHTML = `
-                    <div class="top-row">
-                        <span class="title" title="${App.helpers.escapeHTML(link.title)}">${App.helpers.escapeHTML(link.title)}</span>
-                        <span class="url" title="${App.helpers.escapeHTML(link.url)}">${App.helpers.escapeHTML(link.url)}</span>
-                    </div>
-                    <div class="bottom-row">
-                        <div class="panel-container">${panelHTML}</div>
-                        <span class="category">${App.helpers.escapeHTML(categoryText)}</span>
-                    </div>
-                `;
-                resultsContainer.appendChild(item);
-            });
-        } else {
-            resultsContainer.innerHTML = '<div class="search-result-item">无匹配结果</div>';
+        if (panelKey === 'primary') {
+            panelHTML = `<span class="item-panel-badge primary">主面板</span>`;
+        } else if (panelKey === 'secondary') {
+            panelHTML = `<span class="item-panel-badge secondary">副面板</span>`;
         }
+    
+        return `
+            <div class="search-result-item" data-id="${link.id}">
+                <div class="top-row">
+                    <span class="title" title="${App.helpers.escapeHTML(link.title)}">${App.helpers.escapeHTML(link.title)}</span>
+                    <div class="badges-container">
+                        <span class="item-category-badge">${App.helpers.escapeHTML(categoryText)}</span>
+                        ${panelHTML}
+                    </div>
+                </div>
+                <div class="bottom-row">
+                    <span class="url" title="${App.helpers.escapeHTML(link.url)}">${App.helpers.escapeHTML(link.url)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // getLinksForEditing 返回已加载用于编辑的链接数组
+    function getLinksForEditing() {
+        return linksForEditing;
     }
 
     // handleLinkSelectionChange 在用户从搜索结果中选择链接后填充表单
@@ -107,13 +88,14 @@ App.finder = (function() {
         if (link) {
             currentEditingLinkId = selectedId;
             document.getElementById('edit-link-search-input').value = link.title;
-
+    
             App.helpers.setFormValue('edit-link-title', link.title);
             App.helpers.setFormValue('edit-link-url', link.url);
-            App.helpers.setFormValue('edit-link-category', link.category);
+            App.helpers.setFormValue('edit-link-category', link.category || '');
             App.helpers.setFormValue('edit-link-icon', link.icon);
             App.helpers.setFormValue('edit-link-description', link.description);
-            
+            App.helpers.setFormValue('edit-link-target-panel', link.panel);
+
             toggleEditForm(true);
         } else {
             toggleEditForm(false);
@@ -134,12 +116,17 @@ App.finder = (function() {
 
         if (!isEnabled) {
             currentEditingLinkId = null;
-            const fieldsToReset = ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description'];
+            const fieldsToReset = ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description', 'edit-link-target-panel'];
             fieldsToReset.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
         }
+    }
+
+    // getLinkById 通过 ID 从缓存的链接列表中获取链接
+    function getLinkById(id) {
+        return linksForEditing.find(link => link.id === id) || null;
     }
 
     // getCurrentEditingLinkId 返回当前正在编辑的链接 ID
@@ -149,8 +136,10 @@ App.finder = (function() {
 
     return {
         loadLinksForEditing,
-        filterAndPopulateResults,
+        getLinksForEditing,
+        renderLinkItem,
         handleLinkSelectionChange,
-        getCurrentEditingLinkId
+        getCurrentEditingLinkId,
+        getLinkById
     };
 })();

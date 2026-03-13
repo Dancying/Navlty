@@ -2,51 +2,68 @@ package internal
 
 import (
 	"net/http"
-	"sync"
+	"slices"
+	"time"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// session 代表一个用户会话
-type session struct {
-}
+const sessionDuration = 24 * time.Hour
 
-// sessions 是一个线程安全的会话存储
-var (
-	sessions = make(map[string]session)
-	mu       sync.Mutex
-)
-
-// createSession 创建一个新的会话并返回会话令牌
+// createSession 创建一个新的会话，并将其添加到 auth.json 中
 func createSession() string {
-	sessionToken := uuid.NewString()
-	mu.Lock()
-	sessions[sessionToken] = session{}
-	mu.Unlock()
-	return sessionToken
+	newSession := Session{
+		Token:   uuid.NewString(),
+		Expires: time.Now().Add(sessionDuration).Unix(),
+	}
+	auth := LoadAuth()
+	if auth.Sessions == nil {
+		auth.Sessions = []Session{}
+	}
+	auth.Sessions = append(auth.Sessions, newSession)
+	SaveAuth(auth)
+	return newSession.Token
 }
 
-// IsSessionValid 检查会话令牌是否有效
+// IsSessionValid 检查给定的会话令牌是否有效，并清理过期的会话
 func IsSessionValid(sessionToken string) bool {
-	mu.Lock()
-	defer mu.Unlock()
-	_, exists := sessions[sessionToken]
-	return exists
+	auth := LoadAuth()
+	currentTime := time.Now().Unix()
+	validSessions := []Session{}
+	found := false
+
+	for _, s := range auth.Sessions {
+		if s.Expires > currentTime {
+			validSessions = append(validSessions, s)
+			if s.Token == sessionToken {
+				found = true
+			}
+		}
+	}
+
+	if len(validSessions) < len(auth.Sessions) {
+		auth.Sessions = validSessions
+		SaveAuth(auth)
+	}
+
+	return found
 }
 
-// deleteSession 删除一个会话
+// deleteSession 从 auth.json 中移除一个会话令牌
 func deleteSession(sessionToken string) {
-	mu.Lock()
-	delete(sessions, sessionToken)
-	mu.Unlock()
+	auth := LoadAuth()
+	auth.Sessions = slices.DeleteFunc(auth.Sessions, func(s Session) bool {
+		return s.Token == sessionToken
+	})
+	SaveAuth(auth)
 }
 
-// InvalidateAllSessions 使所有当前会话无效
+// InvalidateAllSessions 清除 auth.json 中的所有会话令牌
 func InvalidateAllSessions() {
-	mu.Lock()
-	sessions = make(map[string]session)
-	mu.Unlock()
+	auth := LoadAuth()
+	auth.Sessions = []Session{}
+	SaveAuth(auth)
 }
 
 // AuthMiddleware 是一个中间件，用于保护需要认证的路由

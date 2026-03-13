@@ -2,9 +2,16 @@ package internal
 
 import "encoding/json"
 
+// Session 代表一个用户的登录会话，包含令牌和过期时间
+type Session struct {
+	Token   string `json:"token"`
+	Expires int64  `json:"expires"`
+}
+
 // Auth 定义了授权文件的结构
 type Auth struct {
-	PasswordHash string `json:"password_hash"`
+	PasswordHash string    `json:"password_hash"`
+	Sessions     []Session `json:"sessions"`
 }
 
 // Link 代表一个链接条目。

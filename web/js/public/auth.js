@@ -1,7 +1,6 @@
 window.App = window.App || {};
 
 App.auth = (function () {
-    let isAuthorized = false;
     let onSuccessCallback = null;
     let modalElements = null;
 
@@ -26,24 +25,19 @@ App.auth = (function () {
         }
     };
 
+    // isAuthenticated 检查用户是否已通过身份验证，sessionStorage 是唯一的数据源
+    function isAuthenticated() {
+        return sessionStorage.getItem("isAuthorized") === "true";
+    }
+
     // init 初始化认证模块
     function init() {
-        return localStorage.getItem("isAuthorized") === "true"
-            ? App.api.request("/auth/status")
-                .then(status => {
-                    isAuthorized = true;
-                    !status.isPasswordSet && invalidateSession();
-                })
-                .catch(() => {
-                    invalidateSession();
-                })
-            : (isAuthorized = false, Promise.resolve());
+        return Promise.resolve();
     }
 
     // invalidateSession 静默地使前端会话失效
     function invalidateSession() {
-        isAuthorized = false;
-        localStorage.removeItem("isAuthorized");
+        sessionStorage.removeItem("isAuthorized");
     }
 
     // handleUnauthorized 处理未授权的情况
@@ -54,45 +48,51 @@ App.auth = (function () {
     }
 
     // authUser 验证用户密码
-    async function authUser(password) {
-        try {
-            const result = await App.api.request("/auth/login", {
-                method: "POST",
-                body: JSON.stringify({ password }),
-            });
+    function authUser(password) {
+        const handleAuthSuccess = (result) => {
+            return result.success
+                ? Promise.resolve()
+                : Promise.reject(new Error("密码验证失败"));
+        };
 
-            if (!result.success) throw new Error("密码验证失败");
-
-            isAuthorized = true;
-            localStorage.setItem("isAuthorized", "true");
+        const performSuccessActions = () => {
+            sessionStorage.setItem("isAuthorized", "true");
             App.modal.close(MODAL_CONFIG.VERIFY.modalId);
-            
             onSuccessCallback && (onSuccessCallback(), onSuccessCallback = null);
-            
             window.location.reload();
+        };
 
-        } catch (error) {
+        const handleAuthError = (error) => {
             invalidateSession();
             console.error("Auth failed:", error);
 
-            if (error.message === '密码验证失败') {
-                App.toast.show("密码错误", "error");
-            } else if (error.message !== 'Unauthorized') {
-                App.toast.show("验证失败请重试", "error");
-            }
-        }
+            const errorActionMap = {
+                '密码验证失败': () => App.toast.show("密码错误", "error"),
+                'default': () => App.toast.show("验证失败请重试", "error")
+            };
+
+            (error.message !== 'Unauthorized') && (errorActionMap[error.message] || errorActionMap['default'])();
+        };
+
+        App.api.request("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ password }),
+        })
+        .then(handleAuthSuccess)
+        .then(performSuccessActions)
+        .catch(handleAuthError);
     }
 
     // logout 用户登出
-    async function logout() {
-        try {
-            await App.api.request("/auth/logout", { method: "POST" });
-        } catch (error) {
-            console.error("Logout failed:", error);
-        } finally {
+    function logout() {
+        const finalAction = () => {
             invalidateSession();
             window.location.reload();
-        }
+        };
+
+        App.api.request("/auth/logout", { method: "POST" })
+            .catch(error => console.error("Logout failed:", error))
+            .finally(finalAction);
     }
 
     // _showAuthModal 创建并显示一个通用的认证模态框
@@ -120,18 +120,21 @@ App.auth = (function () {
                 event.target === modal && App.modal.close(modalId);
             });
 
-            modalElements.modalContent.addEventListener('click', async (event) => {
-                const target = event.target;
-                if (target.closest('.confirm-button')) {
+            modalElements.modalContent.addEventListener('click', (event) => {
+                const confirmAction = () => {
                     const password = modalElements.input.value;
-                    if (!password) {
-                        App.toast.show("密码不能为空", "error");
-                        return;
-                    }
-                    await authUser(password);
-                } else if (target.closest('.cancel-button, .close-button')) {
-                    App.modal.close(modalId);
-                }
+                    password ? authUser(password) : App.toast.show("密码不能为空", "error");
+                };
+                const cancelAction = () => App.modal.close(modalId);
+
+                const actionMap = {
+                    '.confirm-button': confirmAction,
+                    '.cancel-button': cancelAction,
+                    '.close-button': cancelAction
+                };
+
+                const selector = Object.keys(actionMap).find(s => event.target.closest(s));
+                selector && actionMap[selector]();
             });
 
             modalElements.input.addEventListener('keyup', (event) => {
@@ -153,30 +156,26 @@ App.auth = (function () {
     }
 
     // checkAuthStatus 检查授权状态（交互式）
-    async function checkAuthStatus(callback) {
-        if (isAuthorized) {
-            callback && callback();
-            return;
-        }
-
-        if (callback) {
-            onSuccessCallback = callback;
-        }
-
-        try {
-            const result = await App.api.request("/auth/status");
+    function checkAuthStatus(callback) {
+        const handleStatusSuccess = (result) => {
             _showAuthModal(result.isPasswordSet ? MODAL_CONFIG.VERIFY : MODAL_CONFIG.SETUP);
-        } catch (error) {
+        };
+
+        const handleStatusError = (error) => {
             (error.message !== 'Unauthorized') && (
                 console.error("Failed to check auth status:", error),
                 App.toast.show("无法检查状态", "error")
             );
-        }
-    }
+        };
 
-    // isAuthenticated 检查用户是否已通过身份验证
-    function isAuthenticated() {
-        return isAuthorized;
+        return isAuthenticated()
+            ? (callback && callback(), Promise.resolve())
+            : (
+                onSuccessCallback = callback || null,
+                App.api.request("/auth/status")
+                    .then(handleStatusSuccess)
+                    .catch(handleStatusError)
+            );
     }
 
     return { init, logout, checkAuthStatus, isAuthenticated, handleUnauthorized, invalidateSession };

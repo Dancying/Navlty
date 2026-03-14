@@ -1,8 +1,8 @@
 window.App = window.App || {};
 
 // 页面加载完成后执行初始化
-document.addEventListener('DOMContentLoaded', async () => {
-    await App.auth.init();
+document.addEventListener('DOMContentLoaded', () => {
+    App.auth.init();
     App.search.init();
     App.toast.init();
 

@@ -63,6 +63,13 @@
             </button>
           </div>
         </header>
+        <!-- 顶部内容开始 -->
+        {{if .TopContent}}
+        <div style="padding-top: 0.75rem;">
+          {{.TopContent | safeHTML}}
+        </div>
+        {{end}}
+        <!-- 顶部内容结束 -->
       </div>
     </div>
     <!-- 页面顶部导航和操作区域结束 -->
@@ -114,6 +121,14 @@
       </main>
     </div>
     <!-- 页面主内容区域结束 -->
+
+    <!-- 底部内容开始 -->
+    {{if .BottomContent}}
+    <footer class="container">
+        {{.BottomContent | safeHTML}}
+    </footer>
+    {{end}}
+    <!-- 底部内容结束 -->
 
     <!-- 页面内联脚本区域开始 -->
     <script>{{.JS | safeJS}}</script>

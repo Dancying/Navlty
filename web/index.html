@@ -8,6 +8,7 @@
     <title>{{.SiteName}}</title>
     <link rel="icon" href="{{.SiteIcon}}">
     <script src="https://unpkg.com/feather-icons"></script>
+    {{.ExternalJSStr | safeHTML}}
     <!-- 页面 CSS 样式区域开始 -->
     <style>
       :root {
@@ -114,15 +115,12 @@
     </div>
     <!-- 页面主内容区域结束 -->
 
-    <!-- 页面脚本和第三方库引用区域开始 -->
-    {{range .ExternalJS}}
-    <script src="{{.X}}"></script>
-    {{end}}
+    <!-- 页面内联脚本区域开始 -->
     <script>{{.JS | safeJS}}</script>
     <script>
       feather.replace()
     </script>
-    <!-- 页面脚本和第三方库引用区域结束 -->
+    <!-- 页面内联脚本区域结束 -->
   </body>
 
 </html>

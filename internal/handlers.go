@@ -31,6 +31,12 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 	pageData := LoadPageData()
 	publicCSS, publicJS := LoadPublicAssets()
 
+	var jsBuilder strings.Builder
+	for _, jsURL := range pageData.ExternalJS {
+		jsBuilder.WriteString(fmt.Sprintf("<script src=\"%s\" defer></script>", jsURL))
+	}
+	pageData.ExternalJSStr = jsBuilder.String()
+
 	cookie, err := r.Cookie("session_token")
 	if err == nil && IsSessionValid(cookie.Value) {
 		authCSS, authJS := LoadAuthAssets()
@@ -45,6 +51,7 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 	t, err := template.New("index.html").Funcs(template.FuncMap{
 		"safeCSS":    func(s string) template.CSS { return template.CSS(s) },
 		"safeJS":     func(s string) template.JS { return template.JS(s) },
+		"safeHTML":   func(s string) template.HTML { return template.HTML(s) },
 		"renderIcon": renderIcon,
 	}).ParseFiles(templatePath)
 

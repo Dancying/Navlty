@@ -28,7 +28,16 @@ App.auth = (function () {
 
     // init 初始化认证模块
     function init() {
-        isAuthorized = localStorage.getItem("isAuthorized") === "true";
+        return localStorage.getItem("isAuthorized") === "true"
+            ? App.api.request("/auth/status")
+                .then(status => {
+                    isAuthorized = true;
+                    !status.isPasswordSet && invalidateSession();
+                })
+                .catch(() => {
+                    invalidateSession();
+                })
+            : (isAuthorized = false, Promise.resolve());
     }
 
     // invalidateSession 静默地使前端会话失效

@@ -35,7 +35,9 @@
         <header class="header">
           <div class="header-left">
             <img src="{{.AvatarURL}}" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;"{{end}}>
-            <h1 class="site-title">{{.SiteTitle}}</h1>
+            <a href="/">
+              <h1 class="site-title">{{.SiteTitle}}</h1>
+            </a>
           </div>
           <div class="button-container">
             <div class="search-wrapper" id="search-wrapper">

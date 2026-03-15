@@ -1,6 +1,7 @@
 /* 根元素HTML的样式，设置了页面的基础背景色 */
 html {
     background-color: #f0f2f5;
+    scrollbar-width: none;
 }
 
 /* 设置页面主体样式，并应用flex布局实现粘性页脚 */
@@ -74,6 +75,12 @@ body > div.container {
 .header-left {
     display: flex;
     align-items: center;
+}
+
+/* 页眉左侧区域的链接样式重置 */
+.header-left a {
+    text-decoration: none;
+    color: inherit;
 }
 
 /* 页眉中的圆形头像样式 */
@@ -244,4 +251,10 @@ body > div.container {
     main {
         padding: 1rem 0;
     }
+}
+
+/* 隐藏 WebKit 浏览器的滚动条 */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
 }

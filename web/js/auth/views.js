@@ -42,6 +42,8 @@ App.views = (function() {
             <div class="modal-header"><h2>高级设置</h2></div>
             <div class="modal-body">
                 <form id="advanced-settings-form" class="form-grid">
+                    <div class="form-group span-two"><label for="top-content">顶部内容</label><textarea id="top-content" name="topContent" rows="4" placeholder="在导航栏下方添加内容，可用 HTML 代码"></textarea></div>
+                    <div class="form-group span-two"><label for="bottom-content">底部内容</label><textarea id="bottom-content" name="bottomContent" rows="4" placeholder="在页面底部添加内容，可用 HTML 代码"></textarea></div>
                     <div class="form-group span-two"><label for="custom-css">自定义 CSS</label><textarea id="custom-css" name="customCSS" rows="4" placeholder="自定义 CSS 代码"></textarea></div>
                     <div class="form-group span-two"><label for="external-js">外部 JS</label><textarea id="external-js" name="externalJS" rows="4" placeholder="https://example.com/script.js\nhttps://another.com/script.js"></textarea></div>
                 </form>

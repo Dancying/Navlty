@@ -326,6 +326,8 @@ App.settings = (function () {
                 App.helpers.setFormValue('background-url', originalSettings.backgroundURL);
                 App.helpers.setFormValue('background-blur', originalSettings.backgroundBlur);
                 App.helpers.setFormValue('cards-per-row', originalSettings.cardsPerRow);
+                App.helpers.setFormValue('top-content', originalSettings.topContent);
+                App.helpers.setFormValue('bottom-content', originalSettings.bottomContent);
                 App.helpers.setFormValue('custom-css', originalSettings.customCSS);
                 App.helpers.setFormValue('external-js', (originalSettings.externalJS || []).join('\n'));
                 

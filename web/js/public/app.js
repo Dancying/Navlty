@@ -31,6 +31,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.preventDefault();
                 App.search.showSearch();
             }
+        },
+        't': (event) => {
+            const tag = document.activeElement.tagName;
+            if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+                event.preventDefault();
+                document.getElementById('toggle-panel-button')?.click();
+            }
+        },
+        's': (event) => {
+            const tag = document.activeElement.tagName;
+            if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+                event.preventDefault();
+                document.getElementById('settings-button')?.click();
+            }
         }
     };
 

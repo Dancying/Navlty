@@ -8,6 +8,7 @@
     <title>{{.SiteName}}</title>
     <link rel="icon" href="{{.SiteIcon}}">
     <script src="https://unpkg.com/feather-icons"></script>
+    {{.ExternalJSStr | safeHTML}}
     <!-- 页面 CSS 样式区域开始 -->
     <style>
       :root {
@@ -34,7 +35,9 @@
         <header class="header">
           <div class="header-left">
             <img src="{{.AvatarURL}}" alt="Avatar" class="avatar" {{if not .AvatarURL}}style="display: none;"{{end}}>
-            <h1 class="site-title">{{.SiteTitle}}</h1>
+            <a href="/">
+              <h1 class="site-title">{{.SiteTitle}}</h1>
+            </a>
           </div>
           <div class="button-container">
             <div class="search-wrapper" id="search-wrapper">
@@ -62,6 +65,13 @@
             </button>
           </div>
         </header>
+        <!-- 顶部内容开始 -->
+        {{if .TopContent}}
+        <div style="padding-top: 0.75rem;">
+          {{.TopContent | safeHTML}}
+        </div>
+        {{end}}
+        <!-- 顶部内容结束 -->
       </div>
     </div>
     <!-- 页面顶部导航和操作区域结束 -->
@@ -114,15 +124,20 @@
     </div>
     <!-- 页面主内容区域结束 -->
 
-    <!-- 页面脚本和第三方库引用区域开始 -->
-    {{range .ExternalJS}}
-    <script src="{{.X}}"></script>
+    <!-- 底部内容开始 -->
+    {{if .BottomContent}}
+    <footer class="container">
+        {{.BottomContent | safeHTML}}
+    </footer>
     {{end}}
+    <!-- 底部内容结束 -->
+
+    <!-- 页面内联脚本区域开始 -->
     <script>{{.JS | safeJS}}</script>
     <script>
       feather.replace()
     </script>
-    <!-- 页面脚本和第三方库引用区域结束 -->
+    <!-- 页面内联脚本区域结束 -->
   </body>
 
 </html>

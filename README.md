@@ -21,31 +21,17 @@ The name **Navlty** is a blend of "Navigation" and "Novelty," with the `-lty` su
 
 ## 📦 Getting Started
 
-### Prerequisites
+### Using Docker / Podman (Recommended)
 
-*   Go 1.18+
-*   Podman (or Docker)
+You can run Navlty instantly using the official container image hosted on GHCR:
 
-### Running Locally
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/Dancying/Navlty.git
-    cd navlty
-    ```
-
-2.  **Run the application:**
-    ```bash
-    go run main.go
-    ```
-    The server will start on `http://localhost:8080`.
-
-### Building with Podman
-
-You can easily build a container image for Navlty using Podman:
-
-```bash
-podman build -t navlty .
+```sh
+podman run -d \
+  --name navlty \
+  -p 8080:8080 \
+  -v navlty_data:/navlty/data:Z \
+  --restart always \
+  ghcr.io/dancying/navlty:latest
 ```
 
 ## ✨ Design Philosophy

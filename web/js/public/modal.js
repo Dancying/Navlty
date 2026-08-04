@@ -24,7 +24,6 @@ App.modal = (function() {
     if (!modal) return;
     
     modal.classList.remove('show');
-
     modal.contains(document.activeElement) && document.activeElement.blur();
     
     if (document.querySelectorAll('.modal.show').length === 0) {

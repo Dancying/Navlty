@@ -27,8 +27,6 @@ var compressibleTypes = []string{
 }
 
 // CompressMiddleware 根据请求的 Accept-Encoding 对可压缩的响应进行 brotli 或 gzip 压缩。
-// 优先级：brotli (br) > gzip。
-// 压缩默认关闭，仅当环境变量 NAVLTY_ENABLE_COMPRESSION=true 时启用。
 func CompressMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !compressionEnabled() {
@@ -52,13 +50,11 @@ func CompressMiddleware(next http.Handler) http.Handler {
 }
 
 // compressionEnabled 检查环境变量 NAVLTY_ENABLE_COMPRESSION 是否为 true。
-// 默认为 false，只有显式设置为 "true"（不区分大小写）时才启用压缩。
 func compressionEnabled() bool {
 	return strings.EqualFold(os.Getenv("NAVLTY_ENABLE_COMPRESSION"), "true")
 }
 
 // selectEncoding 解析 Accept-Encoding 请求头，返回优先选择的编码。
-// 支持 br 和 gzip，考虑 q 值权重。返回空字符串表示不支持任何压缩编码。
 func selectEncoding(header string) string {
 	type candidate struct {
 		name string

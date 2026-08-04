@@ -11,7 +11,6 @@ import (
 func main() {
 	internal.RegisterHandlers()
 
-	// 通过环境变量 NAVLTY_SERVICE_PORT 控制服务端口，默认 8080
 	port := os.Getenv("NAVLTY_SERVICE_PORT")
 	if port == "" {
 		port = "8080"

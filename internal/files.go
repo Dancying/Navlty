@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	dataDirectory      = "data"
+	dataDirectory      = "/config"
 	publicCSSDirectory = "web/css/public"
 	publicJSDirectory  = "web/js/public"
 	authCSSDirectory   = "web/css/auth"

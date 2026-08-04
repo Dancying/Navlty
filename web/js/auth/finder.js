@@ -140,6 +140,7 @@ App.finder = (function() {
         renderLinkItem,
         handleLinkSelectionChange,
         getCurrentEditingLinkId,
-        getLinkById
+        getLinkById,
+        toggleEditForm
     };
 })();

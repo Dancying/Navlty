@@ -176,6 +176,9 @@ App.settings = (function () {
             case 'content-edit-link':
                 // 重置编辑链接表单
                 App.finder.toggleEditForm(false);
+                // 清空搜索输入框，恢复到未选择链接的状态
+                const editSearchInput = document.getElementById('edit-link-search-input');
+                if (editSearchInput) editSearchInput.value = '';
                 break;
             case 'content-category-management':
                 // 重置分类管理到初始状态
@@ -215,8 +218,14 @@ App.settings = (function () {
         modalCloseHandlerBound = true;
 
         document.addEventListener('modal:closed', (event) => {
-            if (event.detail?.modalId === 'settings-modal' && hasSaved) {
-                window.location.reload();
+            if (event.detail?.modalId === 'settings-modal') {
+                // 关闭前如果有未保存的修改，触发取消逻辑撤销修改
+                if (saveButtonVisible) {
+                    handleCancel();
+                }
+                if (hasSaved) {
+                    window.location.reload();
+                }
             }
         });
     }
@@ -385,6 +394,10 @@ App.settings = (function () {
 
     // switchPanel 切换设置模态框中的主内容面板
     async function switchPanel(targetId) {
+        // 如果有未保存的修改，先触发取消逻辑撤销修改
+        if (saveButtonVisible) {
+            handleCancel();
+        }
         lastActivePanelId = targetId;
         const modal = document.getElementById('settings-modal');
         modal.querySelectorAll('.settings-nav-item').forEach(nav => nav.classList.remove('active'));

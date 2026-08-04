@@ -299,7 +299,17 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     color: #aab;
     padding: 0.1rem;
     border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: color 0.2s, background-color 0.2s;
+}
+
+/* 操作按钮中的图标尺寸 */
+.management-category-actions button svg,
+.management-link-actions button svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* 分类和链接操作按钮的悬浮效果 */
@@ -344,6 +354,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
 .management-link-title {
     font-size: 0.8rem;
     color: #555;
+    margin-left: 1.8rem;
 }
 
 /* 正在被拖拽的元素 */

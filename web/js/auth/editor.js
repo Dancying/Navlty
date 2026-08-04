@@ -321,31 +321,12 @@ App.editor = (function() {
         const actions = document.createElement('div');
         actions.className = 'management-link-actions';
 
-        const editTitleButton = document.createElement('button');
-        editTitleButton.title = '编辑链接名称';
-        editTitleButton.innerHTML = '<i data-feather="edit"></i>';
-        editTitleButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const titleElement = item.querySelector('.management-link-title');
-            if (titleElement) {
-                editLinkTitle(titleElement, link.clientId);
-            }
-        });
-
-        const fullEditButton = document.createElement('button');
-        fullEditButton.title = '完整编辑链接';
-        fullEditButton.innerHTML = '<i data-feather="edit-2"></i>';
-        fullEditButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showFullEditForm(item);
-        });
-
         const copyButton = document.createElement('button');
         copyButton.title = '复制链接数据';
         copyButton.innerHTML = '<i data-feather="copy"></i>';
         copyButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${l.desc || ''}`;
+            const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${link.desc || ''}`;
             navigator.clipboard.writeText(formattedLink).then(() => {
                 App.toast.show('链接已复制', 'success');
             }, () => {
@@ -361,114 +342,11 @@ App.editor = (function() {
             deleteLink(link.clientId);
         });
 
-        actions.appendChild(editTitleButton);
-        actions.appendChild(fullEditButton);
         actions.appendChild(copyButton);
         actions.appendChild(deleteButton);
         item.appendChild(title);
         item.appendChild(actions);
         return item;
-    }
-
-    // showFullEditForm 显示完整的编辑表单
-    function showFullEditForm(originalItem) {
-        const clientId = originalItem.dataset.linkId;
-        const link = currentLinks.find(l => l.clientId === clientId);
-        if (!link) return;
-
-        const editForm = createFullEditForm(link);
-        originalItem.replaceWith(editForm);
-        feather.replace();
-        editForm.querySelector('input[name="title"]').focus();
-    }
-
-    // createFullEditForm 创建完整的编辑表单元素
-    function createFullEditForm(link) {
-        const item = document.createElement('li');
-        item.className = 'management-link-item is-editing';
-        item.dataset.linkId = link.clientId;
-
-        const uniqueCategoriesForDatalist = new Set();
-        currentLinks.forEach(l => {
-            if (l.category) {
-                const panelLabel = l.panel === 'primary' ? '主面板' : '副面板';
-                uniqueCategoriesForDatalist.add(`${l.category} (${panelLabel})`);
-            }
-        });
-
-        const categoryDatalistId = `category-list-${link.clientId}`;
-        const categoryDatalist = `
-            <datalist id="${categoryDatalistId}">
-                ${[...uniqueCategoriesForDatalist].map(catDisplay => `<option value="${App.helpers.escapeHTML(catDisplay)}"></option>`).join('')}
-            </datalist>
-        `;
-
-        const currentCategoryValue = link.category ? `${link.category} (${link.panel === 'primary' ? '主面板' : '副面板'})` : '';
-
-        item.innerHTML = `
-            <div class="edit-form-grid">
-                <input type="text" name="title" class="form-control" value="${App.helpers.escapeHTML(link.title)}" placeholder="标题">
-                <input type="url" name="url" class="form-control" value="${App.helpers.escapeHTML(link.url)}" placeholder="URL">
-                <input type="text" name="category" list="${categoryDatalistId}" class="form-control" value="${App.helpers.escapeHTML(currentCategoryValue)}" placeholder="分类 (选填)">
-                ${categoryDatalist}
-            </div>
-            <div class="management-link-actions">
-                <button title="保存" class="btn-save-full-edit"><i data-feather="check"></i></button>
-                <button title="取消" class="btn-cancel-full-edit"><i data-feather="x"></i></button>
-            </div>
-        `;
-
-        item.querySelector('.btn-save-full-edit').addEventListener('click', (e) => {
-            e.stopPropagation();
-            saveFullEdit(item);
-        });
-
-        item.querySelector('.btn-cancel-full-edit').addEventListener('click', (e) => {
-            e.stopPropagation();
-            renderPanels();
-        });
-
-        return item;
-    }
-
-    // saveFullEdit 保存完整编辑的更改
-    function saveFullEdit(editItem) {
-        const clientId = editItem.dataset.linkId;
-        const link = currentLinks.find(l => l.clientId === clientId);
-        if (!link) return;
-
-        const title = editItem.querySelector('input[name="title"]').value.trim();
-        const url = editItem.querySelector('input[name="url"]').value.trim();
-        const rawCategoryValue = editItem.querySelector('input[name="category"]').value.trim();
-
-        if (!title || !url) {
-            App.toast.show('标题和URL不能为空', 'error');
-            return;
-        }
-
-        const panelMatch = rawCategoryValue.match(/\s*\((主面板|副面板)\)$/);
-        
-        let newCategory = rawCategoryValue;
-        let newPanel = link.panel;
-
-        if (panelMatch) {
-            const panelIdentifier = panelMatch[1];
-            newCategory = rawCategoryValue.replace(/\s*\((主面板|副面板)\)$/, '').trim();
-            
-            if (panelIdentifier === '主面板') {
-                newPanel = 'primary';
-            } else if (panelIdentifier === '副面板') {
-                newPanel = 'secondary';
-            }
-        }
-
-        link.title = title;
-        link.url = url;
-        link.category = newCategory;
-        link.panel = newPanel;
-
-        renderPanels();
-        document.dispatchEvent(new CustomEvent('settings-changed'));
     }
 
     // findLastIndex 从数组中查找最后一个符合条件的元素的索引
@@ -479,35 +357,6 @@ App.editor = (function() {
             }
         }
         return -1;
-    }
-    
-    // editLinkTitle 编辑链接标题
-    function editLinkTitle(titleElement, clientId) {
-        if (titleElement.querySelector('input')) return;
-        const linkToEdit = currentLinks.find(l => l.clientId === clientId);
-        if (!linkToEdit) return;
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'management-link-input';
-        input.value = linkToEdit.title;
-        titleElement.replaceWith(input);
-        input.focus();
-        const save = () => {
-            const newTitle = input.value.trim();
-            if (newTitle && newTitle !== linkToEdit.title) {
-                linkToEdit.title = newTitle;
-            }
-            renderPanels();
-            document.dispatchEvent(new CustomEvent('settings-changed'));
-        };
-        input.addEventListener('blur', save);
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') input.blur();
-            if (e.key === 'Escape') {
-                input.value = linkToEdit.title;
-                input.blur();
-            }
-        });
     }
 
     // editCategoryName 编辑分类名称

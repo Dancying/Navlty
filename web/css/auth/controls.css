@@ -7,6 +7,7 @@
 /* 滑块控件的标签 */
 .slider-group label {
     margin-bottom: 1rem;
+    font-size: 1rem;
 }
 
 /* 滑块控件 */

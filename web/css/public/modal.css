@@ -89,7 +89,7 @@ body.modal-open {
 /* 模态框右上角的关闭按钮 */
 .close-button {
     position: absolute;
-    top: 12px;
+    top: 10px;
     right: 12px;
     z-index: 10;
     width: 28px;

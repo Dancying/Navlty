@@ -4,6 +4,11 @@ App.settings = (function () {
     let lastActivePanelId = 'content-add-link';
     let originalSettings = {};
     let uniqueCategories = [];
+    let saveButtonVisible = false;
+    let cancelButtonVisible = false;
+    let hasSaved = false;
+    let changeListenersBound = false;
+    let modalCloseHandlerBound = false;
 
     // initSearchableSelect 初始化一个可搜索的下拉选择框
     function initSearchableSelect(config) {
@@ -85,6 +90,137 @@ App.settings = (function () {
         }
     }
 
+    // showSaveButton 显示当前激活面板的保存和取消按钮
+    function showSaveButton() {
+        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
+        if (!activePanel) return;
+        const buttons = activePanel.querySelectorAll('.settings-action-button');
+        if (buttons.length > 0 && !saveButtonVisible) {
+            buttons.forEach(btn => btn.classList.add('visible'));
+            saveButtonVisible = true;
+            cancelButtonVisible = true;
+        }
+    }
+
+    // hideSaveButton 隐藏当前激活面板的保存和取消按钮
+    function hideSaveButton() {
+        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
+        if (!activePanel) return;
+        const buttons = activePanel.querySelectorAll('.settings-action-button');
+        if (buttons.length > 0 && saveButtonVisible) {
+            buttons.forEach(btn => btn.classList.remove('visible'));
+            saveButtonVisible = false;
+            cancelButtonVisible = false;
+        }
+    }
+
+    // injectHeaderButtons 为面板标题栏动态注入取消、保存、关闭按钮
+    function injectHeaderButtons(panel) {
+        const header = panel.querySelector('.modal-header');
+        if (!header || header.querySelector('.settings-action-button')) return;
+
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.className = 'btn btn-secondary settings-action-button settings-cancel-button';
+        cancelButton.textContent = '取消';
+        cancelButton.addEventListener('click', handleCancel);
+
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.className = 'btn btn-primary settings-action-button settings-save-button';
+        saveButton.textContent = '保存';
+        saveButton.addEventListener('click', handleSave);
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'close-button';
+        closeButton.innerHTML = '&times;';
+        closeButton.addEventListener('click', () => App.modal.close('settings-modal'));
+
+        header.prepend(cancelButton);
+        header.appendChild(saveButton);
+        header.appendChild(closeButton);
+    }
+
+    // handleCancel 撤销当前面板的修改，不关闭设置窗口
+    function handleCancel() {
+        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
+        if (!activePanel) return;
+
+        switch (activePanel.id) {
+            case 'content-site-settings':
+            case 'content-style-settings':
+            case 'content-advanced-settings':
+                // 从原始设置恢复表单值
+                App.helpers.setFormValue('site-name', originalSettings.siteName);
+                App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
+                App.helpers.setFormValue('site-title', originalSettings.siteTitle);
+                App.helpers.setFormValue('avatar-url', originalSettings.avatarURL);
+                App.helpers.setFormValue('background-url', originalSettings.backgroundURL);
+                App.helpers.setFormValue('background-blur', originalSettings.backgroundBlur);
+                App.helpers.setFormValue('cards-per-row', originalSettings.cardsPerRow);
+                App.helpers.setFormValue('top-content', originalSettings.topContent);
+                App.helpers.setFormValue('bottom-content', originalSettings.bottomContent);
+                App.helpers.setFormValue('custom-css', originalSettings.customCSS);
+                App.helpers.setFormValue('external-js', (originalSettings.externalJS || []).join('\n'));
+                updateSliderValue('background-blur', 'background-blur-value');
+                updateSliderValue('cards-per-row', 'cards-per-row-value');
+                break;
+            case 'content-add-link':
+            case 'content-bulk-add':
+            case 'content-password-settings':
+                // 清空表单
+                const form = activePanel.querySelector('form');
+                form && form.reset();
+                break;
+            case 'content-edit-link':
+                // 重置编辑链接表单
+                App.finder.toggleEditForm(false);
+                break;
+            case 'content-category-management':
+                // 重置分类管理到初始状态
+                App.editor.reset();
+                break;
+        }
+        hideSaveButton();
+    }
+
+    // bindChangeListeners 为设置模态框中的所有表单元素绑定修改事件
+    function bindChangeListeners() {
+        if (changeListenersBound) return;
+        changeListenersBound = true;
+
+        const modal = document.getElementById('settings-modal');
+        if (!modal) return;
+
+        modal.addEventListener('input', (event) => {
+            if (event.target.matches('input, textarea, select')) {
+                showSaveButton();
+            }
+        }, true);
+
+        modal.addEventListener('change', (event) => {
+            if (event.target.matches('input, textarea, select')) {
+                showSaveButton();
+            }
+        }, true);
+
+        // 监听分类管理中的拖放、编辑、删除等操作
+        document.addEventListener('settings-changed', showSaveButton);
+    }
+
+    // bindModalCloseHandler 绑定模态框关闭事件，若已保存则刷新页面
+    function bindModalCloseHandler() {
+        if (modalCloseHandlerBound) return;
+        modalCloseHandlerBound = true;
+
+        document.addEventListener('modal:closed', (event) => {
+            if (event.detail?.modalId === 'settings-modal' && hasSaved) {
+                window.location.reload();
+            }
+        });
+    }
+
     // createModalAndEvents 创建并初始化设置模态框与事件
     function createModalAndEvents() {
         if (document.getElementById('settings-modal')) return;
@@ -92,8 +228,6 @@ App.settings = (function () {
         const modalHTML = `
             <div id="settings-modal" class="modal">
                 <div class="modal-content">
-                    <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
-                    <button class="close-button">&times;</button>
                     <div id="settings-nav"></div>
                     <div id="settings-content"></div>
                 </div>
@@ -105,6 +239,11 @@ App.settings = (function () {
         const modal = document.getElementById('settings-modal');
         const navContainer = document.getElementById('settings-nav');
         const contentContainer = document.getElementById('settings-content');
+
+        // 左侧导航顶部添加"设置"标题
+        const navTitle = document.createElement('h3');
+        navTitle.textContent = '设置';
+        navContainer.appendChild(navTitle);
 
         App.config.settingsNavigation.forEach(item => {
             const navLink = document.createElement('a');
@@ -125,12 +264,18 @@ App.settings = (function () {
             }
         });
 
-        modal.querySelector('.close-button').addEventListener('click', () => App.modal.close('settings-modal'));
         modal.addEventListener('click', (event) => {
             if (event.target === modal) App.modal.close('settings-modal');
         });
 
-        document.getElementById('settings-save-button')?.addEventListener('click', handleSave);
+        // 为每个面板的标题栏动态注入取消、保存、关闭按钮
+        contentContainer.querySelectorAll('.settings-content-panel').forEach(injectHeaderButtons);
+
+        document.addEventListener('settings-saved', () => {
+            hasSaved = true;
+        });
+        bindChangeListeners();
+        bindModalCloseHandler();
         document.getElementById('logout-button')?.addEventListener('click', () => {
             App.auth.logout();
             App.modal.close('settings-modal');
@@ -330,6 +475,7 @@ App.settings = (function () {
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
     
+                hideSaveButton();
                 App.modal.open('settings-modal');
                 switchPanel(panelToShow);
             } catch (error) {
@@ -375,6 +521,7 @@ App.settings = (function () {
                 App.actions.changePassword();
                 break;
         }
+        hideSaveButton();
     }
 
     // get 获取原始设置

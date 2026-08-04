@@ -3,9 +3,9 @@ window.App = window.App || {};
 App.actions = (function() {
 
     // _handleApiSubmit 封装了向服务器提交操作的通用逻辑
-    function _handleApiSubmit({ endpoint, method = 'POST', payload, successMessage, modalId, onSuccess }) {
+    function _handleApiSubmit({ endpoint, method = 'POST', payload, successMessage, modalId, onSuccess, closeModal = true }) {
         if (!payload || (Array.isArray(payload) && payload.length === 0)) {
-            modalId && App.modal.close(modalId);
+            if (closeModal && modalId) App.modal.close(modalId);
             return Promise.resolve(true);
         }
 
@@ -16,6 +16,9 @@ App.actions = (function() {
                 }
                 App.toast.show(successMessage, 'success');
                 onSuccess && onSuccess(result);
+                if (!closeModal) {
+                    document.dispatchEvent(new CustomEvent('settings-saved'));
+                }
                 return true;
             })
             .catch(error => {
@@ -27,7 +30,9 @@ App.actions = (function() {
                 return false;
             })
             .finally(() => {
-                modalId && App.modal.close(modalId);
+                if (closeModal && modalId) {
+                    App.modal.close(modalId);
+                }
             });
     }
 
@@ -40,7 +45,7 @@ App.actions = (function() {
     // addLinks 将链接添加到数据库
     async function addLinks() {
         const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
-        if (!activePanel) return App.modal.close('settings-modal');
+        if (!activePanel) return;
 
         let linksToAdd = [];
         const singleTitleInput = activePanel.querySelector('#link-title');
@@ -53,7 +58,7 @@ App.actions = (function() {
             const iconInput = activePanel.querySelector('#link-icon');
 
             if (![singleTitleInput, urlInput, categoryInput, descInput, iconInput].some(i => i && i.value)) {
-                return App.modal.close('settings-modal');
+                return;
             }
             if (!singleTitleInput.value || !urlInput.value) {
                 App.toast.show('标题链接必填', 'error');
@@ -70,7 +75,7 @@ App.actions = (function() {
             });
         } else if (bulkLinksInput) {
             const bulkContent = bulkLinksInput.value.trim();
-            if (!bulkContent) return App.modal.close('settings-modal');
+            if (!bulkContent) return;
 
             const lines = bulkContent.split('\n').filter(line => line.trim());
             const parsedLinks = lines.map(line => {
@@ -104,6 +109,7 @@ App.actions = (function() {
             payload: actions,
             successMessage: '链接已添加',
             modalId: 'settings-modal',
+            closeModal: false,
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
         });
     }
@@ -163,7 +169,6 @@ App.actions = (function() {
         }
 
         if (actions.length === 0) {
-            App.modal.close('settings-modal');
             return;
         }
 
@@ -172,6 +177,7 @@ App.actions = (function() {
             payload: actions,
             successMessage: '链接已成功更新',
             modalId: 'settings-modal',
+            closeModal: false,
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
         });
     }
@@ -290,9 +296,10 @@ App.actions = (function() {
                 payload: actions,
                 successMessage: '链接保存成功',
                 modalId: 'settings-modal',
+                closeModal: false,
                 onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
             })
-            : (App.modal.close('settings-modal'), Promise.resolve(true));
+            : Promise.resolve(true);
     }
 
     // changePassword 处理用户密码修改请求
@@ -301,7 +308,7 @@ App.actions = (function() {
         const newPass = document.getElementById('new-password-change');
         const confirm = document.getElementById('confirm-password');
     
-        if (![current, newPass, confirm].some(i => i.value)) return App.modal.close('settings-modal');
+        if (![current, newPass, confirm].some(i => i.value)) return;
 
         const allFilled = [current, newPass, confirm].every(input => (input.classList.toggle('input-error', !input.value), !!input.value));
         if (!allFilled) return App.toast.show('所有字段必填', 'error');
@@ -317,6 +324,7 @@ App.actions = (function() {
             payload: { currentPassword: current.value, newPassword: newPass.value },
             successMessage: '密码已更新',
             modalId: 'settings-modal',
+            closeModal: false,
             onSuccess: App.auth.invalidateSession
         });
     }
@@ -348,12 +356,13 @@ App.actions = (function() {
                 payload: updates,
                 successMessage: '设置已保存',
                 modalId: 'settings-modal',
+                closeModal: false,
                 onSuccess: () => {
                     App.settings.update(updates);
                     document.dispatchEvent(new CustomEvent('settings-updated', { detail: App.settings.get() }));
                 }
             })
-            : (App.modal.close('settings-modal'), Promise.resolve(true));
+            : Promise.resolve(true);
     }
 
     return { addLinks, updateLink, updateStructure, changePassword, saveSettings, getActivePanel };

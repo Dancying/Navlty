@@ -12,6 +12,12 @@ App.editor = (function() {
         return { initialLinks, currentLinks };
     }
 
+    // reset 重置分类管理到初始状态
+    function reset() {
+        currentLinks = JSON.parse(JSON.stringify(initialLinks));
+        renderPanels();
+    }
+
     // handleDrop 处理拖放操作
     function handleDrop(event) {
         const { item, target, nextElement } = event.detail;
@@ -73,6 +79,7 @@ App.editor = (function() {
 
         currentLinks.splice(toIndex, 0, ...movedItems);
         renderPanels();
+        document.dispatchEvent(new CustomEvent('settings-changed'));
     }
 
     // loadAndRender 加载链接数据并渲染管理界面
@@ -461,6 +468,7 @@ App.editor = (function() {
         link.panel = newPanel;
 
         renderPanels();
+        document.dispatchEvent(new CustomEvent('settings-changed'));
     }
 
     // findLastIndex 从数组中查找最后一个符合条件的元素的索引
@@ -490,6 +498,7 @@ App.editor = (function() {
                 linkToEdit.title = newTitle;
             }
             renderPanels();
+            document.dispatchEvent(new CustomEvent('settings-changed'));
         };
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
@@ -527,6 +536,7 @@ App.editor = (function() {
                 });
             }
             renderPanels();
+            document.dispatchEvent(new CustomEvent('settings-changed'));
         };
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
@@ -546,6 +556,7 @@ App.editor = (function() {
             return !((link.category || 'Uncategorized') === categoryName && link.panel === panelName);
         });
         renderPanels();
+        document.dispatchEvent(new CustomEvent('settings-changed'));
     }
 
     // deleteLink 删除单个链接
@@ -571,11 +582,13 @@ App.editor = (function() {
         } else {
             renderPanels();
         }
+        document.dispatchEvent(new CustomEvent('settings-changed'));
     }
 
     return {
         getLinkData,
-        loadAndRender
+        loadAndRender,
+        reset
     };
 
 })();

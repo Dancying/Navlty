@@ -92,7 +92,7 @@
 /* 表单字段下的提示性文字 */
 .form-group small {
     margin-top: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: #6c757d;
 }
 
@@ -147,6 +147,7 @@
 /* 结果项中的标题 */
 .search-result-item .title {
     font-weight: bold;
+    font-size: 0.9em;
     color: #333;
     white-space: nowrap;
     overflow: hidden;
@@ -180,7 +181,7 @@
 .item-category-badge {
     padding: 3px 8px;
     border-radius: 4px;
-    font-size: 0.8em;
+    font-size: 0.7em;
     font-weight: 500;
     white-space: nowrap;
     background-color: #e9ecef;
@@ -191,7 +192,7 @@
 .item-panel-badge {
     padding: 3px 8px;
     border-radius: 4px;
-    font-size: 0.8em;
+    font-size: 0.7em;
     font-weight: 500;
     white-space: nowrap;
     color: #fff;

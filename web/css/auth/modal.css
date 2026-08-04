@@ -1,22 +1,48 @@
 /* 切换到网格布局以更好地控制结构 */
 #settings-modal .modal-content {
-    --nav-width: 130px;
+    --nav-width: 160px;
     display: grid;
     grid-template-columns: var(--nav-width) 1fr;
     grid-template-rows: 1fr;
     max-height: 85vh;
 }
 
-/* 保存按钮定位到右上角关闭按钮的左侧 */
-#settings-save-button {
-    position: absolute;
-    top: 12px;
-    right: 48px;
-    z-index: 10;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.8rem;
+/* 取消按钮：默认不可见（保留空间），修改时显示 */
+#settings-modal .modal-header .settings-cancel-button {
+    visibility: hidden;
+    padding: 0.2rem 0.8rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    min-width: auto;
+    background-color: #f6f5f4;
+    color: #333;
+    border: 1px solid #d4d2d0;
+}
+
+#settings-modal .modal-header .settings-cancel-button.visible {
+    visibility: visible;
+}
+
+#settings-modal .modal-header .settings-cancel-button:hover {
+    background-color: #e8e6e5;
+}
+
+/* 保存按钮：默认不可见（保留空间），修改时显示 */
+#settings-modal .modal-header .settings-save-button {
+    visibility: hidden;
+    padding: 0.3rem 0.7rem;
+    font-size: 1rem;
     border-radius: 6px;
     min-width: auto;
+    background-color: #3584e4;
+}
+
+#settings-modal .modal-header .settings-save-button.visible {
+    visibility: visible;
+}
+
+#settings-modal .modal-header .settings-save-button:hover {
+    background-color: #2a6fc0;
 }
 
 /* 将导航栏定位到网格的第一列 */
@@ -27,9 +53,10 @@
     grid-row: 1 / 2;
     width: var(--nav-width);
     padding: 1rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
     flex-shrink: 0;
+    box-sizing: border-box;
     background-color: #f7f9fc;
     border-right: 1px solid #e2e8f0;
     border-top-left-radius: 12px;
@@ -37,11 +64,15 @@
     overflow-y: auto;
 }
 
-/* 为标题添加一些底部边距 */
+/* 左侧导航"设置"标题 */
 #settings-nav h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
-    padding-left: 0.5rem;
+    padding-left: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
 }
 
 /* 调整了内边距和圆角 */
@@ -52,6 +83,8 @@
     color: #4A5568;
     border-radius: 8px;
     margin-bottom: 0.25rem;
+    font-size: 1rem;
+    text-align: center;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -74,7 +107,54 @@
     grid-row: 1 / 2;
     overflow-y: auto;
     position: relative;
-    padding: 0 2rem;
+}
+
+/* 第二列面板标题栏：取消、标题、保存、关闭按钮布局，占满第二列宽度，滚动时常驻显示 */
+#settings-modal .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-bottom: none;
+    flex-shrink: 0;
+    gap: 0.5rem;
+}
+
+/* 第二列面板内容区域内边距 */
+#settings-modal .modal-body {
+    padding: 2rem;
+}
+
+#settings-modal .modal-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    flex: 1;
+}
+
+/* 取消按钮靠左 */
+#settings-modal .modal-header .settings-cancel-button {
+    position: absolute;
+    left: 1rem;
+}
+
+/* 保存按钮靠右（关闭按钮左边） */
+#settings-modal .modal-header .settings-save-button {
+    margin-left: auto;
+}
+
+/* 关闭按钮在 settings-modal 中改为静态定位 */
+#settings-modal .modal-header .close-button {
+    position: static;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
 }
 
 .settings-content-panel {
@@ -184,7 +264,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
 .management-category-title {
     font-weight: 600;
     color: #444;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -217,7 +297,7 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
     border: none;
     cursor: pointer;
     color: #aab;
-    padding: 0.2rem;
+    padding: 0.1rem;
     border-radius: 4px;
     transition: color 0.2s, background-color 0.2s;
 }

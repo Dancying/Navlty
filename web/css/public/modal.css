@@ -116,6 +116,12 @@ body.modal-open {
     color: #333;
 }
 
+/* 关闭按钮中的图标尺寸 */
+.close-button svg {
+    width: 18px;
+    height: 18px;
+}
+
 /* 通用按钮样式 */
 .btn {
     padding: 0.875rem 1.5rem;

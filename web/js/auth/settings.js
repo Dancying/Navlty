@@ -134,7 +134,7 @@ App.settings = (function () {
         const closeButton = document.createElement('button');
         closeButton.type = 'button';
         closeButton.className = 'close-button';
-        closeButton.innerHTML = '&times;';
+        closeButton.innerHTML = '<i data-feather="x"></i>';
         closeButton.addEventListener('click', () => App.modal.close('settings-modal'));
 
         header.prepend(cancelButton);
@@ -279,6 +279,7 @@ App.settings = (function () {
 
         // 为每个面板的标题栏动态注入取消、保存、关闭按钮
         contentContainer.querySelectorAll('.settings-content-panel').forEach(injectHeaderButtons);
+        feather.replace();
 
         document.addEventListener('settings-saved', () => {
             hasSaved = true;

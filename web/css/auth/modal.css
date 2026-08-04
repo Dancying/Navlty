@@ -149,12 +149,14 @@
     margin-left: auto;
 }
 
-/* 关闭按钮在 settings-modal 中改为静态定位 */
+/* 关闭按钮在 settings-modal 中改为静态定位，使用 feather 图标 */
 #settings-modal .modal-header .close-button {
     position: static;
     width: 28px;
     height: 28px;
     flex-shrink: 0;
+    font-size: 0;
+    line-height: 1;
 }
 
 .settings-content-panel {

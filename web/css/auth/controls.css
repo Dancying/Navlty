@@ -1,0 +1,48 @@
+/* 滑块控件的容器 */
+.slider-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 滑块控件的标签 */
+.slider-group label {
+    margin-bottom: 1rem;
+}
+
+/* 滑块控件 */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+/* 滑块控件的悬浮样式 */
+.slider:hover {
+    opacity: 1;
+}
+
+/* Webkit/Blink 浏览器中滑块的滑块按钮 */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Firefox 浏览器中滑块的滑块按钮 */
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}

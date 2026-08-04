@@ -1,0 +1,359 @@
+/* 切换到网格布局以更好地控制结构 */
+#settings-modal .modal-content {
+    --nav-width: 130px;
+    display: grid;
+    grid-template-columns: var(--nav-width) 1fr;
+    grid-template-rows: 1fr auto;
+    max-height: 85vh;
+}
+
+/* 将导航栏定位到网格的第一列并使其跨越两行 */
+#settings-nav {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    width: var(--nav-width);
+    padding: 1rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    background-color: #f7f9fc;
+    border-right: 1px solid #e2e8f0;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    overflow-y: auto;
+}
+
+/* 为标题添加一些底部边距 */
+#settings-nav h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+}
+
+/* 调整了内边距和圆角 */
+.settings-nav-item {
+    display: block;
+    padding: 0.8rem 1rem;
+    text-decoration: none;
+    color: #4A5568;
+    border-radius: 8px;
+    margin-bottom: 0.25rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 添加了悬停效果 */
+.settings-nav-item:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+
+/* 更新了激活状态的样式 */
+.settings-nav-item.active {
+    background-color: #ebf4ff;
+    color: #2b6cb0;
+    font-weight: 600;
+}
+
+/* 为内容区添加水平内边距以创建视觉间距 */
+#settings-content {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    overflow-y: auto;
+    position: relative;
+    padding: 0 2rem;
+}
+
+.settings-content-panel {
+    display: none;
+}
+
+.settings-content-panel.active {
+    display: block;
+}
+
+/* 将页脚定位到网格的第二列第二行 */
+#settings-modal .modal-footer {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    border-bottom-left-radius: 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* 恢复分类管理主体的标准内边距 */
+div#settings-modal>.modal-content>div#category-management-body.modal-body {
+    padding: 2rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* 分类管理容器作为网格布局容器 */
+#category-management-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    flex-grow: 1;
+    min-height: 0;
+    padding: 0;
+}
+
+/* 用于包含主次链接的管理面板 */
+.management-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+/* 管理面板的次级标题 */
+.management-panel-title {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 0.6rem 0;
+    flex-shrink: 0;
+}
+
+/* 用于分类列表的滚动容器 */
+.management-panel-content-wrapper {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 2px 5px 2px 2px;
+}
+
+/* 单个分类的容器 */
+.management-category-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+/* 分类标题栏的样式 */
+.management-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s;
+    touch-action: none;
+}
+
+/* 分类标题栏的悬浮效果 */
+.management-category-header:hover {
+    background-color: #f1f1f1;
+}
+
+/* 展开状态下的分类标题栏 */
+.management-category-header.open {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 分类标题文本和图标的容器 */
+.category-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+/* 分类折叠展开的雪佛龙图标 */
+.category-chevron {
+    transition: transform 0.3s;
+}
+
+/* 展开状态下雪佛龙图标的旋转效果 */
+.management-category-header.open .category-chevron {
+    transform: rotate(90deg);
+}
+
+/* 分类标题文本 */
+.management-category-title {
+    font-weight: 600;
+    color: #444;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* 分类名称编辑输入框 */
+.management-category-input {
+    font: inherit;
+    font-weight: 600;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+}
+
+/* 分类和链接操作按钮的容器 */
+.management-category-actions,
+.management-link-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+}
+
+/* 分类和链接操作按钮 */
+.management-category-actions button,
+.management-link-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aab;
+    padding: 0.2rem;
+    border-radius: 4px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+/* 分类和链接操作按钮的悬浮效果 */
+.management-category-actions button:hover,
+.management-link-actions button:hover {
+    color: #333;
+    background-color: #e9ecef;
+}
+
+/* 链接列表 */
+.management-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 单个链接项的样式 */
+.management-link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    transition: background-color 0.2s;
+    cursor: grab;
+    border-top: 1px solid #f0f0f0;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* 移除第一个链接项的顶部边框 */
+.management-link-item:first-child {
+    border-top: none;
+}
+
+/* 链接项的悬浮效果 */
+.management-link-item:hover {
+    background-color: #f6f6f6;
+}
+
+/* 链接标题 */
+.management-link-title {
+    font-size: 0.8rem;
+    color: #555;
+}
+
+/* 正在被拖拽的元素 */
+.dragging {
+    opacity: 0.4;
+    background: #d3eaff !important;
+    border: 1px dashed #999;
+}
+
+/* 拖拽元素经过的有效放置区域 */
+.drag-over {
+    background-color: #f0f8ff !important;
+}
+
+/* 拖拽元素经过管理面板内容区时的效果 */
+.management-panel-content-wrapper.drag-over {
+    box-shadow: inset 0 0 0 2px #007bff;
+}
+
+/* 用于指示精确放置位置的占位符 */
+.drop-placeholder {
+    height: 10px;
+    background: #cce5ff;
+    list-style: none;
+    margin: -5px 1rem 0;
+    border-radius: 5px;
+    padding: 0;
+    transition: all 0.1s ease;
+}
+
+/* 用于分类拖拽的占位符 */
+.drop-placeholder.category-placeholder {
+    height: 40px;
+    margin: -10px 0 10px 0;
+}
+
+/* --- 响应式调整 --- */
+
+/* 768px断点样式 */
+@media (max-width: 768px) {
+
+    /* 分类管理容器单列布局 */
+    #category-management-container {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 0;
+        gap: 2rem;
+    }
+
+    /* 在移动端恢复flex布局并取消网格设置 */
+    #settings-modal .modal-content {
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: unset;
+        grid-template-rows: unset;
+    }
+
+    /* 取消导航栏的网格定位 */
+    #settings-nav {
+        grid-column: unset;
+        grid-row: unset;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 0;
+    }
+
+    /* 取消页脚的网格定位 */
+    #settings-modal .modal-footer {
+        grid-column: unset;
+        grid-row: unset;
+        width: 100%;
+        position: relative;
+        left: 0;
+    }
+
+    /* 移动端分类管理面板布局调整 */
+    div#settings-modal>.modal-content>div#category-management-body.modal-body {
+        display: block;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    /* 让管理面板的高度自适应内容 */
+    .management-panel {
+        min-height: auto;
+    }
+
+    /* 移除内部滚动条让内容自然撑开 */
+    .management-panel-content-wrapper {
+        overflow-y: visible;
+        flex-grow: 0;
+    }
+}

@@ -25,6 +25,6 @@ func RegisterHandlers() {
 	// 为所有 /api/ 路由应用认证中间件
 	mux.Handle("/api/", AuthMiddleware(api))
 
-	// 将复用器设置为默认的 HTTP 处理器
-	http.Handle("/", mux)
+	// 将复用器设置为默认的 HTTP 处理器，并为所有路由应用压缩中间件
+	http.Handle("/", CompressMiddleware(mux))
 }

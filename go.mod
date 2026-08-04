@@ -8,4 +8,7 @@ require (
 	golang.org/x/crypto v0.48.0
 )
 
-require github.com/tdewolff/parse/v2 v2.8.10 // indirect
+require (
+	github.com/andybalholm/brotli v1.2.2 // indirect
+	github.com/tdewolff/parse/v2 v2.8.10 // indirect
+)

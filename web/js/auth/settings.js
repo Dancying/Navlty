@@ -92,13 +92,10 @@ App.settings = (function () {
         const modalHTML = `
             <div id="settings-modal" class="modal">
                 <div class="modal-content">
+                    <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
                     <button class="close-button">&times;</button>
                     <div id="settings-nav"></div>
                     <div id="settings-content"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary cancel-button">取消</button>
-                        <button type="button" class="btn btn-primary" id="settings-save-button">保存</button>
-                    </div>
                 </div>
             </div>
         `;
@@ -129,7 +126,6 @@ App.settings = (function () {
         });
 
         modal.querySelector('.close-button').addEventListener('click', () => App.modal.close('settings-modal'));
-        modal.querySelector('.cancel-button').addEventListener('click', () => App.modal.close('settings-modal'));
         modal.addEventListener('click', (event) => {
             if (event.target === modal) App.modal.close('settings-modal');
         });

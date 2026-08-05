@@ -57,6 +57,7 @@ App.auth = (function () {
 
         const performSuccessActions = () => {
             sessionStorage.setItem("isAuthorized", "true");
+            App.toast.show('登录成功', 'success');
             App.modal.close(MODAL_CONFIG.VERIFY.modalId);
             onSuccessCallback && (onSuccessCallback(), onSuccessCallback = null);
             window.location.reload();
@@ -65,13 +66,7 @@ App.auth = (function () {
         const handleAuthError = (error) => {
             invalidateSession();
             console.error("Auth failed:", error);
-
-            const errorActionMap = {
-                '密码验证失败': () => App.toast.show("密码错误", "error"),
-                'default': () => App.toast.show("验证失败请重试", "error")
-            };
-
-            (error.message !== 'Unauthorized') && (errorActionMap[error.message] || errorActionMap['default'])();
+            App.toast.show('登录失败', 'error');
         };
 
         App.api.request("/auth/login", {

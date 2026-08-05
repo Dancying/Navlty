@@ -23,8 +23,7 @@ App.actions = (function() {
             })
             .catch(error => {
                 if (error.message !== 'Unauthorized') {
-                    const errorMessage = error.message.includes("failed to fetch") ? '网络错误，请检查您的连接' : error.message;
-                    App.toast.show(`操作失败: ${errorMessage}`, 'error');
+                    App.toast.show('保存失败', 'error');
                     console.error(`Error with ${endpoint}:`, error);
                 }
                 return false;
@@ -107,7 +106,7 @@ App.actions = (function() {
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
             payload: actions,
-            successMessage: '链接已添加',
+            successMessage: '保存成功',
             modalId: 'settings-modal',
             closeModal: false,
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
@@ -175,7 +174,7 @@ App.actions = (function() {
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
             payload: actions,
-            successMessage: '链接已成功更新',
+            successMessage: '保存成功',
             modalId: 'settings-modal',
             closeModal: false,
             onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
@@ -294,7 +293,7 @@ App.actions = (function() {
             ? _handleApiSubmit({
                 endpoint: '/api/links/actions',
                 payload: actions,
-                successMessage: '链接保存成功',
+                successMessage: '保存成功',
                 modalId: 'settings-modal',
                 closeModal: false,
                 onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
@@ -322,7 +321,7 @@ App.actions = (function() {
         await _handleApiSubmit({
             endpoint: '/api/auth/passwd',
             payload: { currentPassword: current.value, newPassword: newPass.value },
-            successMessage: '密码已更新',
+            successMessage: '保存成功',
             modalId: 'settings-modal',
             closeModal: false,
             onSuccess: App.auth.invalidateSession
@@ -354,7 +353,7 @@ App.actions = (function() {
                 endpoint: '/api/settings',
                 method: 'PATCH',
                 payload: updates,
-                successMessage: '设置已保存',
+                successMessage: '保存成功',
                 modalId: 'settings-modal',
                 closeModal: false,
                 onSuccess: () => {

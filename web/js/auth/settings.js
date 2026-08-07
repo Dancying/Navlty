@@ -138,8 +138,7 @@ App.settings = (function () {
         if (!activePanel) return;
 
         switch (activePanel.id) {
-            case 'content-site-settings':
-            case 'content-style-settings':
+            case 'content-site-appearance':
             case 'content-advanced-settings':
                 // 从原始设置恢复表单值
                 App.helpers.setFormValue('site-name', originalSettings.siteName);
@@ -236,6 +235,11 @@ App.settings = (function () {
         navContainer.appendChild(navTitle);
 
         App.config.settingsNavigation.forEach(item => {
+            if (item.target === 'content-site-appearance') {
+                const divider = document.createElement('div');
+                divider.className = 'settings-nav-divider';
+                navContainer.appendChild(divider);
+            }
             const navLink = document.createElement('a');
             navLink.href = '#';
             navLink.className = 'settings-nav-item';
@@ -474,8 +478,7 @@ App.settings = (function () {
         if (!activePanel) return;
 
         switch (activePanel.id) {
-            case 'content-site-settings':
-            case 'content-style-settings':
+            case 'content-site-appearance':
             case 'content-advanced-settings':
                 App.actions.saveSettings();
                 break;

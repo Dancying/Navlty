@@ -12,7 +12,6 @@ html { background-color: #f0f2f5; }
 .btn-primary:hover { background-color: #1557b0; }
 .btn-secondary { background-color: #f0f2f5; color: #333; }
 .btn-secondary:hover { background-color: #e0e3e8; }
-.modal-footer { background-color: #f0f2f5; }
 
 /* web/css/public/toast.css */
 .toast { background-color: #fff; }

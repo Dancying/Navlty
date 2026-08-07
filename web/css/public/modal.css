@@ -75,8 +75,6 @@ body.modal-open {
 /* 模态框的页脚区域 */
 .modal-footer {
     padding: 1rem 2rem;
-    border-top: 1px solid #e0e0e0;
-    background-color: #f9f9f9;
     display: flex;
     justify-content: flex-end;
     gap: 1rem;

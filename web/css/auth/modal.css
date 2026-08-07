@@ -57,7 +57,6 @@
     margin-bottom: 0;
     flex-shrink: 0;
     box-sizing: border-box;
-    background-color: #f5f3ee;
     border-right: 1px solid #e2e8f0;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
@@ -121,7 +120,6 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: #fdfcf9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -221,7 +219,6 @@ div#settings-modal>.modal-content>div#category-management-body.modal-body {
 .management-category-group {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    background-color: #fdfcf9;
     overflow: hidden;
     margin-bottom: 0.5rem;
 }

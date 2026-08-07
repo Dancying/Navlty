@@ -20,6 +20,7 @@ const (
 	publicJSDirectory  = "web/js/public"
 	authCSSDirectory   = "web/css/auth"
 	authJSDirectory    = "web/js/auth"
+	themesDirectory    = "web/css/themes"
 )
 
 var m *minify.M
@@ -114,4 +115,28 @@ func LoadAuthAssets() (string, string) {
 	css := loadStaticAssets(authCSSDirectory, ".css")
 	js := loadStaticAssets(authJSDirectory, ".js")
 	return css, js
+}
+
+// LoadThemeCSS 根据主题名称加载对应的主题 CSS 文件。
+func LoadThemeCSS(themeName string) string {
+	if themeName == "" {
+		return ""
+	}
+	themeFile := filepath.Join(themesDirectory, themeName+".css")
+	content, err := os.ReadFile(themeFile)
+	if err != nil {
+		log.Printf("warning: could not load theme file %s: %v", themeFile, err)
+		return ""
+	}
+	minifiedContent, err := m.Bytes("text/css", content)
+	if err != nil {
+		log.Printf("warning: could not minify theme file %s: %v", themeFile, err)
+		return string(content)
+	}
+	return string(minifiedContent)
+}
+
+// LoadThemeAssets 加载主题目录中的 CSS 文件（用于 themes/ 目录）。
+func LoadThemeAssets() string {
+	return loadStaticAssets(themesDirectory, ".css")
 }

@@ -39,6 +39,7 @@ type Settings struct {
 	BackgroundURL  string   `json:"backgroundURL"`
 	BackgroundBlur int      `json:"backgroundBlur"`
 	CardsPerRow    int      `json:"cardsPerRow"`
+	Theme          string   `json:"theme"`
 	TopContent     string   `json:"topContent"`
 	BottomContent  string   `json:"bottomContent"`
 	CustomCSS      string   `json:"customCSS"`

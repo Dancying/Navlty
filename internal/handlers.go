@@ -37,13 +37,15 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 	}
 	pageData.ExternalJSStr = jsBuilder.String()
 
+	themeCSS := LoadThemeCSS(pageData.Theme)
+
 	cookie, err := r.Cookie("session_token")
 	if err == nil && IsSessionValid(cookie.Value) {
 		authCSS, authJS := LoadAuthAssets()
-		pageData.CSS = publicCSS + "\n" + authCSS
+		pageData.CSS = publicCSS + "\n" + themeCSS + "\n" + authCSS
 		pageData.JS = publicJS + "\n" + authJS
 	} else {
-		pageData.CSS = publicCSS
+		pageData.CSS = publicCSS + "\n" + themeCSS
 		pageData.JS = publicJS
 	}
 

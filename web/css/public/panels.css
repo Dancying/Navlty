@@ -1,6 +1,5 @@
 /* 根元素HTML的样式，设置了页面的基础背景色 */
 html {
-    background-color: #f2f0eb;
     scrollbar-width: none;
 }
 
@@ -55,7 +54,6 @@ body > div.container {
     width: 100%;
     padding: 0.75rem 0;
     z-index: 1000;
-    background-color: rgba(240, 238, 232, 0.65);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -129,7 +127,6 @@ body > div.container {
     height: 100%;
     border-radius: 20px;
     border: 1px solid #ccc;
-    background-color: #fdfcf9;
     font-size: 1rem;
     outline: none;
     padding: 0 45px 0 20px;

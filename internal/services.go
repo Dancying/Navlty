@@ -57,6 +57,7 @@ func LoadSettings() *Settings {
 			CardsPerRow:    2,
 			BackgroundBlur: 8,
 			BackgroundURL:  "",
+			Theme:          "cool-white",
 		}
 	})
 }

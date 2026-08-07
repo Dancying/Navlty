@@ -145,6 +145,7 @@ App.settings = (function () {
                 App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
                 App.helpers.setFormValue('site-title', originalSettings.siteTitle);
                 App.helpers.setFormValue('avatar-url', originalSettings.avatarURL);
+                App.helpers.setFormValue('theme', originalSettings.theme);
                 App.helpers.setFormValue('background-url', originalSettings.backgroundURL);
                 App.helpers.setFormValue('background-blur', originalSettings.backgroundBlur);
                 App.helpers.setFormValue('cards-per-row', originalSettings.cardsPerRow);
@@ -441,6 +442,7 @@ App.settings = (function () {
                 App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
                 App.helpers.setFormValue('site-title', originalSettings.siteTitle);
                 App.helpers.setFormValue('avatar-url', originalSettings.avatarURL);
+                App.helpers.setFormValue('theme', originalSettings.theme);
                 App.helpers.setFormValue('background-url', originalSettings.backgroundURL);
                 App.helpers.setFormValue('background-blur', originalSettings.backgroundBlur);
                 App.helpers.setFormValue('cards-per-row', originalSettings.cardsPerRow);

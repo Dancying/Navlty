@@ -28,7 +28,6 @@
 
 /* 链接卡片的基本样式 */
 .card {
-    background-color: #fdfcf9;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
     padding: 1rem 1.5rem;

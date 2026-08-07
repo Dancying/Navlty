@@ -261,7 +261,7 @@ App.actions = (function() {
         if (!activePanel) return;
 
         const originalSettings = App.settings.get();
-        const currentValues = Array.from(activePanel.querySelectorAll('input[name], textarea[name]')).reduce((acc, field) => {
+        const currentValues = Array.from(activePanel.querySelectorAll('[name]')).reduce((acc, field) => {
             const key = field.name;
             if (field.type === 'range') acc[key] = parseInt(field.value, 10) || 0;
             else if (field.type === 'textarea' && key === 'externalJS') acc[key] = field.value.split('\n').filter(line => line.trim());
@@ -284,7 +284,7 @@ App.actions = (function() {
                 closeModal: false,
                 onSuccess: () => {
                     App.settings.update(updates);
-                    document.dispatchEvent(new CustomEvent('settings-updated', { detail: App.settings.get() }));
+                    document.dispatchEvent(new CustomEvent('settings-saved'));
                 }
             })
             : Promise.resolve(true);

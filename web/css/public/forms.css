@@ -25,6 +25,11 @@
     resize: none;
 }
 
+/* 下拉选择框与输入框高度对齐 */
+.form-group select {
+    height: 47px;
+}
+
 /* 表单输入元素在聚焦时的样式 */
 .form-group input:not(.slider):not(.hidden-file-input):focus,
 .form-group select:focus,

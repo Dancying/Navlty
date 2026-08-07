@@ -50,8 +50,6 @@ App.actions = (function() {
             if (![singleTitleInput, urlInput, categoryInput, descInput, iconInput].some(i => i && i.value)) return;
             if (!singleTitleInput.value || !urlInput.value) {
                 App.toast.show('标题和链接必填', 'error');
-                singleTitleInput.classList.toggle('input-error', !singleTitleInput.value);
-                urlInput.classList.toggle('input-error', !urlInput.value);
                 return;
             }
             linksToAdd.push({ title: singleTitleInput.value, url: urlInput.value, category: categoryInput.value || 'Uncategorized', desc: descInput.value, icon_url: iconInput.value || 'globe' });
@@ -62,7 +60,7 @@ App.actions = (function() {
                 const [title, url, category, icon_url, desc] = line.split('|').map(part => part.trim());
                 return (title && url) ? { title, url, category: category || 'Uncategorized', icon_url: icon_url || 'globe', desc: desc || '' } : null;
             }).filter(Boolean);
-            if (linksToAdd.length === 0) { App.toast.show('没有有效的链接', 'error'); return; }
+            if (linksToAdd.length === 0) { App.toast.show('标题和链接必填', 'error'); return; }
         }
         if (linksToAdd.length === 0) return;
 
@@ -93,7 +91,7 @@ App.actions = (function() {
 
         const newTitle = App.helpers.getFormValue('edit-link-title');
         const newUrl = App.helpers.getFormValue('edit-link-url');
-        if (!newTitle || !newUrl) { App.toast.show('标题和链接为必填项', 'error'); return; }
+        if (!newTitle || !newUrl) { App.toast.show('标题和链接必填', 'error'); return; }
 
         const newCategory = App.helpers.getFormValue('edit-link-category') || 'Uncategorized';
         const newPanel = App.helpers.getFormValue('edit-link-target-panel');

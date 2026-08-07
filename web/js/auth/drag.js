@@ -116,9 +116,7 @@ App.dnd = (function () {
         state.placeholder = document.createElement('div');
         state.placeholder.className = 'drop-placeholder';
         const itemType = state.draggedItem.dataset.dndType;
-        if (itemType === 'category') {
-            state.placeholder.classList.add('category-placeholder');
-        }
+        itemType === 'category' && state.placeholder.classList.add('category-placeholder');
         const rect = state.draggedItem.getBoundingClientRect();
         state.placeholder.style.height = `${rect.height}px`;
     }

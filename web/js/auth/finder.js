@@ -17,34 +17,20 @@ App.finder = (function() {
             if (panelsToRender && typeof panelsToRender === 'object') {
                 for (const panelName in panelsToRender) {
                     const categories = panelsToRender[panelName];
-                    if (Array.isArray(categories)) {
-                        categories.forEach(category => {
-                            if (category.links && Array.isArray(category.links)) {
-                                category.links.forEach(link => {
-                                    flatLinks.push({
-                                        id: link.id,
-                                        title: link.title || '',
-                                        url: link.url || '',
-                                        panel: panelName,
-                                        category: category.name || '',
-                                        icon: link.icon_url || '',
-                                        description: link.desc || ''
-                                    });
-                                });
-                            }
+                    if (!Array.isArray(categories)) continue;
+                    categories.forEach(category => {
+                        if (!category.links || !Array.isArray(category.links)) return;
+                        category.links.forEach(link => {
+                            flatLinks.push({ id: link.id, title: link.title || '', url: link.url || '', panel: panelName, category: category.name || '', icon: link.icon_url || '', description: link.desc || '' });
                         });
-                    }
+                    });
                 }
             }
-            
+
             flatLinks.sort((a, b) => a.title.localeCompare(b.title));
             linksForEditing = flatLinks;
-
         } catch (error) {
-            if (error.message !== 'Unauthorized') {
-                console.error('Error loading links for editing:', error);
-                App.toast.show('链接加载失败', 'error');
-            }
+            error.message !== 'Unauthorized' && (console.error('Error loading links for editing:', error), App.toast.show('链接加载失败', 'error'));
         }
     }
 
@@ -53,13 +39,13 @@ App.finder = (function() {
         const categoryText = link.category || '未分类';
         const panelKey = (link.panel || '').toLowerCase();
         let panelHTML = '';
-    
+
         if (panelKey === 'primary') {
             panelHTML = `<span class="item-panel-badge primary">主面板</span>`;
         } else if (panelKey === 'secondary') {
             panelHTML = `<span class="item-panel-badge secondary">副面板</span>`;
         }
-    
+
         return `
             <div class="search-result-item" data-id="${link.id}">
                 <div class="top-row">
@@ -88,7 +74,7 @@ App.finder = (function() {
         if (link) {
             currentEditingLinkId = selectedId;
             document.getElementById('edit-link-search-input').value = link.title;
-    
+
             App.helpers.setFormValue('edit-link-title', link.title);
             App.helpers.setFormValue('edit-link-url', link.url);
             App.helpers.setFormValue('edit-link-category', link.category || '');
@@ -116,10 +102,9 @@ App.finder = (function() {
 
         if (!isEnabled) {
             currentEditingLinkId = null;
-            const fieldsToReset = ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description', 'edit-link-target-panel'];
-            fieldsToReset.forEach(id => {
+            ['edit-link-title', 'edit-link-url', 'edit-link-category', 'edit-link-icon', 'edit-link-description', 'edit-link-target-panel'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.value = '';
+                el && (el.value = '');
             });
         }
     }
@@ -134,13 +119,5 @@ App.finder = (function() {
         return currentEditingLinkId;
     }
 
-    return {
-        loadLinksForEditing,
-        getLinksForEditing,
-        renderLinkItem,
-        handleLinkSelectionChange,
-        getCurrentEditingLinkId,
-        getLinkById,
-        toggleEditForm
-    };
+    return { loadLinksForEditing, getLinksForEditing, renderLinkItem, handleLinkSelectionChange, getCurrentEditingLinkId, getLinkById, toggleEditForm };
 })();

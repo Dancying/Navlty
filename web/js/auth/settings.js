@@ -21,19 +21,11 @@ App.settings = (function () {
 
         const populateResults = () => {
             const searchTerm = input.value.toLowerCase();
-            const items = source();
-            const filtered = items.filter(item => 
-                JSON.stringify(item).toLowerCase().includes(searchTerm)
-            );
+            const filtered = source().filter(item => JSON.stringify(item).toLowerCase().includes(searchTerm));
 
-            resultsContainer.innerHTML = '';
-            if (filtered.length > 0) {
-                filtered.forEach(item => {
-                    resultsContainer.insertAdjacentHTML('beforeend', renderItem(item));
-                });
-            } else {
-                resultsContainer.innerHTML = '<div class="search-result-item">无匹配结果</div>';
-            }
+            resultsContainer.innerHTML = filtered.length > 0
+                ? filtered.map(renderItem).join('')
+                : '<div class="search-result-item">无匹配结果</div>';
         };
 
         input.addEventListener('input', populateResults);
@@ -67,9 +59,7 @@ App.settings = (function () {
             try {
                 const base64String = await App.helpers.fileToBase64(file);
                 const targetInput = document.getElementById(targetId);
-                if (targetInput) {
-                    targetInput.value = base64String;
-                }
+                targetInput && (targetInput.value = base64String);
                 App.toast.show('文件加载成功', 'success');
             } catch (error) {
                 console.error('File could not be read:', error);
@@ -77,7 +67,7 @@ App.settings = (function () {
             }
         });
     }
-    
+
     // updateSliderValue 更新滑块值的显示
     function updateSliderValue(sliderId, displayId) {
         const slider = document.getElementById(sliderId);
@@ -176,9 +166,8 @@ App.settings = (function () {
             case 'content-edit-link':
                 // 重置编辑链接表单
                 App.finder.toggleEditForm(false);
-                // 清空搜索输入框，恢复到未选择链接的状态
                 const editSearchInput = document.getElementById('edit-link-search-input');
-                if (editSearchInput) editSearchInput.value = '';
+                editSearchInput && (editSearchInput.value = '');
                 break;
             case 'content-category-management':
                 // 重置分类管理到初始状态
@@ -197,15 +186,11 @@ App.settings = (function () {
         if (!modal) return;
 
         modal.addEventListener('input', (event) => {
-            if (event.target.matches('input, textarea, select')) {
-                showSaveButton();
-            }
+            event.target.matches('input, textarea, select') && showSaveButton();
         }, true);
 
         modal.addEventListener('change', (event) => {
-            if (event.target.matches('input, textarea, select')) {
-                showSaveButton();
-            }
+            event.target.matches('input, textarea, select') && showSaveButton();
         }, true);
 
         // 监听分类管理中的拖放、编辑、删除等操作
@@ -220,12 +205,8 @@ App.settings = (function () {
         document.addEventListener('modal:closed', (event) => {
             if (event.detail?.modalId === 'settings-modal') {
                 // 关闭前如果有未保存的修改，触发取消逻辑撤销修改
-                if (saveButtonVisible) {
-                    handleCancel();
-                }
-                if (hasSaved) {
-                    window.location.reload();
-                }
+                saveButtonVisible && handleCancel();
+                hasSaved && window.location.reload();
             }
         });
     }
@@ -244,7 +225,7 @@ App.settings = (function () {
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         feather.replace();
-        
+
         const modal = document.getElementById('settings-modal');
         const navContainer = document.getElementById('settings-nav');
         const contentContainer = document.getElementById('settings-content');
@@ -262,19 +243,14 @@ App.settings = (function () {
             navLink.textContent = item.name;
             navContainer.appendChild(navLink);
 
-            const panelName = item.target.replace('content-', '')
-                .split('-')
-                .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-                .join('');
+            const panelName = item.target.replace('content-', '').split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
             const functionName = `get${panelName}HTML`;
 
-            if (typeof App.views[functionName] === 'function') {
-                contentContainer.insertAdjacentHTML('beforeend', App.views[functionName]());
-            }
+            typeof App.views[functionName] === 'function' && contentContainer.insertAdjacentHTML('beforeend', App.views[functionName]());
         });
 
         modal.addEventListener('click', (event) => {
-            if (event.target === modal) App.modal.close('settings-modal');
+            event.target === modal && App.modal.close('settings-modal');
         });
 
         // 为每个面板的标题栏动态注入取消、保存、关闭按钮
@@ -303,12 +279,10 @@ App.settings = (function () {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetId = item.getAttribute('data-target');
-                if(targetId){
-                    switchPanel(targetId);
-                }
+                targetId && switchPanel(targetId);
             });
         });
-        
+
         updateSliderValue('background-blur', 'background-blur-value');
         updateSliderValue('cards-per-row', 'cards-per-row-value');
 
@@ -352,21 +326,18 @@ App.settings = (function () {
             const input = document.getElementById(inputId);
             const targetPanelInput = document.getElementById(targetPanelId);
             if (!input || !targetPanelInput) return;
-        
+
             const match = id.match(/^(.*) \((主面板|副面板)\)$/);
             if (match) {
-                const categoryName = match[1].trim();
-                const panelName = match[2];
-                const panelKey = panelName === '主面板' ? 'primary' : 'secondary';
-                input.value = categoryName;
-                targetPanelInput.value = panelKey;
+                input.value = match[1].trim();
+                targetPanelInput.value = match[2] === '主面板' ? 'primary' : 'secondary';
             } else {
                 input.value = id;
             }
         };
 
         const categoryConfig = {
-            source: () => uniqueCategories.map(cat => ({ id: cat, name: cat })), 
+            source: () => uniqueCategories.map(cat => ({ id: cat, name: cat })),
             renderItem: categoryRenderItem,
         };
 
@@ -386,9 +357,7 @@ App.settings = (function () {
 
         document.addEventListener('click', (e) => {
             document.querySelectorAll('.searchable-select-wrapper.active').forEach(wrapper => {
-                if (!wrapper.contains(e.target)) {
-                    wrapper.classList.remove('active');
-                }
+                !wrapper.contains(e.target) && wrapper.classList.remove('active');
             });
         }, true);
     }
@@ -396,9 +365,7 @@ App.settings = (function () {
     // switchPanel 切换设置模态框中的主内容面板
     async function switchPanel(targetId) {
         // 如果有未保存的修改，先触发取消逻辑撤销修改
-        if (saveButtonVisible) {
-            handleCancel();
-        }
+        saveButtonVisible && handleCancel();
         lastActivePanelId = targetId;
         const modal = document.getElementById('settings-modal');
         modal.querySelectorAll('.settings-nav-item').forEach(nav => nav.classList.remove('active'));
@@ -406,40 +373,34 @@ App.settings = (function () {
 
         modal.querySelector(`.settings-nav-item[data-target="${targetId}"]`)?.classList.add('active');
         const activePanel = modal.querySelector(`#${targetId}`);
-        if (activePanel) activePanel.classList.add('active');
+        activePanel && activePanel.classList.add('active');
 
         if (targetId === 'content-add-link') {
             const targetPanelInput = document.getElementById('add-link-target-panel');
-            if (targetPanelInput) {
-                targetPanelInput.value = App.actions.getActivePanel ? App.actions.getActivePanel() : 'primary';
-            }
+            targetPanelInput && (targetPanelInput.value = App.actions.getActivePanel ? App.actions.getActivePanel() : 'primary');
         }
 
         if (targetId === 'content-category-management') {
             const container = document.getElementById('category-management-body');
             App.editor.loadAndRender(container);
         } else if (targetId === 'content-edit-link' || targetId === 'content-add-link') {
-            if (targetId === 'content-edit-link') {
-                 App.finder.loadLinksForEditing();
-            }
+            targetId === 'content-edit-link' && App.finder.loadLinksForEditing();
             try {
                 const panelsToRender = await App.cache.fetchLinks();
                 const flatLinks = [];
                 if (panelsToRender && typeof panelsToRender === 'object') {
                     for (const panelName in panelsToRender) {
                         const categories = panelsToRender[panelName];
-                        if (Array.isArray(categories)) {
-                            categories.forEach(category => {
-                                if (category.links && Array.isArray(category.links)) {
-                                    category.links.forEach(link => {
-                                        flatLinks.push({ ...link, panel: panelName, category: category.name || '' });
-                                    });
-                                }
+                        if (!Array.isArray(categories)) continue;
+                        categories.forEach(category => {
+                            if (!category.links || !Array.isArray(category.links)) return;
+                            category.links.forEach(link => {
+                                flatLinks.push({ ...link, panel: panelName, category: category.name || '' });
                             });
-                        }
+                        });
                     }
                 }
-                
+
                 const categorySet = new Set();
                 flatLinks.forEach(l => {
                     if (l.category) {
@@ -448,16 +409,14 @@ App.settings = (function () {
                     }
                 });
                 uniqueCategories = [...categorySet];
-                if(activePanel.classList.contains('active')){
+                if (activePanel.classList.contains('active')) {
                     const input = activePanel.querySelector('.searchable-select-wrapper input');
-                    if(input && document.activeElement === input) {
+                    if (input && document.activeElement === input) {
                         input.dispatchEvent(new Event('focus'));
                     }
                 }
             } catch (error) {
-                if (error.message !== 'Unauthorized') {
-                     console.error(`Failed to populate categories for ${targetId} form:`, error);
-                }
+                error.message !== 'Unauthorized' && console.error(`Failed to populate categories for ${targetId} form:`, error);
             }
         }
     }
@@ -466,14 +425,14 @@ App.settings = (function () {
     async function loadAndShow(initialPanelId) {
         createModalAndEvents();
         const panelToShow = initialPanelId || lastActivePanelId;
-    
+
         const openSettingsPanel = async () => {
             try {
                 if (Object.keys(originalSettings).length === 0) {
                     const data = await App.api.request('/api/settings');
                     originalSettings = data;
                 }
-    
+
                 App.helpers.setFormValue('site-name', originalSettings.siteName);
                 App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
                 App.helpers.setFormValue('site-title', originalSettings.siteTitle);
@@ -485,10 +444,10 @@ App.settings = (function () {
                 App.helpers.setFormValue('bottom-content', originalSettings.bottomContent);
                 App.helpers.setFormValue('custom-css', originalSettings.customCSS);
                 App.helpers.setFormValue('external-js', (originalSettings.externalJS || []).join('\n'));
-                
+
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
-    
+
                 hideSaveButton();
                 App.modal.open('settings-modal');
                 switchPanel(panelToShow);
@@ -501,7 +460,7 @@ App.settings = (function () {
                 }
             }
         };
-    
+
         if (App.auth.isAuthenticated()) {
             openSettingsPanel();
         } else {
@@ -548,9 +507,5 @@ App.settings = (function () {
         originalSettings = { ...originalSettings, ...newSettings };
     }
 
-    return { 
-        loadAndShow,
-        get,
-        update
-    };
+    return { loadAndShow, get, update };
 })();

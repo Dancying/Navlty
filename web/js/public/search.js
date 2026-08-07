@@ -10,14 +10,12 @@ App.search = (function () {
         searchButton = document.getElementById('search-button');
 
         searchButton?.addEventListener('click', toggleSearch);
-        
-        searchInput?.addEventListener('input', (() => {
-            let debounceTimer;
-            return () => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(performSearch, 100);
-            };
-        })());
+
+        let debounceTimer;
+        searchInput?.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(performSearch, 100);
+        });
     }
 
     // showSearch 显示并聚焦搜索框
@@ -47,11 +45,7 @@ App.search = (function () {
         const searchTerm = searchInput.value.toLowerCase().trim();
         const activePanel = document.querySelector('.panel.active');
         if (!activePanel) return;
-
-        if (searchTerm === '') {
-            clearSearch();
-            return;
-        }
+        if (searchTerm === '') { clearSearch(); return; }
 
         activePanel.classList.add('is-searching');
         const isPrimary = activePanel.id === 'primary-panel';
@@ -77,10 +71,7 @@ App.search = (function () {
         if (!activePanel) return;
 
         activePanel.classList.remove('is-searching');
-        
-        activePanel.querySelectorAll('.card.is-match, .category-title.is-match').forEach(el => {
-            el.classList.remove('is-match');
-        });
+        activePanel.querySelectorAll('.card.is-match, .category-title.is-match').forEach(el => el.classList.remove('is-match'));
     }
 
     return { init, showSearch, hideSearch, toggleSearch };

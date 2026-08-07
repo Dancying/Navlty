@@ -4,28 +4,13 @@ App.auth = (function () {
     let onSuccessCallback = null;
     let modalElements = null;
 
+    // MODAL_CONFIG 模态框配置
     const MODAL_CONFIG = {
-        SETUP: {
-            modalId: 'auth-modal',
-            title: '设置访问密码',
-            label: '首次使用，请设置访问密码',
-            inputId: 'new-password',
-            placeholder: '请输入密码...',
-            autocomplete: 'new-password',
-            buttonText: '保存'
-        },
-        VERIFY: {
-            modalId: 'auth-modal',
-            title: '验证访问密码',
-            label: '请输入访问密码',
-            inputId: 'password',
-            placeholder: '请输入密码...',
-            autocomplete: 'current-password',
-            buttonText: '确认'
-        }
+        SETUP: { modalId: 'auth-modal', title: '设置访问密码', label: '首次使用，请设置访问密码', inputId: 'new-password', placeholder: '请输入密码...', autocomplete: 'new-password', buttonText: '保存' },
+        VERIFY: { modalId: 'auth-modal', title: '验证访问密码', label: '请输入访问密码', inputId: 'password', placeholder: '请输入密码...', autocomplete: 'current-password', buttonText: '确认' }
     };
 
-    // isAuthenticated 检查用户是否已通过身份验证，sessionStorage 是唯一的数据源
+    // isAuthenticated 检查用户是否已通过身份验证
     function isAuthenticated() {
         return sessionStorage.getItem("isAuthorized") === "true";
     }
@@ -49,12 +34,7 @@ App.auth = (function () {
 
     // authUser 验证用户密码
     function authUser(password) {
-        const handleAuthSuccess = (result) => {
-            return result.success
-                ? Promise.resolve()
-                : Promise.reject(new Error("密码验证失败"));
-        };
-
+        const handleAuthSuccess = (result) => result.success ? Promise.resolve() : Promise.reject(new Error("密码验证失败"));
         const performSuccessActions = () => {
             sessionStorage.setItem("isAuthorized", "true");
             App.toast.show('登录成功', 'success');
@@ -62,7 +42,6 @@ App.auth = (function () {
             onSuccessCallback && (onSuccessCallback(), onSuccessCallback = null);
             window.location.reload();
         };
-
         const handleAuthError = (error) => {
             invalidateSession();
             console.error("Auth failed:", error);
@@ -97,7 +76,6 @@ App.auth = (function () {
             const modal = document.createElement('div');
             modal.id = modalId;
             modal.className = 'modal';
-
             modal.innerHTML = '<div class="modal-content"><div class="modal-header"><h2></h2><span class="close-button"><i data-feather="x"></i></span></div><div class="modal-body"><div class="form-group"><label></label><input type="password"></div></div><div class="modal-footer"><button class="btn btn-secondary cancel-button">取消</button><button class="btn btn-primary confirm-button"></button></div></div>';
 
             document.body.appendChild(modal);

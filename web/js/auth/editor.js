@@ -57,17 +57,15 @@ App.editor = (function() {
         } else {
             if (isCategory) {
                 if (targetPanel) {
-                     const lastLinkInPanelIndex = findLastIndex(currentLinks, l => l.panel === targetPanel);
-                     toIndex = lastLinkInPanelIndex + 1;
+                    toIndex = findLastIndex(currentLinks, l => l.panel === targetPanel) + 1;
                 } else { toIndex = currentLinks.length; }
             } else {
-                 if (targetCategoryName) {
-                    const lastLinkInCategoryIndex = findLastIndex(currentLinks, l => (l.category || 'Uncategorized') === targetCategoryName && l.panel === targetPanel);
-                    toIndex = lastLinkInCategoryIndex + 1;
-                 } else { toIndex = currentLinks.length; }
+                if (targetCategoryName) {
+                    toIndex = findLastIndex(currentLinks, l => (l.category || 'Uncategorized') === targetCategoryName && l.panel === targetPanel) + 1;
+                } else { toIndex = currentLinks.length; }
             }
         }
-        
+
         if (toIndex === -1) toIndex = currentLinks.length;
 
         movedItems.forEach(movedItem => {
@@ -98,20 +96,13 @@ App.editor = (function() {
             if (panelsToRender && typeof panelsToRender === 'object') {
                 for (const panelName in panelsToRender) {
                     const categories = panelsToRender[panelName];
-                    if (Array.isArray(categories)) {
-                        categories.forEach(category => {
-                            if (category.links && Array.isArray(category.links)) {
-                                category.links.forEach(link => {
-                                    flatLinks.push({
-                                        ...link,
-                                        clientId: `client-link-${linkIdCounter++}`,
-                                        panel: panelName,
-                                        category: category.name || ''
-                                    });
-                                });
-                            }
+                    if (!Array.isArray(categories)) continue;
+                    categories.forEach(category => {
+                        if (!category.links || !Array.isArray(category.links)) return;
+                        category.links.forEach(link => {
+                            flatLinks.push({ ...link, clientId: `client-link-${linkIdCounter++}`, panel: panelName, category: category.name || '' });
                         });
-                    }
+                    });
                 }
             }
             currentLinks = flatLinks;
@@ -131,20 +122,15 @@ App.editor = (function() {
     function renderPanels() {
         if (!dom.container) return;
         dom.container.innerHTML = '';
-        
+
         const gridContainer = document.createElement('div');
         gridContainer.id = 'category-management-container';
         gridContainer.className = 'category-management-grid';
         dom.container.appendChild(gridContainer);
 
-        const primaryLinks = currentLinks.filter(link => link.panel === 'primary');
-        const secondaryLinks = currentLinks.filter(link => link.panel === 'secondary');
-        const primaryPanel = createPanel('主面板', 'primary', primaryLinks);
-        const secondaryPanel = createPanel('副面板', 'secondary', secondaryLinks);
-        
-        gridContainer.appendChild(primaryPanel);
-        gridContainer.appendChild(secondaryPanel);
-        
+        gridContainer.appendChild(createPanel('主面板', 'primary', currentLinks.filter(link => link.panel === 'primary')));
+        gridContainer.appendChild(createPanel('副面板', 'secondary', currentLinks.filter(link => link.panel === 'secondary')));
+
         feather.replace();
         App.dnd.init(gridContainer);
     }
@@ -176,9 +162,7 @@ App.editor = (function() {
         });
 
         categories.forEach(categoryName => {
-            const categoryLinks = categoryMap.get(categoryName);
-            const categoryGroup = createCategory(categoryName, categoryLinks, panelName);
-            contentWrapper.appendChild(categoryGroup);
+            contentWrapper.appendChild(createCategory(categoryName, categoryMap.get(categoryName), panelName));
         });
 
         return panel;
@@ -237,9 +221,7 @@ App.editor = (function() {
         editButton.innerHTML = '<i data-feather="edit"></i>';
         editButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (header.querySelector('.management-category-title')) {
-                editCategoryName(header.querySelector('.management-category-title'), categoryName, panelName);
-            }
+            header.querySelector('.management-category-title') && editCategoryName(header.querySelector('.management-category-title'), categoryName, panelName);
         });
 
         const copyButton = document.createElement('button');
@@ -247,16 +229,9 @@ App.editor = (function() {
         copyButton.innerHTML = '<i data-feather="copy"></i>';
         copyButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            const linksToCopy = currentLinks.filter(link => link.panel === panelName && (link.category || 'Uncategorized') === categoryName);
-            const formattedLinks = linksToCopy.map(l => {
-                return `${l.title}|${l.url}|${l.category || 'Uncategorized'}|${l.icon_url || 'globe'}|${l.desc || ''}`;
-            }).join('\n');
-
-            navigator.clipboard.writeText(formattedLinks).then(() => {
-                App.toast.show('分类链接已复制', 'success');
-            }, () => {
-                App.toast.show('复制失败', 'error');
-            });
+            const formattedLinks = currentLinks.filter(link => link.panel === panelName && (link.category || 'Uncategorized') === categoryName)
+                .map(l => `${l.title}|${l.url}|${l.category || 'Uncategorized'}|${l.icon_url || 'globe'}|${l.desc || ''}`).join('\n');
+            navigator.clipboard.writeText(formattedLinks).then(() => App.toast.show('分类链接已复制', 'success'), () => App.toast.show('复制失败', 'error'));
         });
 
         const deleteButton = document.createElement('button');
@@ -302,9 +277,7 @@ App.editor = (function() {
         list.style.maxHeight = '0px';
         list.dataset.dndTarget = 'link-container';
 
-        links.forEach(link => {
-            list.appendChild(createLinkItem(link));
-        });
+        links.forEach(link => list.appendChild(createLinkItem(link)));
         return list;
     }
 
@@ -329,11 +302,7 @@ App.editor = (function() {
         copyButton.addEventListener('click', (e) => {
             e.stopPropagation();
             const formattedLink = `${link.title}|${link.url}|${link.category || 'Uncategorized'}|${link.icon_url || 'globe'}|${link.desc || ''}`;
-            navigator.clipboard.writeText(formattedLink).then(() => {
-                App.toast.show('链接已复制', 'success');
-            }, () => {
-                App.toast.show('复制失败', 'error');
-            });
+            navigator.clipboard.writeText(formattedLink).then(() => App.toast.show('链接已复制', 'success'), () => App.toast.show('复制失败', 'error'));
         });
 
         const deleteButton = document.createElement('button');
@@ -354,9 +323,7 @@ App.editor = (function() {
     // findLastIndex 从数组中查找最后一个符合条件的元素的索引
     function findLastIndex(arr, predicate) {
         for (let i = arr.length - 1; i >= 0; i--) {
-            if (predicate(arr[i])) {
-                return i;
-            }
+            if (predicate(arr[i])) return i;
         }
         return -1;
     }
@@ -417,7 +384,7 @@ App.editor = (function() {
     // deleteLink 删除单个链接
     function deleteLink(clientId) {
         const itemToRemove = dom.container.querySelector(`li[data-link-id="${clientId}"]`);
-        
+
         currentLinks = currentLinks.filter(link => link.clientId !== clientId);
 
         if (itemToRemove) {
@@ -430,9 +397,7 @@ App.editor = (function() {
             if (linkList.children.length === 0) {
                 categoryGroup?.remove();
             } else {
-                if (header?.classList.contains('open')) {
-                    linkList.style.maxHeight = linkList.scrollHeight + 'px';
-                }
+                header?.classList.contains('open') && (linkList.style.maxHeight = linkList.scrollHeight + 'px');
             }
         } else {
             renderPanels();
@@ -440,10 +405,5 @@ App.editor = (function() {
         document.dispatchEvent(new CustomEvent('settings-changed'));
     }
 
-    return {
-        getLinkData,
-        loadAndRender,
-        reset
-    };
-
+    return { getLinkData, loadAndRender, reset };
 })();

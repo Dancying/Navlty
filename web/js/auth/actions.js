@@ -16,23 +16,14 @@ App.actions = (function() {
                 }
                 App.toast.show(successMessage, 'success');
                 onSuccess && onSuccess(result);
-                if (!closeModal) {
-                    document.dispatchEvent(new CustomEvent('settings-saved'));
-                }
+                !closeModal && document.dispatchEvent(new CustomEvent('settings-saved'));
                 return true;
             })
             .catch(error => {
-                if (error.message !== 'Unauthorized') {
-                    App.toast.show('保存失败', 'error');
-                    console.error(`Error with ${endpoint}:`, error);
-                }
+                error.message !== 'Unauthorized' && (App.toast.show('保存失败', 'error'), console.error(`Error with ${endpoint}:`, error));
                 return false;
             })
-            .finally(() => {
-                if (closeModal && modalId) {
-                    App.modal.close(modalId);
-                }
-            });
+            .finally(() => { closeModal && modalId && App.modal.close(modalId); });
     }
 
     // getActivePanel 获取当前激活的面板名称
@@ -56,56 +47,35 @@ App.actions = (function() {
             const descInput = activePanel.querySelector('#link-description');
             const iconInput = activePanel.querySelector('#link-icon');
 
-            if (![singleTitleInput, urlInput, categoryInput, descInput, iconInput].some(i => i && i.value)) {
-                return;
-            }
+            if (![singleTitleInput, urlInput, categoryInput, descInput, iconInput].some(i => i && i.value)) return;
             if (!singleTitleInput.value || !urlInput.value) {
                 App.toast.show('标题链接必填', 'error');
                 singleTitleInput.classList.toggle('input-error', !singleTitleInput.value);
                 urlInput.classList.toggle('input-error', !urlInput.value);
                 return;
             }
-            linksToAdd.push({
-                title: singleTitleInput.value,
-                url: urlInput.value,
-                category: categoryInput.value || 'Uncategorized',
-                desc: descInput.value,
-                icon_url: iconInput.value || 'globe',
-            });
+            linksToAdd.push({ title: singleTitleInput.value, url: urlInput.value, category: categoryInput.value || 'Uncategorized', desc: descInput.value, icon_url: iconInput.value || 'globe' });
         } else if (bulkLinksInput) {
             const bulkContent = bulkLinksInput.value.trim();
             if (!bulkContent) return;
-
-            const lines = bulkContent.split('\n').filter(line => line.trim());
-            const parsedLinks = lines.map(line => {
+            linksToAdd = bulkContent.split('\n').filter(line => line.trim()).map(line => {
                 const [title, url, category, icon_url, desc] = line.split('|').map(part => part.trim());
                 return (title && url) ? { title, url, category: category || 'Uncategorized', icon_url: icon_url || 'globe', desc: desc || '' } : null;
             }).filter(Boolean);
-
-            if (parsedLinks.length === 0) {
-                App.toast.show('无有效链接', 'error');
-                return;
-            }
-            linksToAdd = parsedLinks;
+            if (linksToAdd.length === 0) { App.toast.show('无有效链接', 'error'); return; }
         }
         if (linksToAdd.length === 0) return;
 
         const targetPanel = App.helpers.getFormValue('add-link-target-panel') || getActivePanel();
-
         const linksByCategory = linksToAdd.reduce((acc, link) => {
             const { category = 'Uncategorized', ...linkData } = link;
             (acc[category] = acc[category] || []).push(linkData);
             return acc;
         }, {});
 
-        const actions = Object.entries(linksByCategory).map(([category, links]) => ({
-            action: 'CREATE_LINKS',
-            payload: { panel: targetPanel, category, links }
-        }));
-
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
-            payload: actions,
+            payload: Object.entries(linksByCategory).map(([category, links]) => ({ action: 'CREATE_LINKS', payload: { panel: targetPanel, category, links } })),
             successMessage: '保存成功',
             modalId: 'settings-modal',
             closeModal: false,
@@ -116,60 +86,30 @@ App.actions = (function() {
     // updateLink 更新当前正在编辑的链接
     async function updateLink() {
         const linkId = App.finder.getCurrentEditingLinkId();
-        if (!linkId) {
-            App.toast.show('请先选择链接', 'warning');
-            return;
-        }
+        if (!linkId) { App.toast.show('请先选择链接', 'warning'); return; }
 
         const originalLink = App.finder.getLinkById(linkId);
-        if (!originalLink) {
-            App.toast.show('找不到原始链接数据', 'error');
-            return;
-        }
+        if (!originalLink) { App.toast.show('找不到原始链接数据', 'error'); return; }
 
         const newTitle = App.helpers.getFormValue('edit-link-title');
         const newUrl = App.helpers.getFormValue('edit-link-url');
-        if (!newTitle || !newUrl) {
-            App.toast.show('标题和URL是必填项', 'error');
-            return;
-        }
+        if (!newTitle || !newUrl) { App.toast.show('标题和URL是必填项', 'error'); return; }
 
         const newCategory = App.helpers.getFormValue('edit-link-category') || 'Uncategorized';
         const newPanel = App.helpers.getFormValue('edit-link-target-panel');
         const newIcon = App.helpers.getFormValue('edit-link-icon');
         const newDesc = App.helpers.getFormValue('edit-link-description');
 
-        const actions = [];
         const updatePayload = {};
-        let contentHasChanged = false;
-
         if (originalLink.title !== newTitle) updatePayload.title = newTitle;
         if (originalLink.url !== newUrl) updatePayload.url = newUrl;
         if (originalLink.icon !== newIcon) updatePayload.icon_url = newIcon;
         if (originalLink.description !== newDesc) updatePayload.desc = newDesc;
 
-        if (Object.keys(updatePayload).length > 0) {
-            contentHasChanged = true;
-            actions.push({
-                action: 'UPDATE_LINKS',
-                payload: [{ id: linkId, updates: updatePayload }]
-            });
-        }
-
-        const hasMoved = originalLink.panel !== newPanel || originalLink.category !== newCategory;
-        if (hasMoved) {
-            actions.push({
-                action: 'MOVE_LINKS',
-                payload: {
-                    target: { panel: newPanel, category: newCategory },
-                    ids: [linkId]
-                }
-            });
-        }
-
-        if (actions.length === 0) {
-            return;
-        }
+        const actions = [];
+        Object.keys(updatePayload).length > 0 && actions.push({ action: 'UPDATE_LINKS', payload: [{ id: linkId, updates: updatePayload }] });
+        (originalLink.panel !== newPanel || originalLink.category !== newCategory) && actions.push({ action: 'MOVE_LINKS', payload: { target: { panel: newPanel, category: newCategory }, ids: [linkId] } });
+        if (actions.length === 0) return;
 
         await _handleApiSubmit({
             endpoint: '/api/links/actions',
@@ -181,11 +121,13 @@ App.actions = (function() {
         });
     }
 
+    // _detectDeletions 检测被删除的链接
     function _detectDeletions(initialLinks, currentLinksMap) {
         const deletedIds = initialLinks.filter(link => !currentLinksMap.has(link.id)).map(link => link.id);
         return deletedIds.length > 0 ? { action: 'DELETE_LINKS', payload: { ids: deletedIds } } : null;
     }
-    
+
+    // _detectMoves 检测发生移动的链接
     function _detectMoves(currentLinks, initialLinksMap) {
         return Array.from(currentLinks.reduce((moves, currentLink) => {
             const initialLink = initialLinksMap.get(currentLink.id);
@@ -201,7 +143,8 @@ App.actions = (function() {
             return moves;
         }, new Map()).values()).map(move => ({ action: 'MOVE_LINKS', payload: move }));
     }
-    
+
+    // _detectCategoryReorders 检测分类顺序变化
     function _detectCategoryReorders(initialLinks, currentLinks) {
         const getOrderedCategories = (links) => {
             const panels = { primary: { order: [], set: new Set() }, secondary: { order: [], set: new Set() } };
@@ -215,47 +158,39 @@ App.actions = (function() {
             });
             return panels;
         };
-    
+
         const initialPanels = getOrderedCategories(initialLinks);
         const currentPanels = getOrderedCategories(currentLinks);
         const actions = [];
-    
+
         ['primary', 'secondary'].forEach(panelName => {
-            const initialOrder = initialPanels[panelName].order;
-            const currentOrder = currentPanels[panelName].order;
-    
-            if (JSON.stringify(initialOrder) !== JSON.stringify(currentOrder)) {
-                actions.push({
-                    action: 'REORDER_CATEGORIES',
-                    payload: {
-                        panel: panelName,
-                        orderedCategoryNames: currentOrder.map(name => name === 'Uncategorized' ? '' : name)
-                    }
-                });
+            if (JSON.stringify(initialPanels[panelName].order) !== JSON.stringify(currentPanels[panelName].order)) {
+                actions.push({ action: 'REORDER_CATEGORIES', payload: { panel: panelName, orderedCategoryNames: currentPanels[panelName].order.map(name => name === 'Uncategorized' ? '' : name) } });
             }
         });
-    
+
         return actions;
     }
-    
+
+    // _detectLinkUpdates 检测链接内容的更新
     function _detectLinkUpdates(initialLinks, currentLinks, initialLinksMap) {
         const groupLinks = links => links.reduce((acc, link) => {
             const key = `${link.panel || 'primary'}:${link.category || 'Uncategorized'}`;
             (acc[key] = acc[key] || []).push(link);
             return acc;
         }, {});
-    
+
         const initialGroups = groupLinks(initialLinks);
         const currentGroups = groupLinks(currentLinks);
-    
+
         const updates = Object.entries(currentGroups).flatMap(([key, currentLinksInCat]) => {
             const initialLinksInCat = initialGroups[key] || [];
             const orderChanged = initialLinksInCat.map(l => l.id).join() !== currentLinksInCat.map(l => l.id).join();
-    
+
             return currentLinksInCat.map((currentLink, index) => {
                 const initialLink = initialLinksMap.get(currentLink.id);
                 if (!initialLink) return null;
-    
+
                 const updatePayload = {};
                 let hasChange = false;
 
@@ -270,11 +205,11 @@ App.actions = (function() {
                         hasChange = true;
                     }
                 });
-    
+
                 return hasChange ? { id: currentLink.id, updates: updatePayload } : null;
             });
         }).filter(Boolean);
-    
+
         return updates.length > 0 ? { action: 'UPDATE_LINKS', payload: updates } : null;
     }
 
@@ -290,14 +225,7 @@ App.actions = (function() {
         ].filter(Boolean);
 
         return (actions.length > 0)
-            ? _handleApiSubmit({
-                endpoint: '/api/links/actions',
-                payload: actions,
-                successMessage: '保存成功',
-                modalId: 'settings-modal',
-                closeModal: false,
-                onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated'))
-            })
+            ? _handleApiSubmit({ endpoint: '/api/links/actions', payload: actions, successMessage: '保存成功', modalId: 'settings-modal', closeModal: false, onSuccess: () => document.dispatchEvent(new CustomEvent('links-updated')) })
             : Promise.resolve(true);
     }
 
@@ -306,12 +234,9 @@ App.actions = (function() {
         const current = document.getElementById('current-password');
         const newPass = document.getElementById('new-password-change');
         const confirm = document.getElementById('confirm-password');
-    
-        if (![current, newPass, confirm].some(i => i.value)) return;
 
-        const allFilled = [current, newPass, confirm].every(input => (input.classList.toggle('input-error', !input.value), !!input.value));
-        if (!allFilled) return App.toast.show('所有字段必填', 'error');
-        
+        if (![current, newPass, confirm].some(i => i.value)) return;
+        if (![current, newPass, confirm].every(input => (input.classList.toggle('input-error', !input.value), !!input.value))) return App.toast.show('所有字段必填', 'error');
         if (newPass.value !== confirm.value) {
             newPass.classList.add('input-error');
             confirm.classList.add('input-error');
@@ -334,8 +259,7 @@ App.actions = (function() {
         if (!activePanel) return;
 
         const originalSettings = App.settings.get();
-        const formFields = activePanel.querySelectorAll('input[name], textarea[name]');
-        const currentValues = Array.from(formFields).reduce((acc, field) => {
+        const currentValues = Array.from(activePanel.querySelectorAll('input[name], textarea[name]')).reduce((acc, field) => {
             const key = field.name;
             if (field.type === 'range') acc[key] = parseInt(field.value, 10) || 0;
             else if (field.type === 'textarea' && key === 'externalJS') acc[key] = field.value.split('\n').filter(line => line.trim());

@@ -1,14 +1,8 @@
 window.App = window.App || {};
 
 App.helpers = (function () {
-
-    const HTML_ESCAPE_MAP = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-    };
+    // HTML_ESCAPE_MAP HTML 转义映射表
+    const HTML_ESCAPE_MAP = { '&': '&a' + 'mp;', '<': '&l' + 't;', '>': '&g' + 't;', "'": '&#' + '39;', '"': '&q' + 'uot;' };
 
     // escapeHTML 转义 HTML 字符串以防止 XSS
     function escapeHTML(str) {
@@ -40,18 +34,17 @@ App.helpers = (function () {
     // setFormValue 设置表单字段的值
     function setFormValue(id, value) {
         const element = document.getElementById(id);
-        element && (() => {
-            const finalValue = value ?? '';
-            const actions = {
-                'range': () => {
-                    const display = document.getElementById(id + '-value');
-                    display && (display.textContent = finalValue);
-                    return finalValue;
-                },
-                'textarea': () => Array.isArray(finalValue) ? finalValue.join('\n') : finalValue,
-            };
-            element.value = actions[element.type]?.() ?? finalValue;
-        })();
+        if (!element) return;
+        const finalValue = value ?? '';
+        const actions = {
+            'range': () => {
+                const display = document.getElementById(id + '-value');
+                display && (display.textContent = finalValue);
+                return finalValue;
+            },
+            'textarea': () => Array.isArray(finalValue) ? finalValue.join('\n') : finalValue,
+        };
+        element.value = actions[element.type]?.() ?? finalValue;
     };
 
     // getFormValue 获取表单字段的值

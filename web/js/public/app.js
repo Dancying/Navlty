@@ -1,6 +1,6 @@
 window.App = window.App || {};
 
-// 页面加载完成后执行初始化
+// init 页面加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', () => {
     App.auth.init();
     App.search.init();
@@ -18,39 +18,27 @@ document.addEventListener('DOMContentLoaded', () => {
         (App.settings?.loadAndShow || App.auth.checkAuthStatus)();
     });
 
-    // 定义键盘快捷键操作
-    const keydownActions = {
+    // 全局键盘快捷键处理
+    const keyActions = {
         'Escape': () => {
             const activeModal = document.querySelector('.modal.show');
             activeModal && App.modal.close(activeModal.id);
             document.getElementById('search-wrapper')?.classList.contains('active') && App.search.hideSearch();
         },
-        '/': (event) => {
-            const tag = document.activeElement.tagName;
-            if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
-                event.preventDefault();
-                App.search.showSearch();
-            }
-        },
-        't': (event) => {
-            const tag = document.activeElement.tagName;
-            if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
-                event.preventDefault();
-                document.getElementById('toggle-panel-button')?.click();
-            }
-        },
-        's': (event) => {
-            const tag = document.activeElement.tagName;
-            if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
-                event.preventDefault();
-                document.getElementById('settings-button')?.click();
-            }
-        }
+        '/': () => App.search.showSearch(),
+        't': () => document.getElementById('toggle-panel-button')?.click(),
+        's': () => document.getElementById('settings-button')?.click()
     };
 
-    // 绑定全局键盘快捷键
     window.addEventListener('keydown', (event) => {
-        keydownActions[event.key]?.(event);
+        const action = keyActions[event.key];
+        if (!action) return;
+        if (event.key !== 'Escape') {
+            const tag = document.activeElement.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+            event.preventDefault();
+        }
+        action();
     });
 
     // 更新卡片内容的溢出状态

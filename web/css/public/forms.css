@@ -20,6 +20,7 @@
     font-size: 0.9rem;
     border-radius: 8px;
     border: 1px solid #ccc;
+    background-color: #fdfcf9;
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
     resize: none;

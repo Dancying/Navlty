@@ -31,7 +31,7 @@ body.modal-open {
 /* 模态框的主要内容区域，应用进入动画 */
 .modal-content {
     position: relative;
-    background-color: #fff;
+    background-color: #fdfcf9;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 95%;

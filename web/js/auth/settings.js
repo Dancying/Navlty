@@ -456,7 +456,7 @@ App.settings = (function () {
                     App.auth.handleUnauthorized();
                 } else {
                     console.error('Error loading settings:', error);
-                    App.toast.show('配置加载失败', 'error');
+                    App.toast.show('设置加载失败', 'error');
                 }
             }
         };

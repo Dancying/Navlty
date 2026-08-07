@@ -111,7 +111,6 @@ App.editor = (function() {
         } catch (error) {
             if (error.message !== 'Unauthorized') {
                 console.error('Error loading links:', error);
-                App.toast.show('链接加载失败', 'error');
                 dom.container.innerHTML = '<p style="color: red; text-align: center;">加载链接失败。</p>';
             }
             return;

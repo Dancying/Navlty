@@ -28,7 +28,6 @@ App.auth = (function () {
     // handleUnauthorized 处理未授权的情况
     function handleUnauthorized() {
         invalidateSession();
-        App.toast.show("登录已失效", "error");
         checkAuthStatus();
     }
 
@@ -138,7 +137,7 @@ App.auth = (function () {
         const handleStatusError = (error) => {
             (error.message !== 'Unauthorized') && (
                 console.error("Failed to check auth status:", error),
-                App.toast.show("无法检查状态", "error")
+                App.toast.show("无法检查认证状态", "error")
             );
         };
 

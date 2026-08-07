@@ -73,7 +73,7 @@ App.actions = (function() {
             return acc;
         }, {});
 
-        await _handleApiSubmit({
+        return _handleApiSubmit({
             endpoint: '/api/links/actions',
             payload: Object.entries(linksByCategory).map(([category, links]) => ({ action: 'CREATE_LINKS', payload: { panel: targetPanel, category, links } })),
             successMessage: '保存成功',
@@ -111,7 +111,7 @@ App.actions = (function() {
         (originalLink.panel !== newPanel || originalLink.category !== newCategory) && actions.push({ action: 'MOVE_LINKS', payload: { target: { panel: newPanel, category: newCategory }, ids: [linkId] } });
         if (actions.length === 0) return;
 
-        await _handleApiSubmit({
+        return _handleApiSubmit({
             endpoint: '/api/links/actions',
             payload: actions,
             successMessage: '保存成功',
@@ -243,7 +243,7 @@ App.actions = (function() {
             return App.toast.show('两次输入的密码不一致', 'error');
         }
 
-        await _handleApiSubmit({
+        return _handleApiSubmit({
             endpoint: '/api/auth/passwd',
             payload: { currentPassword: current.value, newPassword: newPass.value },
             successMessage: '保存成功',

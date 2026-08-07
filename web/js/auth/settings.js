@@ -468,32 +468,33 @@ App.settings = (function () {
         }
     }
 
-    // handleSave 根据当前激活的面板处理保存操作
-    function handleSave() {
+    // handleSave 根据当前激活的面板处理保存操作，仅保存成功时隐藏按钮
+    async function handleSave() {
         const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
         if (!activePanel) return;
 
+        let result;
         switch (activePanel.id) {
             case 'content-site-appearance':
             case 'content-advanced-settings':
-                App.actions.saveSettings();
+                result = await App.actions.saveSettings();
                 break;
             case 'content-add-link':
             case 'content-bulk-add':
-                App.actions.addLinks();
+                result = await App.actions.addLinks();
                 break;
             case 'content-edit-link':
-                App.actions.updateLink();
+                result = await App.actions.updateLink();
                 break;
             case 'content-category-management':
                 const { initialLinks, currentLinks } = App.editor.getLinkData();
-                App.actions.updateStructure(initialLinks, currentLinks);
+                result = await App.actions.updateStructure(initialLinks, currentLinks);
                 break;
             case 'content-password-settings':
-                App.actions.changePassword();
+                result = await App.actions.changePassword();
                 break;
         }
-        hideSaveButton();
+        result === true && hideSaveButton();
     }
 
     // get 获取原始设置

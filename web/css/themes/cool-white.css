@@ -13,18 +13,25 @@ html { background-color: #f0f2f5; }
 .toast { background-color: #fff; }
 
 /* web/css/public/forms.css */
-.form-group input:not(.slider):not(.hidden-file-input),
-.form-group select,
+.form-group input:not(.slider):not(.hidden-file-input) { background-color: #fff; }
+.form-group select { background-color: #fff; }
 .form-group textarea { background-color: #fff; }
 
 /* web/css/auth/modal.css */
-#settings-nav { background-color: #f7f9fc; }
+#settings-nav { background-color: #f0f2f5; }
 #settings-content { background-color: #f0f2f5; }
-#settings-modal .modal-header { background-color: #fff; }
-.management-category-group { background-color: #fff; }
+#settings-modal .modal-header { background-color: #f0f2f5; }
+.management-category-group { background-color: #f0f2f5; }
 .settings-nav-item.active { background-color: #d0e8ff; color: #1a73e8; }
 .management-category-header { background-color: #f5f5f5; }
 .management-category-header.open { background-color: #ebebeb; }
 
 /* web/css/auth/forms.css */
 .search-results-list { background-color: #fff; }
+
+/* web/css/auth/controls.css */
+.input-with-button .btn.icon-button { background-color: #1a73e8; color: white; }
+.input-with-button .btn.icon-button:hover { background-color: #1557b0; }
+.slider { background: #ddd; }
+.slider::-webkit-slider-thumb { background: #1a73e8; }
+.slider::-moz-range-thumb { background: #1a73e8; }

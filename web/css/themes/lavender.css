@@ -13,8 +13,8 @@ html { background-color: #f3e5f5; }
 .toast { background-color: #f3e5f5; }
 
 /* web/css/public/forms.css */
-.form-group input:not(.slider):not(.hidden-file-input),
-.form-group select,
+.form-group input:not(.slider):not(.hidden-file-input) { background-color: #f3e5f5; }
+.form-group select { background-color: #f3e5f5; }
 .form-group textarea { background-color: #f3e5f5; }
 
 /* web/css/auth/modal.css */
@@ -28,3 +28,10 @@ html { background-color: #f3e5f5; }
 
 /* web/css/auth/forms.css */
 .search-results-list { background-color: #f3e5f5; }
+
+/* web/css/auth/controls.css */
+.input-with-button .btn.icon-button { background-color: #6a1b9a; color: white; }
+.input-with-button .btn.icon-button:hover { background-color: #4a148c; }
+.slider { background: #ddd; }
+.slider::-webkit-slider-thumb { background: #6a1b9a; }
+.slider::-moz-range-thumb { background: #6a1b9a; }

@@ -13,18 +13,25 @@ html { background-color: #f2f0eb; }
 .toast { background-color: #fdfcf9; }
 
 /* web/css/public/forms.css */
-.form-group input:not(.slider):not(.hidden-file-input),
-.form-group select,
+.form-group input:not(.slider):not(.hidden-file-input) { background-color: #fdfcf9; }
+.form-group select { background-color: #fdfcf9; }
 .form-group textarea { background-color: #fdfcf9; }
 
 /* web/css/auth/modal.css */
-#settings-nav { background-color: #f5f3ee; }
+#settings-nav { background-color: #f2f0eb; }
 #settings-content { background-color: #f2f0eb; }
-#settings-modal .modal-header { background-color: #fdfcf9; }
-.management-category-group { background-color: #fdfcf9; }
+#settings-modal .modal-header { background-color: #f2f0eb; }
+.management-category-group { background-color: #f2f0eb; }
 .settings-nav-item.active { background-color: #e8d5b7; color: #8b6914; }
 .management-category-header { background-color: #f5f3ee; }
 .management-category-header.open { background-color: #ebe7df; }
 
 /* web/css/auth/forms.css */
 .search-results-list { background-color: #fdfcf9; }
+
+/* web/css/auth/controls.css */
+.input-with-button .btn.icon-button { background-color: #8b6914; color: white; }
+.input-with-button .btn.icon-button:hover { background-color: #6b5010; }
+.slider { background: #ddd; }
+.slider::-webkit-slider-thumb { background: #8b6914; }
+.slider::-moz-range-thumb { background: #8b6914; }

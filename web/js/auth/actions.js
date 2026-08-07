@@ -3,13 +3,13 @@ window.App = window.App || {};
 App.actions = (function() {
 
     // _handleApiSubmit 封装了向服务器提交操作的通用逻辑
-    function _handleApiSubmit({ endpoint, method = 'POST', payload, successMessage, modalId, onSuccess, closeModal = true }) {
+    function _handleApiSubmit({ endpoint, method = 'POST', payload, successMessage, modalId, onSuccess, closeModal = true, skipAuthRedirect = false, errorMessage = '保存失败' }) {
         if (!payload || (Array.isArray(payload) && payload.length === 0)) {
             if (closeModal && modalId) App.modal.close(modalId);
             return Promise.resolve(true);
         }
 
-        return App.api.request(endpoint, { method, body: JSON.stringify(payload) })
+        return App.api.request(endpoint, { method, body: JSON.stringify(payload), skipAuthRedirect })
             .then(result => {
                 if (result.success === false || result.status === 'error') {
                     throw new Error(result.message || '操作失败');
@@ -20,7 +20,7 @@ App.actions = (function() {
                 return true;
             })
             .catch(error => {
-                error.message !== 'Unauthorized' && (App.toast.show('保存失败', 'error'), console.error(`Error with ${endpoint}:`, error));
+                error.message !== 'Unauthorized' && (App.toast.show(errorMessage, 'error'), console.error(`Error with ${endpoint}:`, error));
                 return false;
             })
             .finally(() => { closeModal && modalId && App.modal.close(modalId); });
@@ -249,6 +249,8 @@ App.actions = (function() {
             successMessage: '保存成功',
             modalId: 'settings-modal',
             closeModal: false,
+            skipAuthRedirect: true,
+            errorMessage: '原密码错误',
             onSuccess: App.auth.invalidateSession
         });
     }

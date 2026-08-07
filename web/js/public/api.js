@@ -9,7 +9,7 @@ App.api = (function () {
         });
 
         if (response.ok) return response.json();
-        response.status === 401 && App.auth.handleUnauthorized();
+        response.status === 401 && !options.skipAuthRedirect && App.auth.handleUnauthorized();
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 

@@ -1,0 +1,30 @@
+/* web/css/public/panels.css */
+html { background-color: #f0f2f5; }
+.header-background { background-color: rgba(229, 231, 235, 0.65); }
+.search-input { background-color: #fff; }
+
+/* web/css/public/links.css */
+.card { background-color: #fff; }
+
+/* web/css/public/modal.css */
+.modal-content { background-color: #fff; }
+
+/* web/css/public/toast.css */
+.toast { background-color: #fff; }
+
+/* web/css/public/forms.css */
+.form-group input:not(.slider):not(.hidden-file-input),
+.form-group select,
+.form-group textarea { background-color: #fff; }
+
+/* web/css/auth/modal.css */
+#settings-nav { background-color: #f7f9fc; }
+#settings-content { background-color: #f0f2f5; }
+#settings-modal .modal-header { background-color: #fff; }
+.management-category-group { background-color: #fff; }
+.settings-nav-item.active { background-color: #d0e8ff; color: #1a73e8; }
+.management-category-header { background-color: #f5f5f5; }
+.management-category-header.open { background-color: #ebebeb; }
+
+/* web/css/auth/forms.css */
+.search-results-list { background-color: #fff; }

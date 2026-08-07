@@ -8,6 +8,11 @@ html { background-color: #f2f0eb; }
 
 /* web/css/public/modal.css */
 .modal-content { background-color: #fdfcf9; }
+.btn-primary { background-color: #8b6914; color: white; }
+.btn-primary:hover { background-color: #6b5010; }
+.btn-secondary { background-color: #f2f0eb; color: #333; }
+.btn-secondary:hover { background-color: #e0dedf; }
+.modal-footer { background-color: #f2f0eb; }
 
 /* web/css/public/toast.css */
 .toast { background-color: #fdfcf9; }

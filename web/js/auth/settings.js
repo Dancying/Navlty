@@ -80,11 +80,11 @@ App.settings = (function () {
         }
     }
 
-    // showSaveButton 显示当前激活面板的保存和取消按钮
+    // showSaveButton 显示共享标题栏的保存和取消按钮
     function showSaveButton() {
-        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
-        if (!activePanel) return;
-        const buttons = activePanel.querySelectorAll('.settings-action-button');
+        const header = document.querySelector('#settings-content .modal-header');
+        if (!header) return;
+        const buttons = header.querySelectorAll('.settings-action-button');
         if (buttons.length > 0 && !saveButtonVisible) {
             buttons.forEach(btn => btn.classList.add('visible'));
             saveButtonVisible = true;
@@ -92,11 +92,11 @@ App.settings = (function () {
         }
     }
 
-    // hideSaveButton 隐藏当前激活面板的保存和取消按钮
+    // hideSaveButton 隐藏共享标题栏的保存和取消按钮
     function hideSaveButton() {
-        const activePanel = document.querySelector('#settings-modal .settings-content-panel.active');
-        if (!activePanel) return;
-        const buttons = activePanel.querySelectorAll('.settings-action-button');
+        const header = document.querySelector('#settings-content .modal-header');
+        if (!header) return;
+        const buttons = header.querySelectorAll('.settings-action-button');
         if (buttons.length > 0 && saveButtonVisible) {
             buttons.forEach(btn => btn.classList.remove('visible'));
             saveButtonVisible = false;
@@ -104,32 +104,12 @@ App.settings = (function () {
         }
     }
 
-    // injectHeaderButtons 为面板标题栏动态注入取消、保存、关闭按钮
-    function injectHeaderButtons(panel) {
-        const header = panel.querySelector('.modal-header');
-        if (!header || header.querySelector('.settings-action-button')) return;
-
-        const cancelButton = document.createElement('button');
-        cancelButton.type = 'button';
-        cancelButton.className = 'btn btn-secondary settings-action-button settings-cancel-button';
-        cancelButton.textContent = '取消';
-        cancelButton.addEventListener('click', handleCancel);
-
-        const saveButton = document.createElement('button');
-        saveButton.type = 'button';
-        saveButton.className = 'btn btn-primary settings-action-button settings-save-button';
-        saveButton.textContent = '保存';
-        saveButton.addEventListener('click', handleSave);
-
-        const closeButton = document.createElement('button');
-        closeButton.type = 'button';
-        closeButton.className = 'close-button';
-        closeButton.innerHTML = '<i data-feather="x"></i>';
-        closeButton.addEventListener('click', () => App.modal.close('settings-modal'));
-
-        header.prepend(cancelButton);
-        header.appendChild(saveButton);
-        header.appendChild(closeButton);
+    // updatePanelTitle 更新共享标题栏的标题
+    function updatePanelTitle(panelId) {
+        const headerTitle = document.querySelector('#settings-content .modal-header h2');
+        if (!headerTitle) return;
+        const navItem = App.config.settingsNavigation.find(item => item.target === panelId);
+        headerTitle.textContent = navItem ? navItem.name : '';
     }
 
     // handleCancel 撤销当前面板的修改，不关闭设置窗口
@@ -219,7 +199,14 @@ App.settings = (function () {
             <div id="settings-modal" class="modal">
                 <div class="modal-content">
                     <div id="settings-nav"></div>
-                    <div id="settings-content"></div>
+                    <div id="settings-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn btn-secondary settings-action-button settings-cancel-button">取消</button>
+                            <h2></h2>
+                            <button type="button" class="btn btn-primary settings-action-button settings-save-button">保存</button>
+                            <button type="button" class="close-button"><i data-feather="x"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -258,9 +245,13 @@ App.settings = (function () {
             event.target === modal && App.modal.close('settings-modal');
         });
 
-        // 为每个面板的标题栏动态注入取消、保存、关闭按钮
-        contentContainer.querySelectorAll('.settings-content-panel').forEach(injectHeaderButtons);
-        feather.replace();
+        // 绑定共享标题栏按钮事件
+        const header = document.querySelector('#settings-content .modal-header');
+        if (header) {
+            header.querySelector('.settings-cancel-button').addEventListener('click', handleCancel);
+            header.querySelector('.settings-save-button').addEventListener('click', handleSave);
+            header.querySelector('.close-button').addEventListener('click', () => App.modal.close('settings-modal'));
+        }
 
         document.addEventListener('settings-saved', () => {
             hasSaved = true;
@@ -379,6 +370,9 @@ App.settings = (function () {
         modal.querySelector(`.settings-nav-item[data-target="${targetId}"]`)?.classList.add('active');
         const activePanel = modal.querySelector(`#${targetId}`);
         activePanel && activePanel.classList.add('active');
+
+        // 更新共享标题栏标题
+        updatePanelTitle(targetId);
 
         if (targetId === 'content-add-link') {
             const targetPanelInput = document.getElementById('add-link-target-panel');

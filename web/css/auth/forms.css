@@ -37,18 +37,11 @@
 
 /* 组合控件中的图标按钮 */
 .input-with-button .btn.icon-button {
-    background-color: #007bff;
-    color: white;
     padding: 0.6rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-}
-
-/* 组合控件中的图标按钮的悬浮样式 */
-.input-with-button .btn.icon-button:hover {
-    background-color: #0056b3;
 }
 
 /* 隐藏的文件选择输入框 */

@@ -42,7 +42,7 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err == nil && IsSessionValid(cookie.Value) {
 		authCSS, authJS := LoadAuthAssets()
-		pageData.CSS = publicCSS + "\n" + themeCSS + "\n" + authCSS
+		pageData.CSS = publicCSS + "\n" + authCSS + "\n" + themeCSS
 		pageData.JS = publicJS + "\n" + authJS
 	} else {
 		pageData.CSS = publicCSS + "\n" + themeCSS

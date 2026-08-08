@@ -262,7 +262,6 @@ App.actions = (function() {
         const currentValues = Array.from(activePanel.querySelectorAll('[name]')).reduce((acc, field) => {
             const key = field.name;
             if (field.type === 'range') acc[key] = parseInt(field.value, 10) || 0;
-            else if (field.type === 'textarea' && key === 'externalJS') acc[key] = field.value.split('\n').filter(line => line.trim());
             else acc[key] = field.value;
             return acc;
         }, {});

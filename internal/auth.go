@@ -1,8 +1,9 @@
 package internal
 
 import (
+	"log"
 	"net/http"
-	"slices"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,7 +12,13 @@ import (
 
 const sessionDuration = 24 * time.Hour
 
-// createSession 创建一个新的会话，并将其添加到 auth.json 中
+// sessionCache 会话内存缓存
+var sessionCache = struct {
+	sync.RWMutex
+	tokens map[string]int64
+}{tokens: make(map[string]int64)}
+
+// createSession 创建新会话并持久化
 func createSession() string {
 	newSession := Session{
 		Token:   uuid.NewString(),
@@ -23,15 +30,26 @@ func createSession() string {
 	}
 	auth.Sessions = append(auth.Sessions, newSession)
 	SaveAuth(auth)
+
+	sessionCache.Lock()
+	sessionCache.tokens[newSession.Token] = newSession.Expires
+	sessionCache.Unlock()
 	return newSession.Token
 }
 
-// IsSessionValid 检查给定的会话令牌是否有效，并清理过期的会话
+// IsSessionValid 检查会话令牌是否有效
 func IsSessionValid(sessionToken string) bool {
+	sessionCache.RLock()
+	expires, found := sessionCache.tokens[sessionToken]
+	sessionCache.RUnlock()
+	if found && expires > time.Now().Unix() {
+		return true
+	}
+
 	auth := LoadAuth()
 	currentTime := time.Now().Unix()
 	validSessions := []Session{}
-	found := false
+	found = false
 
 	for _, s := range auth.Sessions {
 		if s.Expires > currentTime {
@@ -47,26 +65,44 @@ func IsSessionValid(sessionToken string) bool {
 		SaveAuth(auth)
 	}
 
+	sessionCache.Lock()
+	sessionCache.tokens = make(map[string]int64)
+	for _, s := range validSessions {
+		sessionCache.tokens[s.Token] = s.Expires
+	}
+	sessionCache.Unlock()
 	return found
 }
 
-// deleteSession 从 auth.json 中移除一个会话令牌
+// deleteSession 移除会话令牌
 func deleteSession(sessionToken string) {
 	auth := LoadAuth()
-	auth.Sessions = slices.DeleteFunc(auth.Sessions, func(s Session) bool {
-		return s.Token == sessionToken
-	})
+	validSessions := auth.Sessions[:0]
+	for _, s := range auth.Sessions {
+		if s.Token != sessionToken {
+			validSessions = append(validSessions, s)
+		}
+	}
+	auth.Sessions = validSessions
 	SaveAuth(auth)
+
+	sessionCache.Lock()
+	delete(sessionCache.tokens, sessionToken)
+	sessionCache.Unlock()
 }
 
-// InvalidateAllSessions 清除 auth.json 中的所有会话令牌
+// InvalidateAllSessions 清除所有会话令牌
 func InvalidateAllSessions() {
 	auth := LoadAuth()
 	auth.Sessions = []Session{}
 	SaveAuth(auth)
+
+	sessionCache.Lock()
+	sessionCache.tokens = make(map[string]int64)
+	sessionCache.Unlock()
 }
 
-// AuthMiddleware 是一个中间件，用于保护需要认证的路由
+// AuthMiddleware 认证中间件
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("session_token")
@@ -79,8 +115,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		sessionToken := cookie.Value
-		if !IsSessionValid(sessionToken) {
+		if !IsSessionValid(cookie.Value) {
 			respondWithError(w, http.StatusUnauthorized, "Unauthorized: Session is invalid or expired.")
 			return
 		}
@@ -89,17 +124,17 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// HashPassword 对密码进行哈希处理
+// HashPassword 密码哈希处理
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		log.Printf("error: failed to hash password: %v", err)
 		return "", err
 	}
 	return string(bytes), nil
 }
 
-// CheckPasswordHash 验证密码和哈希值是否匹配
+// CheckPasswordHash 校验密码与哈希值
 func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }

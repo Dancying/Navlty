@@ -43,13 +43,12 @@ type Settings struct {
 	TopContent     string   `json:"topContent"`
 	BottomContent  string   `json:"bottomContent"`
 	CustomCSS      string   `json:"customCSS"`
-	ExternalJS     []string `json:"externalJS"`
+	ExternalJS     string   `json:"externalJS"`
 }
 
 // PageData 包含了页面渲染所需的全部数据。
 type PageData struct {
 	Settings
-	ExternalJSStr  string
 	PrimaryLinks   []LinkCategory
 	SecondaryLinks []LinkCategory
 	CSS            string

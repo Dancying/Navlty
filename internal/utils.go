@@ -6,16 +6,17 @@ import (
 	"net/http"
 )
 
-// respondWithError 是一个用于发送 JSON 格式错误响应的辅助函数。
+// respondWithError 发送 JSON 错误响应
 func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
-// respondWithJSON 是一个用于发送 JSON 格式响应的通用辅助函数。
+// respondWithJSON 发送 JSON 响应
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, err := json.Marshal(payload)
 	if err != nil {
 		log.Printf("error: failed to marshal JSON response: %v", err)
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"sort"
-	"strings"
 
 	"github.com/google/uuid"
 )
@@ -15,7 +14,7 @@ const (
 	settingsFileName = "settings.json"
 )
 
-// loadOrCreate 尝试从文件加载数据，如果失败（特别是文件不存在时），则调用 factory 函数创建并保存默认数据
+// loadOrCreate 加载数据，文件不存在时创建默认数据
 func loadOrCreate[T any](fileName string, factory func() T) T {
 	var data T
 	if err := loadJSONData(fileName, &data); err != nil {
@@ -32,23 +31,19 @@ func loadOrCreate[T any](fileName string, factory func() T) T {
 	return data
 }
 
-// LoadPageData 读取渲染页面所需的全部数据。
+// LoadPageData 读取页面渲染所需数据
 func LoadPageData() *PageData {
 	settings := LoadSettings()
-
-	pageData := &PageData{
-		Settings:      *settings,
-		ExternalJSStr: strings.Join(settings.ExternalJS, "\n"),
-	}
-
 	panels := LoadLinks()
-	pageData.PrimaryLinks = panels["primary"]
-	pageData.SecondaryLinks = panels["secondary"]
 
-	return pageData
+	return &PageData{
+		Settings:       *settings,
+		PrimaryLinks:   panels["primary"],
+		SecondaryLinks: panels["secondary"],
+	}
 }
 
-// LoadSettings 读取设置，如果文件不存在则创建一个默认文件。
+// LoadSettings 读取设置，不存在时创建默认设置
 func LoadSettings() *Settings {
 	return loadOrCreate(settingsFileName, func() *Settings {
 		return &Settings{
@@ -62,12 +57,12 @@ func LoadSettings() *Settings {
 	})
 }
 
-// SaveSettings 将给定的设置保存到磁盘。
+// SaveSettings 保存设置
 func SaveSettings(settings *Settings) error {
 	return saveJSONData(settingsFileName, settings)
 }
 
-// LoadLinks 读取链接，如果文件不存在则创建一个默认文件。
+// LoadLinks 读取链接，不存在时创建默认链接
 func LoadLinks() map[string][]LinkCategory {
 	panels := loadOrCreate(linksFileName, func() map[string][]LinkCategory {
 		return map[string][]LinkCategory{
@@ -112,19 +107,19 @@ func LoadLinks() map[string][]LinkCategory {
 	return panels
 }
 
-// SaveLinks 将给定的链接保存到磁盘。
+// SaveLinks 保存链接
 func SaveLinks(panels map[string][]LinkCategory) error {
 	return saveJSONData(linksFileName, panels)
 }
 
-// LoadAuth 从 auth.json 加载身份验证数据
+// LoadAuth 加载身份验证数据
 func LoadAuth() *Auth {
 	var auth Auth
 	loadJSONData(authFileName, &auth)
 	return &auth
 }
 
-// SaveAuth 将身份验证数据保存到 auth.json
+// SaveAuth 保存身份验证数据
 func SaveAuth(auth *Auth) {
 	saveJSONData(authFileName, auth)
 }

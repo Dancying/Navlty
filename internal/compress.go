@@ -3,8 +3,8 @@ package internal
 import (
 	"bytes"
 	"compress/gzip"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -13,10 +13,10 @@ import (
 	"github.com/andybalholm/brotli"
 )
 
-// minCompressSize 小于该字节数的响应不压缩，避免小响应的压缩开销。
+// minCompressSize 小于该字节数的响应不压缩
 const minCompressSize = 1024
 
-// compressibleTypes 可压缩的内容类型前缀列表。
+// compressibleTypes 可压缩的内容类型前缀列表
 var compressibleTypes = []string{
 	"text/",
 	"application/json",
@@ -26,7 +26,7 @@ var compressibleTypes = []string{
 	"image/svg+xml",
 }
 
-// CompressMiddleware 根据请求的 Accept-Encoding 对可压缩的响应进行 brotli 或 gzip 压缩。
+// CompressMiddleware 响应压缩中间件
 func CompressMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !compressionEnabled() {
@@ -40,21 +40,18 @@ func CompressMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		cw := &compressWriter{
-			ResponseWriter: w,
-			encoding:       encoding,
-		}
+		cw := &compressWriter{ResponseWriter: w, encoding: encoding}
 		next.ServeHTTP(cw, r)
 		cw.finish()
 	})
 }
 
-// compressionEnabled 检查环境变量 NAVLTY_ENABLE_COMPRESSION 是否为 true。
+// compressionEnabled 检查压缩开关环境变量
 func compressionEnabled() bool {
 	return strings.EqualFold(os.Getenv("NAVLTY_ENABLE_COMPRESSION"), "true")
 }
 
-// selectEncoding 解析 Accept-Encoding 请求头，返回优先选择的编码。
+// selectEncoding 解析 Accept-Encoding 选择优先编码
 func selectEncoding(header string) string {
 	type candidate struct {
 		name string
@@ -75,7 +72,11 @@ func selectEncoding(header string) string {
 			for _, param := range strings.Split(part[idx+1:], ";") {
 				param = strings.TrimSpace(param)
 				if strings.HasPrefix(param, "q=") {
-					fmt.Sscanf(param[2:], "%f", &q)
+					if parsed, err := strconv.ParseFloat(param[2:], 64); err == nil {
+						q = parsed
+					} else {
+						log.Printf("warning: invalid q value in Accept-Encoding: %s", param[2:])
+					}
 				}
 			}
 		}
@@ -85,16 +86,6 @@ func selectEncoding(header string) string {
 		}
 	}
 
-	// 按 q 值从高到低排序（简单插入排序）
-	for i := 0; i < len(candidates); i++ {
-		for j := i + 1; j < len(candidates); j++ {
-			if candidates[j].q > candidates[i].q {
-				candidates[i], candidates[j] = candidates[j], candidates[i]
-			}
-		}
-	}
-
-	// 在支持的编码中按优先级选择：br > gzip
 	best := ""
 	bestQ := 0.0
 	for _, c := range candidates {
@@ -109,7 +100,7 @@ func selectEncoding(header string) string {
 	return best
 }
 
-// compressWriter 缓存响应内容，在 handler 完成后决定是否压缩并写入底层。
+// compressWriter 缓存响应内容的写入器
 type compressWriter struct {
 	http.ResponseWriter
 	encoding    string
@@ -118,11 +109,13 @@ type compressWriter struct {
 	wroteHeader bool
 }
 
+// WriteHeader 记录响应状态码
 func (cw *compressWriter) WriteHeader(status int) {
 	cw.status = status
 	cw.wroteHeader = true
 }
 
+// Write 写入响应内容到缓冲区
 func (cw *compressWriter) Write(b []byte) (int, error) {
 	if !cw.wroteHeader {
 		cw.WriteHeader(http.StatusOK)
@@ -130,7 +123,7 @@ func (cw *compressWriter) Write(b []byte) (int, error) {
 	return cw.buf.Write(b)
 }
 
-// finish 在 handler 返回后，根据内容类型和大小决定是否压缩响应。
+// finish 根据内容类型和大小决定是否压缩响应
 func (cw *compressWriter) finish() {
 	status := cw.status
 	if status == 0 {
@@ -143,7 +136,6 @@ func (cw *compressWriter) finish() {
 		contentType = http.DetectContentType(cw.buf.Bytes())
 	}
 
-	// 不压缩的情况：太小、内容类型不可压缩
 	if size < minCompressSize || !isCompressible(contentType) {
 		cw.Header().Set("Content-Length", strconv.Itoa(size))
 		cw.ResponseWriter.WriteHeader(status)
@@ -151,7 +143,6 @@ func (cw *compressWriter) finish() {
 		return
 	}
 
-	// 压缩的情况
 	h := cw.Header()
 	h.Del("Content-Length")
 	h.Set("Content-Encoding", cw.encoding)
@@ -173,7 +164,7 @@ func (cw *compressWriter) finish() {
 	}
 }
 
-// isCompressible 判断内容类型是否可压缩。
+// isCompressible 判断内容类型是否可压缩
 func isCompressible(contentType string) bool {
 	ct := strings.ToLower(contentType)
 	if idx := strings.Index(ct, ";"); idx >= 0 {

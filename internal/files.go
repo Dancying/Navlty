@@ -14,8 +14,8 @@ import (
 	jsonminify "github.com/tdewolff/minify/v2/json"
 )
 
-const (
-	dataDirectory      = "/config"
+var (
+	dataDirectory      = envOr("NAVLTY_DATA_DIR", "/config")
 	publicCSSDirectory = "web/css/public"
 	publicJSDirectory  = "web/js/public"
 	authCSSDirectory   = "web/css/auth"
@@ -25,7 +25,7 @@ const (
 
 var m *minify.M
 
-// 包初始化时，设置压缩器
+// init 初始化压缩器
 func init() {
 	m = minify.New()
 	m.AddFunc("text/css", css.Minify)
@@ -34,7 +34,15 @@ func init() {
 	m.AddFunc("text/html", html.Minify)
 }
 
-// loadJSONData 读取并解码一个 JSON 文件，如果文件不存在则返回错误。
+// envOr 读取环境变量，为空时返回默认值
+func envOr(key, fallback string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return fallback
+}
+
+// loadJSONData 读取并解码 JSON 文件
 func loadJSONData(fileName string, v interface{}) error {
 	path := filepath.Join(dataDirectory, fileName)
 	file, err := os.ReadFile(path)
@@ -44,16 +52,18 @@ func loadJSONData(fileName string, v interface{}) error {
 
 	if err := json.Unmarshal(file, v); err != nil {
 		log.Printf("warning: could not parse data file %s: %v", fileName, err)
+		return err
 	}
 	return nil
 }
 
-// saveJSONData 将数据编码为 JSON 并写入文件，如果目录不存在则创建它。
+// saveJSONData 编码并写入 JSON 文件
 func saveJSONData(fileName string, v interface{}) error {
 	if err := os.MkdirAll(dataDirectory, 0755); err != nil {
 		log.Printf("error: failed to create data directory: %v", err)
 		return err
 	}
+
 	path := filepath.Join(dataDirectory, fileName)
 	file, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
@@ -63,7 +73,7 @@ func saveJSONData(fileName string, v interface{}) error {
 	return os.WriteFile(path, file, 0644)
 }
 
-// loadStaticAssets 将一个目录中所有匹配后缀的文件内容合并并压缩成一个字符串。
+// loadStaticAssets 合并并压缩目录下指定后缀的资源
 func loadStaticAssets(dir, suffix string) string {
 	var builder strings.Builder
 	files, err := os.ReadDir(dir)
@@ -72,62 +82,57 @@ func loadStaticAssets(dir, suffix string) string {
 		return ""
 	}
 
-	var mime string
-	switch suffix {
-	case ".css":
-		mime = "text/css"
-	case ".js":
-		mime = "application/javascript"
-	default:
+	mime := map[string]string{".css": "text/css", ".js": "application/javascript"}[suffix]
+	if mime == "" {
 		mime = "application/octet-stream"
 	}
 
 	for _, file := range files {
-		if !file.IsDir() && strings.HasSuffix(file.Name(), suffix) {
-			content, err := os.ReadFile(filepath.Join(dir, file.Name()))
-			if err != nil {
-				log.Printf("warning: could not read file %s: %v", file.Name(), err)
-				continue
-			}
-
-			minifiedContent, err := m.Bytes(mime, content)
-			if err != nil {
-				log.Printf("warning: could not minify file %s: %v", file.Name(), err)
-				builder.Write(content)
-			} else {
-				builder.Write(minifiedContent)
-			}
-			builder.WriteString("\n")
+		if file.IsDir() || !strings.HasSuffix(file.Name(), suffix) {
+			continue
 		}
+
+		content, err := os.ReadFile(filepath.Join(dir, file.Name()))
+		if err != nil {
+			log.Printf("warning: could not read file %s: %v", file.Name(), err)
+			continue
+		}
+
+		minifiedContent, err := m.Bytes(mime, content)
+		if err != nil {
+			log.Printf("warning: could not minify file %s: %v", file.Name(), err)
+			builder.Write(content)
+		} else {
+			builder.Write(minifiedContent)
+		}
+		builder.WriteString("\n")
 	}
 	return builder.String()
 }
 
-// LoadPublicAssets 加载并返回所有公共的 CSS 和 JavaScript 资源。
+// LoadPublicAssets 加载公共 CSS 和 JS 资源
 func LoadPublicAssets() (string, string) {
-	css := loadStaticAssets(publicCSSDirectory, ".css")
-	js := loadStaticAssets(publicJSDirectory, ".js")
-	return css, js
+	return loadStaticAssets(publicCSSDirectory, ".css"), loadStaticAssets(publicJSDirectory, ".js")
 }
 
-// LoadAuthAssets 加载并返回所有需要认证的 CSS 和 JavaScript 资源。
+// LoadAuthAssets 加载认证 CSS 和 JS 资源
 func LoadAuthAssets() (string, string) {
-	css := loadStaticAssets(authCSSDirectory, ".css")
-	js := loadStaticAssets(authJSDirectory, ".js")
-	return css, js
+	return loadStaticAssets(authCSSDirectory, ".css"), loadStaticAssets(authJSDirectory, ".js")
 }
 
-// LoadThemeCSS 根据主题名称加载对应的主题 CSS 文件。
+// LoadThemeCSS 加载指定主题的 CSS 文件
 func LoadThemeCSS(themeName string) string {
 	if themeName == "" {
 		return ""
 	}
+
 	themeFile := filepath.Join(themesDirectory, themeName+".css")
 	content, err := os.ReadFile(themeFile)
 	if err != nil {
 		log.Printf("warning: could not load theme file %s: %v", themeFile, err)
 		return ""
 	}
+
 	minifiedContent, err := m.Bytes("text/css", content)
 	if err != nil {
 		log.Printf("warning: could not minify theme file %s: %v", themeFile, err)
@@ -136,7 +141,7 @@ func LoadThemeCSS(themeName string) string {
 	return string(minifiedContent)
 }
 
-// LoadThemeAssets 加载主题目录中的 CSS 文件（用于 themes/ 目录）。
+// LoadThemeAssets 加载主题目录的所有 CSS 资源
 func LoadThemeAssets() string {
 	return loadStaticAssets(themesDirectory, ".css")
 }

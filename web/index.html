@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.SiteName}}</title>
     <link rel="icon" href="{{if .SiteIcon}}{{.SiteIcon}}{{else}}data:,{{end}}">
-    {{.ExternalJSStr | safeHTML}}
+    {{.ExternalJS | safeHTML}}
     <!-- 页面 CSS 样式区域开始 -->
     <style>
       :root {

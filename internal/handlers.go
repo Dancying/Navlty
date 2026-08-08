@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// renderIcon 根据图标字符串的类型生成相应的 HTML。
+// renderIcon 根据图标类型生成 HTML
 func renderIcon(icon string) template.HTML {
 	if strings.HasPrefix(icon, "http") || strings.HasPrefix(icon, "data:image") {
 		return template.HTML(fmt.Sprintf(`<img src="%s" class="icon">`, icon))
@@ -26,16 +26,10 @@ func renderIcon(icon string) template.HTML {
 	return template.HTML(fmt.Sprintf(`<i data-feather="%s" class="icon"></i>`, icon))
 }
 
-// RenderPage 使用数据渲染主 HTML 页面。
+// RenderPage 渲染主 HTML 页面
 func RenderPage(w http.ResponseWriter, r *http.Request) {
 	pageData := LoadPageData()
 	publicCSS, publicJS := LoadPublicAssets()
-
-	var jsBuilder strings.Builder
-	for _, jsURL := range pageData.ExternalJS {
-		jsBuilder.WriteString(fmt.Sprintf("<script src=\"%s\" defer></script>", jsURL))
-	}
-	pageData.ExternalJSStr = jsBuilder.String()
 
 	themeCSS := LoadThemeCSS(pageData.Theme)
 
@@ -50,27 +44,26 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templatePath := "web/index.html"
-	t, err := template.New("index.html").Funcs(template.FuncMap{
+	t, parseErr := template.New("index.html").Funcs(template.FuncMap{
 		"safeCSS":    func(s string) template.CSS { return template.CSS(s) },
 		"safeJS":     func(s string) template.JS { return template.JS(s) },
 		"safeHTML":   func(s string) template.HTML { return template.HTML(s) },
 		"renderIcon": renderIcon,
 	}).ParseFiles(templatePath)
-
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error parsing template: "+err.Error())
+	if parseErr != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error parsing template: "+parseErr.Error())
 		return
 	}
 
 	var buf bytes.Buffer
-	if err := t.Execute(&buf, pageData); err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error executing template: "+err.Error())
+	if execErr := t.Execute(&buf, pageData); execErr != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error executing template: "+execErr.Error())
 		return
 	}
 
-	minifiedHTML, err := m.Bytes("text/html", buf.Bytes())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error minifying HTML: "+err.Error())
+	minifiedHTML, minErr := m.Bytes("text/html", buf.Bytes())
+	if minErr != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error minifying HTML: "+minErr.Error())
 		w.Write(buf.Bytes())
 		return
 	}
@@ -79,7 +72,7 @@ func RenderPage(w http.ResponseWriter, r *http.Request) {
 	w.Write(minifiedHTML)
 }
 
-// HandleSettings 根据 HTTP 方法路由设置相关的请求。
+// HandleSettings 根据请求方法处理设置
 func HandleSettings(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -93,12 +86,11 @@ func HandleSettings(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// HandleLinks 根据 HTTP 方法处理链接相关的请求。
+// HandleLinks 根据请求方法处理链接
 func HandleLinks(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		links := LoadLinks()
-		respondWithJSON(w, http.StatusOK, links)
+		respondWithJSON(w, http.StatusOK, LoadLinks())
 	case http.MethodPost:
 		var panels map[string][]LinkCategory
 		if err := json.NewDecoder(r.Body).Decode(&panels); err != nil {
@@ -136,19 +128,20 @@ func HandleLinks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// getSettings 处理获取当前网站设置的请求。
+// getSettings 获取网站设置
 func getSettings(w http.ResponseWriter) {
-	settings := LoadSettings()
-	respondWithJSON(w, http.StatusOK, settings)
+	respondWithJSON(w, http.StatusOK, LoadSettings())
 }
 
-// saveSettings 处理保存新网站设置的请求。
+// saveSettings 保存网站设置
 func saveSettings(w http.ResponseWriter, r *http.Request) {
 	var newSettings Settings
 	if err := json.NewDecoder(r.Body).Decode(&newSettings); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Error decoding request body: "+err.Error())
 		return
 	}
+
+	if newSettings.Theme == "" { newSettings.Theme = "cool-white" }
 
 	if err := SaveSettings(&newSettings); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error saving settings: "+err.Error())
@@ -158,7 +151,7 @@ func saveSettings(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
 }
 
-// patchSettings 处理对网站设置的局部更新请求。
+// patchSettings 局部更新网站设置
 func patchSettings(w http.ResponseWriter, r *http.Request) {
 	currentSettings := LoadSettings()
 
@@ -177,6 +170,9 @@ func patchSettings(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for key, value := range updates {
+		if key == "theme" && value == "" {
+			value = "cool-white"
+		}
 		currentSettingsMap[key] = value
 	}
 
@@ -200,7 +196,7 @@ func patchSettings(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
 }
 
-// HandleAuth 处理用户登录请求
+// HandleAuth 处理用户登录
 func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
@@ -239,7 +235,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// HandleLogout 处理用户登出请求
+// HandleLogout 处理用户登出
 func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
@@ -260,7 +256,7 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// HandleChangePassword 处理修改密码请求
+// HandleChangePassword 处理修改密码
 func HandleChangePassword(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
@@ -271,7 +267,6 @@ func HandleChangePassword(w http.ResponseWriter, r *http.Request) {
 		CurrentPassword string `json:"currentPassword"`
 		NewPassword     string `json:"newPassword"`
 	}
-
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request body")
 		return
@@ -298,21 +293,19 @@ func HandleChangePassword(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{"success": true, "message": "密码修改成功"})
 }
 
-// HandleAuthStatus 检查系统是否已设置管理员密码
+// HandleAuthStatus 检查管理员密码是否已设置
 func HandleAuthStatus(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
 		return
 	}
 
-	auth := LoadAuth()
-
 	respondWithJSON(w, http.StatusOK, map[string]bool{
-		"isPasswordSet": auth.PasswordHash != "",
+		"isPasswordSet": LoadAuth().PasswordHash != "",
 	})
 }
 
-// createAndSetSessionCookie 创建一个新的会话并将其作为 cookie 设置到 HTTP 响应中。
+// createAndSetSessionCookie 创建会话并设置 Cookie
 func createAndSetSessionCookie(w http.ResponseWriter) {
 	sessionToken := createSession()
 	http.SetCookie(w, &http.Cookie{
@@ -321,295 +314,4 @@ func createAndSetSessionCookie(w http.ResponseWriter) {
 		HttpOnly: true,
 		Path:     "/",
 	})
-}
-
-// findOrCreateCategory 在一个分类列表中查找指定名称的分类，如果找不到则创建并返回它。
-func findOrCreateCategory(categories *[]LinkCategory, categoryName string) *LinkCategory {
-	for i := range *categories {
-		if (*categories)[i].Name == categoryName {
-			return &(*categories)[i]
-		}
-	}
-
-	newCategory := LinkCategory{Name: categoryName, Links: []Link{}}
-	*categories = append(*categories, newCategory)
-	return &(*categories)[len(*categories)-1]
-}
-
-// HandleLinksBatch 处理所有链接的批量事务操作
-func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
-		return
-	}
-
-	var actions []BatchAction
-	if err := json.NewDecoder(r.Body).Decode(&actions); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid actions format: "+err.Error())
-		return
-	}
-
-	panels := LoadLinks()
-
-	for _, action := range actions {
-		switch action.Action {
-		case "CREATE_LINKS":
-			var payload CreateLinksPayload
-			if err := json.Unmarshal(action.Payload, &payload); err != nil {
-				respondWithError(w, http.StatusBadRequest, "Invalid CREATE_LINKS payload: "+err.Error())
-				return
-			}
-
-			if payload.Category == "" {
-				payload.Category = "Uncategorized"
-			}
-
-			targetPanel, panelExists := panels[payload.Panel]
-			if !panelExists {
-				targetPanel = []LinkCategory{}
-			}
-
-			targetCategory := findOrCreateCategory(&targetPanel, payload.Category)
-
-			maxSort := -1
-			for _, link := range targetCategory.Links {
-				if link.Sort > maxSort {
-					maxSort = link.Sort
-				}
-			}
-
-			for _, newLink := range payload.Links {
-				maxSort++
-				newLink.ID = uuid.NewString()
-				newLink.Sort = maxSort
-				targetCategory.Links = append(targetCategory.Links, newLink)
-			}
-			panels[payload.Panel] = targetPanel
-
-		case "DELETE_LINKS":
-			var payload DeleteLinksPayload
-			if err := json.Unmarshal(action.Payload, &payload); err != nil {
-				respondWithError(w, http.StatusBadRequest, "Invalid DELETE_LINKS payload: "+err.Error())
-				return
-			}
-			idsToDelete := make(map[string]struct{})
-			for _, id := range payload.IDs {
-				idsToDelete[id] = struct{}{}
-			}
-
-			for panelKey, categories := range panels {
-				for i := range categories {
-					var remainingLinks []Link
-					for _, link := range categories[i].Links {
-						if _, found := idsToDelete[link.ID]; !found {
-							remainingLinks = append(remainingLinks, link)
-						}
-					}
-					panels[panelKey][i].Links = remainingLinks
-				}
-			}
-
-		case "UPDATE_LINKS":
-			var payload []UpdateLinkItem
-			if err := json.Unmarshal(action.Payload, &payload); err != nil {
-				respondWithError(w, http.StatusBadRequest, "Invalid UPDATE_LINKS payload: "+err.Error())
-				return
-			}
-
-			updatesMap := make(map[string]json.RawMessage)
-			for _, item := range payload {
-				updatesMap[item.ID] = item.Updates
-			}
-
-			type LinkMove struct {
-				Link        Link
-				PanelKey    string
-				NewCategory string
-			}
-			var linksToMove []LinkMove
-
-			for panelKey, categories := range panels {
-				for i := range categories {
-					for j := range categories[i].Links {
-						link := &panels[panelKey][i].Links[j]
-
-						if updatesJSON, found := updatesMap[link.ID]; found {
-							var linkUpdates map[string]interface{}
-							if err := json.Unmarshal(updatesJSON, &linkUpdates); err != nil {
-								respondWithError(w, http.StatusBadRequest, "Failed to decode update for link "+link.ID)
-								return
-							}
-
-							if err := json.Unmarshal(updatesJSON, link); err != nil {
-								respondWithError(w, http.StatusBadRequest, "Failed to apply updates to link "+link.ID)
-								return
-							}
-
-							if newCategory, ok := linkUpdates["category"].(string); ok {
-								if newCategory == "" {
-									newCategory = "Uncategorized"
-								}
-
-								currentCategory := panels[panelKey][i].Name
-								if newCategory != currentCategory {
-									linksToMove = append(linksToMove, LinkMove{
-										Link:        *link,
-										PanelKey:    panelKey,
-										NewCategory: newCategory,
-									})
-								}
-							}
-							delete(updatesMap, link.ID)
-						}
-					}
-				}
-			}
-
-			if len(linksToMove) > 0 {
-				movesMap := make(map[string]bool)
-				for _, move := range linksToMove {
-					movesMap[move.Link.ID] = true
-				}
-
-				for panelKey, categories := range panels {
-					for i := range categories {
-						var remainingLinks []Link
-						for _, link := range categories[i].Links {
-							if !movesMap[link.ID] {
-								remainingLinks = append(remainingLinks, link)
-							}
-						}
-						panels[panelKey][i].Links = remainingLinks
-					}
-				}
-			}
-
-			for _, move := range linksToMove {
-				targetPanel, _ := panels[move.PanelKey]
-				targetCategory := findOrCreateCategory(&targetPanel, move.NewCategory)
-
-				maxSort := -1
-				for _, l := range targetCategory.Links {
-					if l.Sort > maxSort {
-						maxSort = l.Sort
-					}
-				}
-				move.Link.Sort = maxSort + 1
-				targetCategory.Links = append(targetCategory.Links, move.Link)
-				panels[move.PanelKey] = targetPanel
-			}
-
-		case "MOVE_LINKS":
-			var payload MoveLinksPayload
-			if err := json.Unmarshal(action.Payload, &payload); err != nil {
-				respondWithError(w, http.StatusBadRequest, "Invalid MOVE_LINKS payload: "+err.Error())
-				return
-			}
-			idsToMove := make(map[string]struct{})
-			for _, id := range payload.IDs {
-				idsToMove[id] = struct{}{}
-			}
-
-			var movedLinks []Link
-			for panelKey, categories := range panels {
-				for i := range categories {
-					var remainingLinks []Link
-					for _, link := range categories[i].Links {
-						if _, found := idsToMove[link.ID]; found {
-							movedLinks = append(movedLinks, link)
-						} else {
-							remainingLinks = append(remainingLinks, link)
-						}
-					}
-					panels[panelKey][i].Links = remainingLinks
-				}
-			}
-
-			targetPanel, panelExists := panels[payload.Target.Panel]
-			if !panelExists {
-				targetPanel = []LinkCategory{}
-			}
-
-			targetCategory := findOrCreateCategory(&targetPanel, payload.Target.Category)
-
-			maxSort := -1
-			for _, link := range targetCategory.Links {
-				if link.Sort > maxSort {
-					maxSort = link.Sort
-				}
-			}
-
-			for _, link := range movedLinks {
-				maxSort++
-				link.Sort = maxSort
-				targetCategory.Links = append(targetCategory.Links, link)
-			}
-			panels[payload.Target.Panel] = targetPanel
-
-		case "DELETE_CATEGORIES":
-			var payload []DeleteCategoryPayload
-			if err := json.Unmarshal(action.Payload, &payload); err != nil {
-				respondWithError(w, http.StatusBadRequest, "Invalid DELETE_CATEGORIES payload: "+err.Error())
-				return
-			}
-
-			for _, catToDelete := range payload {
-				if categories, ok := panels[catToDelete.Panel]; ok {
-					var remainingCategories []LinkCategory
-					for _, category := range categories {
-						if category.Name != catToDelete.Category {
-							remainingCategories = append(remainingCategories, category)
-						}
-					}
-					panels[catToDelete.Panel] = remainingCategories
-				}
-			}
-		case "REORDER_CATEGORIES":
-			var payload ReorderCategoriesPayload
-			if err := json.Unmarshal(action.Payload, &payload); err != nil {
-				respondWithError(w, http.StatusBadRequest, "Invalid REORDER_CATEGORIES payload: "+err.Error())
-				return
-			}
-
-			currentCategories, panelExists := panels[payload.Panel]
-			if !panelExists {
-				respondWithError(w, http.StatusBadRequest, "Panel not found for reordering: "+payload.Panel)
-				return
-			}
-
-			categoryMap := make(map[string]LinkCategory)
-			for _, category := range currentCategories {
-				categoryMap[category.Name] = category
-			}
-
-			reorderedCategories := make([]LinkCategory, 0, len(payload.OrderedCategoryNames))
-			for _, categoryName := range payload.OrderedCategoryNames {
-				if category, found := categoryMap[categoryName]; found {
-					reorderedCategories = append(reorderedCategories, category)
-				}
-			}
-			panels[payload.Panel] = reorderedCategories
-
-		default:
-			respondWithError(w, http.StatusBadRequest, "Unknown action: "+action.Action)
-			return
-		}
-	}
-
-	for panelKey, categories := range panels {
-		var filteredCategories []LinkCategory
-		for _, category := range categories {
-			if len(category.Links) > 0 {
-				filteredCategories = append(filteredCategories, category)
-			}
-		}
-		panels[panelKey] = filteredCategories
-	}
-
-	if err := SaveLinks(panels); err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to save links after batch update: "+err.Error())
-		return
-	}
-
-	respondWithJSON(w, http.StatusOK, map[string]string{"message": "Batch update successful"})
 }

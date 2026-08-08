@@ -132,7 +132,7 @@ App.settings = (function () {
                 App.helpers.setFormValue('top-content', originalSettings.topContent);
                 App.helpers.setFormValue('bottom-content', originalSettings.bottomContent);
                 App.helpers.setFormValue('custom-css', originalSettings.customCSS);
-                App.helpers.setFormValue('external-js', (originalSettings.externalJS || []).join('\n'));
+                App.helpers.setFormValue('external-js', originalSettings.externalJS || '');
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
                 break;
@@ -443,7 +443,7 @@ App.settings = (function () {
                 App.helpers.setFormValue('top-content', originalSettings.topContent);
                 App.helpers.setFormValue('bottom-content', originalSettings.bottomContent);
                 App.helpers.setFormValue('custom-css', originalSettings.customCSS);
-                App.helpers.setFormValue('external-js', (originalSettings.externalJS || []).join('\n'));
+                App.helpers.setFormValue('external-js', originalSettings.externalJS || '');
 
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');

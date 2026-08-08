@@ -10,6 +10,15 @@ App.settings = (function () {
     let changeListenersBound = false;
     let modalCloseHandlerBound = false;
 
+    const themes = [
+        { id: 'cool-white', name: '冷白 (默认)' },
+        { id: 'warm-white', name: '暖白' },
+        { id: 'light-blue', name: '浅蓝' },
+        { id: 'mint', name: '薄荷绿' },
+        { id: 'lavender', name: '淡紫' },
+        { id: 'peach', name: '淡橙' }
+    ];
+
     // initSearchableSelect 初始化一个可搜索的下拉选择框
     function initSearchableSelect(config) {
         const { inputId, resultsId, source, renderItem, onSelect } = config;
@@ -120,7 +129,6 @@ App.settings = (function () {
         switch (activePanel.id) {
             case 'content-site-appearance':
             case 'content-advanced-settings':
-                // 从原始设置恢复表单值
                 App.helpers.setFormValue('site-name', originalSettings.siteName);
                 App.helpers.setFormValue('site-icon', originalSettings.siteIcon);
                 App.helpers.setFormValue('site-title', originalSettings.siteTitle);
@@ -135,22 +143,28 @@ App.settings = (function () {
                 App.helpers.setFormValue('external-js', originalSettings.externalJS || '');
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
+
+                const themeInput = document.getElementById('theme');
+                if (themeInput && originalSettings.theme) {
+                    const theme = themes.find(t => t.id === originalSettings.theme);
+                    if (theme) {
+                        themeInput.value = theme.name;
+                        themeInput.dataset.themeId = theme.id;
+                    }
+                }
                 break;
             case 'content-add-link':
             case 'content-bulk-add':
             case 'content-password-settings':
-                // 清空表单
                 const form = activePanel.querySelector('form');
                 form && form.reset();
                 break;
             case 'content-edit-link':
-                // 重置编辑链接表单
                 App.finder.toggleEditForm(false);
                 const editSearchInput = document.getElementById('edit-link-search-input');
                 editSearchInput && (editSearchInput.value = '');
                 break;
             case 'content-category-management':
-                // 重置分类管理到初始状态
                 App.editor.reset();
                 break;
         }
@@ -242,7 +256,6 @@ App.settings = (function () {
             event.target === modal && App.modal.close('settings-modal');
         });
 
-        // 绑定共享标题栏按钮事件
         const header = document.querySelector('#settings-content .modal-header');
         if (header) {
             header.querySelector('.settings-cancel-button').addEventListener('click', handleCancel);
@@ -348,6 +361,32 @@ App.settings = (function () {
             onSelect: onCategorySelect('edit-link-category', 'edit-link-target-panel'),
         });
 
+        const themeInput = document.getElementById('theme');
+        if (themeInput) {
+            themeInput.setAttribute('readonly', 'readonly');
+            themeInput.addEventListener('focus', () => {
+                themeInput.value = '';
+            });
+        }
+
+        initSearchableSelect({
+            inputId: 'theme',
+            resultsId: 'theme-results',
+            source: () => themes,
+            renderItem: (theme) => `<div class="search-result-item" data-id="${theme.id}"><span class="title">${theme.name}</span></div>`,
+            onSelect: (id) => {
+                const input = document.getElementById('theme');
+                if (input) {
+                    const theme = themes.find(t => t.id === id);
+                    if (theme) {
+                        input.value = theme.name;
+                        input.dataset.themeId = theme.id;
+                    }
+                }
+                document.dispatchEvent(new CustomEvent('settings-changed'));
+            }
+        });
+
         document.addEventListener('click', (e) => {
             document.querySelectorAll('.searchable-select-wrapper.active').forEach(wrapper => {
                 !wrapper.contains(e.target) && wrapper.classList.remove('active');
@@ -442,6 +481,15 @@ App.settings = (function () {
 
                 updateSliderValue('background-blur', 'background-blur-value');
                 updateSliderValue('cards-per-row', 'cards-per-row-value');
+
+                const themeInput = document.getElementById('theme');
+                if (themeInput && originalSettings.theme) {
+                    const theme = themes.find(t => t.id === originalSettings.theme);
+                    if (theme) {
+                        themeInput.value = theme.name;
+                        themeInput.dataset.themeId = theme.id;
+                    }
+                }
 
                 hideSaveButton();
                 App.modal.open('settings-modal');

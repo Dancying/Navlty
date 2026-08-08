@@ -27,6 +27,7 @@ html { background-color: #f3e5f5; }
 #settings-modal .modal-header { background-color: #f3e5f5; }
 .management-category-group { background-color: #f3e5f5; }
 .settings-nav-item.active { background-color: #ce93d8; color: #6a1b9a; }
+.settings-nav-item:hover { background-color: #e1bee7; color: #6a1b9a; }
 .management-category-header { background-color: #f3e5f5; }
 .management-category-header.open { background-color: #e1bee7; }
 

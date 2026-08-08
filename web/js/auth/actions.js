@@ -262,6 +262,7 @@ App.actions = (function() {
         const currentValues = Array.from(activePanel.querySelectorAll('[name]')).reduce((acc, field) => {
             const key = field.name;
             if (field.type === 'range') acc[key] = parseInt(field.value, 10) || 0;
+            else if (field.id === 'theme' && field.dataset.themeId) acc[key] = field.dataset.themeId;
             else acc[key] = field.value;
             return acc;
         }, {});

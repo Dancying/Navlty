@@ -88,9 +88,7 @@ func loadStaticAssets(dir, suffix string) string {
 	}
 
 	for _, file := range files {
-		if file.IsDir() || !strings.HasSuffix(file.Name(), suffix) {
-			continue
-		}
+		if file.IsDir() || !strings.HasSuffix(file.Name(), suffix) { continue }
 
 		content, err := os.ReadFile(filepath.Join(dir, file.Name()))
 		if err != nil {
@@ -122,10 +120,7 @@ func LoadAuthAssets() (string, string) {
 
 // LoadThemeCSS 加载指定主题的 CSS 文件
 func LoadThemeCSS(themeName string) string {
-	if themeName == "" {
-		return ""
-	}
-
+	if themeName == "" { themeName = "cool-white" }
 	themeFile := filepath.Join(themesDirectory, themeName+".css")
 	content, err := os.ReadFile(themeFile)
 	if err != nil {
@@ -141,7 +136,3 @@ func LoadThemeCSS(themeName string) string {
 	return string(minifiedContent)
 }
 
-// LoadThemeAssets 加载主题目录的所有 CSS 资源
-func LoadThemeAssets() string {
-	return loadStaticAssets(themesDirectory, ".css")
-}

@@ -62,11 +62,9 @@ func HandleLinksBatch(w http.ResponseWriter, r *http.Request) {
 func filterEmptyCategories(panels map[string][]LinkCategory) {
 	for panelKey, categories := range panels {
 		var filteredCategories []LinkCategory
-		for _, category := range categories {
-			if len(category.Links) > 0 {
-				filteredCategories = append(filteredCategories, category)
-			}
-		}
+	for _, category := range categories {
+		if len(category.Links) > 0 { filteredCategories = append(filteredCategories, category) }
+	}
 		panels[panelKey] = filteredCategories
 	}
 }
@@ -74,9 +72,7 @@ func filterEmptyCategories(panels map[string][]LinkCategory) {
 // findOrCreateCategory 查找分类，不存在则创建
 func findOrCreateCategory(categories *[]LinkCategory, categoryName string) *LinkCategory {
 	for i := range *categories {
-		if (*categories)[i].Name == categoryName {
-			return &(*categories)[i]
-		}
+		if (*categories)[i].Name == categoryName { return &(*categories)[i] }
 	}
 
 	newCategory := LinkCategory{Name: categoryName, Links: []Link{}}
@@ -103,9 +99,7 @@ func applyCreateLinks(panels map[string][]LinkCategory, payload json.RawMessage)
 
 	maxSort := -1
 	for _, link := range targetCategory.Links {
-		if link.Sort > maxSort {
-			maxSort = link.Sort
-		}
+		if link.Sort > maxSort { maxSort = link.Sort }
 	}
 
 	for _, newLink := range p.Links {
@@ -132,11 +126,9 @@ func applyDeleteLinks(panels map[string][]LinkCategory, payload json.RawMessage)
 	for panelKey, categories := range panels {
 		for i := range categories {
 			var remainingLinks []Link
-			for _, link := range categories[i].Links {
-				if _, found := idsToDelete[link.ID]; !found {
-					remainingLinks = append(remainingLinks, link)
-				}
-			}
+	for _, link := range categories[i].Links {
+		if _, found := idsToDelete[link.ID]; !found { remainingLinks = append(remainingLinks, link) }
+	}
 			panels[panelKey][i].Links = remainingLinks
 		}
 	}
@@ -181,9 +173,7 @@ func applyUpdateLinks(panels map[string][]LinkCategory, payload json.RawMessage)
 				}
 
 				if newCategory, ok := linkUpdates["category"].(string); ok {
-					if newCategory == "" {
-						newCategory = "Uncategorized"
-					}
+					if newCategory == "" { newCategory = "Uncategorized" }
 					if newCategory != panels[panelKey][i].Name {
 						linksToMove = append(linksToMove, LinkMove{
 							Link:        *link,
@@ -207,9 +197,7 @@ func applyUpdateLinks(panels map[string][]LinkCategory, payload json.RawMessage)
 			for i := range categories {
 				var remainingLinks []Link
 				for _, link := range categories[i].Links {
-					if !movesMap[link.ID] {
-						remainingLinks = append(remainingLinks, link)
-					}
+					if !movesMap[link.ID] { remainingLinks = append(remainingLinks, link) }
 				}
 				panels[panelKey][i].Links = remainingLinks
 			}
@@ -222,9 +210,7 @@ func applyUpdateLinks(panels map[string][]LinkCategory, payload json.RawMessage)
 
 		maxSort := -1
 		for _, l := range targetCategory.Links {
-			if l.Sort > maxSort {
-				maxSort = l.Sort
-			}
+			if l.Sort > maxSort { maxSort = l.Sort }
 		}
 		move.Link.Sort = maxSort + 1
 		targetCategory.Links = append(targetCategory.Links, move.Link)
@@ -248,13 +234,11 @@ func applyMoveLinks(panels map[string][]LinkCategory, payload json.RawMessage) e
 	for panelKey, categories := range panels {
 		for i := range categories {
 			var remainingLinks []Link
-			for _, link := range categories[i].Links {
-				if _, found := idsToMove[link.ID]; found {
-					movedLinks = append(movedLinks, link)
-				} else {
-					remainingLinks = append(remainingLinks, link)
-				}
-			}
+	for _, link := range categories[i].Links {
+		if _, found := idsToMove[link.ID]; found {
+			movedLinks = append(movedLinks, link)
+		} else { remainingLinks = append(remainingLinks, link) }
+	}
 			panels[panelKey][i].Links = remainingLinks
 		}
 	}
@@ -296,11 +280,9 @@ func applyDeleteCategories(panels map[string][]LinkCategory, payload json.RawMes
 		}
 
 		var remainingCategories []LinkCategory
-		for _, category := range categories {
-			if category.Name != catToDelete.Category {
-				remainingCategories = append(remainingCategories, category)
-			}
-		}
+	for _, category := range categories {
+		if category.Name != catToDelete.Category { remainingCategories = append(remainingCategories, category) }
+	}
 		panels[catToDelete.Panel] = remainingCategories
 	}
 	return nil
@@ -326,9 +308,7 @@ func applyReorderCategories(panels map[string][]LinkCategory, payload json.RawMe
 	reorderedCategories := make([]LinkCategory, 0, len(p.OrderedCategoryNames))
 	for _, categoryName := range p.OrderedCategoryNames {
 		if categoryName == "" { categoryName = "Uncategorized" }
-		if category, found := categoryMap[categoryName]; found {
-			reorderedCategories = append(reorderedCategories, category)
-		}
+		if category, found := categoryMap[categoryName]; found { reorderedCategories = append(reorderedCategories, category) }
 	}
 	panels[p.Panel] = reorderedCategories
 	return nil

@@ -33,12 +33,10 @@ App.modal = (function() {
     
     modal.classList.remove('show');
 
-    // 若焦点停留在模态框内的元素上，将其移除避免快捷键被隐藏元素拦截
     modal.contains(document.activeElement) && document.activeElement.blur();
     
     document.querySelectorAll('.modal.show').length === 0 && restoreScroll();
 
-    // 派发模态框关闭事件，供其他模块监听
     document.dispatchEvent(new CustomEvent('modal:closed', { detail: { modalId } }));
   }
 

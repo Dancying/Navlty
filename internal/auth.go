@@ -42,9 +42,7 @@ func IsSessionValid(sessionToken string) bool {
 	sessionCache.RLock()
 	expires, found := sessionCache.tokens[sessionToken]
 	sessionCache.RUnlock()
-	if found && expires > time.Now().Unix() {
-		return true
-	}
+	if found && expires > time.Now().Unix() { return true }
 
 	auth := LoadAuth()
 	currentTime := time.Now().Unix()

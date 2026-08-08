@@ -173,7 +173,6 @@ App.settings = (function () {
             event.target.matches('input, textarea, select') && showSaveButton();
         }, true);
 
-        // 监听分类管理中的拖放、编辑、删除等操作
         document.addEventListener('settings-changed', showSaveButton);
     }
 
@@ -184,7 +183,6 @@ App.settings = (function () {
 
         document.addEventListener('modal:closed', (event) => {
             if (event.detail?.modalId === 'settings-modal') {
-                // 关闭前如果有未保存的修改，触发取消逻辑撤销修改
                 saveButtonVisible && handleCancel();
                 hasSaved && window.location.reload();
             }
@@ -217,7 +215,6 @@ App.settings = (function () {
         const navContainer = document.getElementById('settings-nav');
         const contentContainer = document.getElementById('settings-content');
 
-        // 左侧导航顶部添加"设置"标题
         const navTitle = document.createElement('h3');
         navTitle.textContent = '设置';
         navContainer.appendChild(navTitle);
@@ -360,7 +357,6 @@ App.settings = (function () {
 
     // switchPanel 切换设置模态框中的主内容面板
     async function switchPanel(targetId) {
-        // 如果有未保存的修改，先触发取消逻辑撤销修改
         saveButtonVisible && handleCancel();
         lastActivePanelId = targetId;
         const modal = document.getElementById('settings-modal');
@@ -371,7 +367,6 @@ App.settings = (function () {
         const activePanel = modal.querySelector(`#${targetId}`);
         activePanel && activePanel.classList.add('active');
 
-        // 更新共享标题栏标题
         updatePanelTitle(targetId);
 
         if (targetId === 'content-add-link') {

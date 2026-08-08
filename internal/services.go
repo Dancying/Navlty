@@ -49,10 +49,10 @@ func LoadSettings() *Settings {
 		return &Settings{
 			SiteName:       "Navlty - A Lightweight Dashboard",
 			SiteTitle:      "Navlty Dashboard",
-			CardsPerRow:    2,
-			BackgroundBlur: 8,
-			BackgroundURL:  "",
 			Theme:          "cool-white",
+			BackgroundURL:  "",
+			BackgroundBlur: 8,
+			CardsPerRow:    2,
 		}
 	})
 }
@@ -92,9 +92,7 @@ func LoadLinks() map[string][]LinkCategory {
 		}
 	})
 
-	if panels == nil {
-		return make(map[string][]LinkCategory)
-	}
+	if panels == nil { return make(map[string][]LinkCategory) }
 
 	for _, categories := range panels {
 		for i := range categories {

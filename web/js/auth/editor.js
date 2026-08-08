@@ -207,7 +207,6 @@ App.editor = (function() {
 
         const categoryKey = `${panelName}-${categoryName}`;
         titleContainer.addEventListener('click', () => {
-            // 编辑分类名称时禁止触发展开/收起
             if (titleContainer.querySelector('input')) return;
             toggleCategory(header, categoryKey);
         });
@@ -332,7 +331,6 @@ App.editor = (function() {
         if (titleElement.querySelector('input')) return;
         const originalName = oldCategoryName;
         const categoryGroup = titleElement.closest('.management-category-group');
-        // 编辑时禁止拖动分类
         if (categoryGroup) categoryGroup.setAttribute('draggable', 'false');
 
         const input = document.createElement('input');

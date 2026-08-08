@@ -61,9 +61,7 @@ func selectEncoding(header string) string {
 	var candidates []candidate
 	for _, part := range strings.Split(header, ",") {
 		part = strings.TrimSpace(part)
-		if part == "" {
-			continue
-		}
+		if part == "" { continue }
 
 		name := part
 		q := 1.0
@@ -81,17 +79,13 @@ func selectEncoding(header string) string {
 			}
 		}
 
-		if q > 0 {
-			candidates = append(candidates, candidate{name: strings.ToLower(name), q: q})
-		}
+		if q > 0 { candidates = append(candidates, candidate{name: strings.ToLower(name), q: q}) }
 	}
 
 	best := ""
 	bestQ := 0.0
 	for _, c := range candidates {
-		if c.name != "br" && c.name != "gzip" {
-			continue
-		}
+		if c.name != "br" && c.name != "gzip" { continue }
 		if c.q > bestQ {
 			best = c.name
 			bestQ = c.q
@@ -117,24 +111,18 @@ func (cw *compressWriter) WriteHeader(status int) {
 
 // Write 写入响应内容到缓冲区
 func (cw *compressWriter) Write(b []byte) (int, error) {
-	if !cw.wroteHeader {
-		cw.WriteHeader(http.StatusOK)
-	}
+	if !cw.wroteHeader { cw.WriteHeader(http.StatusOK) }
 	return cw.buf.Write(b)
 }
 
 // finish 根据内容类型和大小决定是否压缩响应
 func (cw *compressWriter) finish() {
 	status := cw.status
-	if status == 0 {
-		status = http.StatusOK
-	}
+	if status == 0 { status = http.StatusOK }
 
 	size := cw.buf.Len()
 	contentType := cw.Header().Get("Content-Type")
-	if contentType == "" {
-		contentType = http.DetectContentType(cw.buf.Bytes())
-	}
+	if contentType == "" { contentType = http.DetectContentType(cw.buf.Bytes()) }
 
 	if size < minCompressSize || !isCompressible(contentType) {
 		cw.Header().Set("Content-Length", strconv.Itoa(size))
@@ -146,9 +134,7 @@ func (cw *compressWriter) finish() {
 	h := cw.Header()
 	h.Del("Content-Length")
 	h.Set("Content-Encoding", cw.encoding)
-	if h.Get("Vary") == "" {
-		h.Set("Vary", "Accept-Encoding")
-	}
+	if h.Get("Vary") == "" { h.Set("Vary", "Accept-Encoding") }
 	cw.ResponseWriter.WriteHeader(status)
 
 	var enc io.WriteCloser
@@ -167,13 +153,9 @@ func (cw *compressWriter) finish() {
 // isCompressible 判断内容类型是否可压缩
 func isCompressible(contentType string) bool {
 	ct := strings.ToLower(contentType)
-	if idx := strings.Index(ct, ";"); idx >= 0 {
-		ct = strings.TrimSpace(ct[:idx])
-	}
+	if idx := strings.Index(ct, ";"); idx >= 0 { ct = strings.TrimSpace(ct[:idx]) }
 	for _, prefix := range compressibleTypes {
-		if strings.HasPrefix(ct, prefix) {
-			return true
-		}
+		if strings.HasPrefix(ct, prefix) { return true }
 	}
 	return false
 }

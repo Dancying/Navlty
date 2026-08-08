@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // renderIcon 根据图标类型生成 HTML
@@ -18,9 +16,7 @@ func renderIcon(icon string) template.HTML {
 		return template.HTML(fmt.Sprintf(`<img src="%s" class="icon">`, icon))
 	}
 	if strings.HasPrefix(icon, "<svg") && strings.HasSuffix(icon, "</svg>") {
-		if !strings.Contains(icon, "class=") {
-			return template.HTML(strings.Replace(icon, "<svg", `<svg class="icon"`, 1))
-		}
+		if !strings.Contains(icon, "class=") { return template.HTML(strings.Replace(icon, "<svg", `<svg class="icon"`, 1)) }
 		return template.HTML(icon)
 	}
 	return template.HTML(fmt.Sprintf(`<i data-feather="%s" class="icon"></i>`, icon))
@@ -77,8 +73,6 @@ func HandleSettings(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		getSettings(w)
-	case http.MethodPost:
-		saveSettings(w, r)
 	case http.MethodPatch:
 		patchSettings(w, r)
 	default:
@@ -86,69 +80,14 @@ func HandleSettings(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// HandleLinks 根据请求方法处理链接
-func HandleLinks(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		respondWithJSON(w, http.StatusOK, LoadLinks())
-	case http.MethodPost:
-		var panels map[string][]LinkCategory
-		if err := json.NewDecoder(r.Body).Decode(&panels); err != nil {
-			respondWithError(w, http.StatusBadRequest, "Invalid data format: "+err.Error())
-			return
-		}
-
-		for _, categories := range panels {
-			for i := range categories {
-				maxSort := -1
-				for _, link := range categories[i].Links {
-					if link.Sort > maxSort {
-						maxSort = link.Sort
-					}
-				}
-
-				for j := range categories[i].Links {
-					if categories[i].Links[j].ID == "" {
-						categories[i].Links[j].ID = uuid.NewString()
-						maxSort++
-						categories[i].Links[j].Sort = maxSort
-					}
-				}
-			}
-		}
-
-		if err := SaveLinks(panels); err != nil {
-			respondWithError(w, http.StatusInternalServerError, "Failed to save links: "+err.Error())
-			return
-		}
-
-		respondWithJSON(w, http.StatusOK, map[string]string{"message": "Links updated successfully"})
-	default:
-		respondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
-	}
+// getLinks 获取所有链接
+func getLinks(w http.ResponseWriter, r *http.Request) {
+	respondWithJSON(w, http.StatusOK, LoadLinks())
 }
 
 // getSettings 获取网站设置
 func getSettings(w http.ResponseWriter) {
 	respondWithJSON(w, http.StatusOK, LoadSettings())
-}
-
-// saveSettings 保存网站设置
-func saveSettings(w http.ResponseWriter, r *http.Request) {
-	var newSettings Settings
-	if err := json.NewDecoder(r.Body).Decode(&newSettings); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Error decoding request body: "+err.Error())
-		return
-	}
-
-	if newSettings.Theme == "" { newSettings.Theme = "cool-white" }
-
-	if err := SaveSettings(&newSettings); err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error saving settings: "+err.Error())
-		return
-	}
-
-	respondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
 }
 
 // patchSettings 局部更新网站设置

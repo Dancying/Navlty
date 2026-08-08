@@ -13,7 +13,7 @@ func NewRouter() http.Handler {
 
 	api := http.NewServeMux()
 	api.HandleFunc("/api/settings", HandleSettings)
-	api.HandleFunc("/api/links", HandleLinks)
+	api.HandleFunc("/api/links", getLinks)
 	api.HandleFunc("/api/links/actions", HandleLinksBatch)
 	api.HandleFunc("/api/auth/passwd", HandleChangePassword)
 

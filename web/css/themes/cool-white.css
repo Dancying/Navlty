@@ -2,12 +2,17 @@
 html { background-color: #f0f2f5; }
 .header-background { background-color: rgba(229, 231, 235, 0.65); }
 .search-input { background-color: #fff; }
+.search-input:focus { border-color: #1a73e8; }
+.icon-button { background-color: transparent; border-color: #ccc; color: #333; }
+.icon-button:hover { background-color: #f0f2f5; }
 
 /* web/css/public/links.css */
 .card { background-color: #fff; }
 
 /* web/css/public/modal.css */
 .modal-content { background-color: #fff; }
+.close-button { background-color: #e9ecef; color: #6c757d; }
+.close-button:hover { background-color: #dae0e5; color: #333; }
 .btn-primary { background-color: #1a73e8; color: white; }
 .btn-primary:hover { background-color: #1557b0; }
 .btn-secondary { background-color: #f0f2f5; color: #333; }
@@ -33,6 +38,7 @@ html { background-color: #f0f2f5; }
 
 /* web/css/auth/forms.css */
 .search-results-list { background-color: #fff; }
+.search-result-item:hover { background-color: #f0f2f5; }
 
 /* web/css/auth/controls.css */
 .input-with-button .btn.icon-button { background-color: #1a73e8; color: white; }

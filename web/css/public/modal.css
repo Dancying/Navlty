@@ -92,25 +92,16 @@ body.modal-open {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background-color: #e9ecef;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6c757d;
     font-size: 24px;
     font-weight: 300;
     line-height: 1;
     padding: 0;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-/* 关闭按钮的悬浮和聚焦样式 */
-.close-button:hover,
-.close-button:focus {
-    background-color: #dae0e5;
-    color: #333;
 }
 
 /* 关闭按钮中的图标尺寸 */

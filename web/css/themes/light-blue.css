@@ -1,13 +1,18 @@
 /* web/css/public/panels.css */
 html { background-color: #e3f2fd; }
 .header-background { background-color: rgba(227, 242, 253, 0.65); }
-.search-input { background-color: #fff; }
+.search-input { background-color: #e3f2fd; }
+.search-input:focus { border-color: #1565c0; }
+.icon-button { background-color: transparent; border-color: #ccc; color: #333; }
+.icon-button:hover { background-color: #e3f2fd; }
 
 /* web/css/public/links.css */
 .card { background-color: #e3f2fd; }
 
 /* web/css/public/modal.css */
 .modal-content { background-color: #e3f2fd; }
+.close-button { background-color: #e9ecef; color: #1565c0; }
+.close-button:hover { background-color: #b3e5fc; color: #333; }
 .btn-primary { background-color: #1565c0; color: white; }
 .btn-primary:hover { background-color: #0d47a1; }
 .btn-secondary { background-color: #e1f5fe; color: #333; }
@@ -33,6 +38,7 @@ html { background-color: #e3f2fd; }
 
 /* web/css/auth/forms.css */
 .search-results-list { background-color: #e3f2fd; }
+.search-result-item:hover { background-color: #d0e8ff; }
 
 /* web/css/auth/controls.css */
 .input-with-button .btn.icon-button { background-color: #1565c0; color: white; }

@@ -150,7 +150,6 @@ body > div.container {
 
 /* 带图标的圆形按钮 */
 .icon-button {
-    background-color: transparent;
     border: 1px solid #ccc;
     border-radius: 50%;
     width: 40px;
@@ -163,11 +162,6 @@ body > div.container {
     transition: background-color 0.2s, color 0.2s;
     position: relative;
     z-index: 2;
-}
-
-/* 图标按钮的悬浮样式 */
-.icon-button:hover {
-    background-color: #f2f2f2;
 }
 
 /* 图标按钮中的图标 */

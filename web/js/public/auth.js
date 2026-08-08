@@ -75,7 +75,7 @@ App.auth = (function () {
             const modal = document.createElement('div');
             modal.id = modalId;
             modal.className = 'modal';
-            modal.innerHTML = '<div class="modal-content"><div class="modal-header"><h2></h2><span class="close-button"><i data-feather="x"></i></span></div><div class="modal-body"><div class="form-group"><label></label><input type="password"></div></div><div class="modal-footer"><button class="btn btn-secondary cancel-button">取消</button><button class="btn btn-primary confirm-button"></button></div></div>';
+            modal.innerHTML = '<div class="modal-content"><div class="modal-header"><h2></h2><button type="button" class="close-button"><i data-feather="x"></i></button></div><div class="modal-body"><div class="form-group"><label></label><input type="password"></div></div><div class="modal-footer"><button class="btn btn-secondary cancel-button">取消</button><button class="btn btn-primary confirm-button"></button></div></div>';
 
             document.body.appendChild(modal);
             feather.replace();

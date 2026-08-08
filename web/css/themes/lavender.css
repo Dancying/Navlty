@@ -1,13 +1,18 @@
 /* web/css/public/panels.css */
 html { background-color: #f3e5f5; }
 .header-background { background-color: rgba(243, 229, 245, 0.65); }
-.search-input { background-color: #fff; }
+.search-input { background-color: #f3e5f5; }
+.search-input:focus { border-color: #6a1b9a; }
+.icon-button { background-color: transparent; border-color: #ccc; color: #333; }
+.icon-button:hover { background-color: #f3e5f5; }
 
 /* web/css/public/links.css */
 .card { background-color: #f3e5f5; }
 
 /* web/css/public/modal.css */
 .modal-content { background-color: #f3e5f5; }
+.close-button { background-color: #e9ecef; color: #6a1b9a; }
+.close-button:hover { background-color: #e1bee7; color: #333; }
 .btn-primary { background-color: #6a1b9a; color: white; }
 .btn-primary:hover { background-color: #4a148c; }
 .btn-secondary { background-color: #f3e5f5; color: #333; }
@@ -33,6 +38,7 @@ html { background-color: #f3e5f5; }
 
 /* web/css/auth/forms.css */
 .search-results-list { background-color: #f3e5f5; }
+.search-result-item:hover { background-color: #e8d5e8; }
 
 /* web/css/auth/controls.css */
 .input-with-button .btn.icon-button { background-color: #6a1b9a; color: white; }

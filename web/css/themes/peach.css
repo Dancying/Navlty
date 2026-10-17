@@ -1,0 +1,48 @@
+/* web/css/public/panels.css */
+html { background-color: #fff3e0; }
+.header-background { background-color: rgba(255, 243, 224, 0.35); }
+.search-input { background-color: #fff3e0; }
+.search-input:focus { border-color: #e65100; }
+.icon-button { background-color: transparent; border-color: #ccc; color: #333; }
+.icon-button:hover { background-color: #fff3e0; }
+
+/* web/css/public/links.css */
+.card { background-color: rgba(255, 243, 224, 0.75); }
+
+/* web/css/public/modal.css */
+.modal-content { background-color: #fff3e0; }
+.close-button { background-color: #e9ecef; color: #e65100; }
+.close-button:hover { background-color: #ffe0b2; color: #333; }
+.btn-primary { background-color: #e65100; color: white; }
+.btn-primary:hover { background-color: #bf360c; }
+.btn-secondary { background-color: #fff8e1; color: #333; }
+.btn-secondary:hover { background-color: #ffe0b2; }
+
+/* web/css/public/toast.css */
+.toast { background-color: #fff3e0; }
+
+/* web/css/public/forms.css */
+.form-group input:not(.slider):not(.hidden-file-input) { background-color: #fff3e0; }
+.form-group select { background-color: #fff3e0; }
+.form-group textarea { background-color: #fff3e0; }
+
+/* web/css/auth/modal.css */
+#settings-nav { background-color: #fff8e1; }
+#settings-content { background-color: #fff3e0; }
+#settings-modal .modal-header { background-color: #fff3e0; }
+.management-category-group { background-color: #fff3e0; }
+.settings-nav-item.active { background-color: #ffcc80; color: #e65100; }
+.settings-nav-item:hover { background-color: #ffe0b2; color: #e65100; }
+.management-category-header { background-color: #fff8e1; }
+.management-category-header.open { background-color: #ffe0b2; }
+
+/* web/css/auth/forms.css */
+.search-results-list { background-color: #fff3e0; }
+.search-result-item:hover { background-color: #ffe8cc; }
+
+/* web/css/auth/controls.css */
+.input-with-button .btn.icon-button { background-color: #e65100; color: white; }
+.input-with-button .btn.icon-button:hover { background-color: #bf360c; }
+.slider { background: #ddd; }
+.slider::-webkit-slider-thumb { background: #e65100; }
+.slider::-moz-range-thumb { background: #e65100; }

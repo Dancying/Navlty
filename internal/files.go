@@ -2,9 +2,9 @@ package internal
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 var dataDirectory = envOr("NAVLTY_DATA_DIR", "/config")
@@ -26,7 +26,7 @@ func loadJSONData(fileName string, v interface{}) error {
 	}
 
 	if err := json.Unmarshal(file, v); err != nil {
-		log.Printf("warning: could not parse data file %s: %v", fileName, err)
+		FileLogger.Printf("%s | WARN | FILES | Could not parse data file fileName=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), fileName, err)
 		return err
 	}
 	return nil
@@ -35,14 +35,14 @@ func loadJSONData(fileName string, v interface{}) error {
 // saveJSONData 编码并写入 JSON 文件
 func saveJSONData(fileName string, v interface{}) error {
 	if err := os.MkdirAll(dataDirectory, 0755); err != nil {
-		log.Printf("error: failed to create data directory: %v", err)
+		CriticalLogger.Printf("%s | ERROR | FILES | Failed to create data directory err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), err)
 		return err
 	}
 
 	path := filepath.Join(dataDirectory, fileName)
 	file, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
-		log.Printf("error: failed to serialize data for %s: %v", fileName, err)
+		FileLogger.Printf("%s | ERROR | FILES | Failed to serialize data fileName=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), fileName, err)
 		return err
 	}
 	return os.WriteFile(path, file, 0644)

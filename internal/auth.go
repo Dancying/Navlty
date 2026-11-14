@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -126,7 +125,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Printf("error: failed to hash password: %v", err)
+		FileLogger.Printf("%s | ERROR | AUTH | Failed to hash password err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), err)
 		return "", err
 	}
 	return string(bytes), nil

@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -59,7 +58,7 @@ func WarmAssetCache() {
 	assetCache.themes = make(map[string]string)
 	entries, err := os.ReadDir(themesDirectory)
 	if err != nil {
-		log.Printf("warning: could not read theme directory %s: %v", themesDirectory, err)
+		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read theme directory dir=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), themesDirectory, err)
 	}
 	for _, entry := range entries {
 		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".css") {
@@ -68,14 +67,14 @@ func WarmAssetCache() {
 		name := strings.TrimSuffix(entry.Name(), ".css")
 		assetCache.themes[name] = minifyThemeFile(filepath.Join(themesDirectory, entry.Name()))
 	}
-	log.Printf("info: asset cache warmed in %dms", time.Since(start).Milliseconds())
+	FileLogger.Printf("%s | INFO | ASSETS | Asset cache warmed duration=%dms", time.Now().Format("2006-01-02 15:04:05"), time.Since(start).Milliseconds())
 }
 
 // loadStaticAssets 合并并压缩目录下指定后缀的资源
 func loadStaticAssets(dir, suffix string) string {
 	files, err := os.ReadDir(dir)
 	if err != nil {
-		log.Printf("warning: could not read directory %s: %v", dir, err)
+		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read directory dir=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), dir, err)
 		return ""
 	}
 
@@ -90,7 +89,7 @@ func loadStaticAssets(dir, suffix string) string {
 
 		content, err := minifyFile(filepath.Join(dir, file.Name()), mime)
 		if err != nil {
-			log.Printf("warning: could not read file %s: %v", file.Name(), err)
+			CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read file file=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), file.Name(), err)
 			continue
 		}
 
@@ -109,7 +108,7 @@ func minifyFile(path, mime string) (string, error) {
 
 	minified, err := m.Bytes(mime, content)
 	if err != nil {
-		log.Printf("warning: could not minify file %s: %v", path, err)
+		FileLogger.Printf("%s | WARN | ASSETS | Could not minify file path=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), path, err)
 		return string(content), nil
 	}
 	return string(minified), nil
@@ -138,7 +137,7 @@ func LoadThemeCSS(themeName string) string {
 func minifyThemeFile(themeFile string) string {
 	content, err := minifyFile(themeFile, "text/css")
 	if err != nil {
-		log.Printf("warning: could not load theme file %s: %v", themeFile, err)
+		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not load theme file themeFile=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), themeFile, err)
 		return ""
 	}
 	return content

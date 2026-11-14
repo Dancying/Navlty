@@ -192,14 +192,17 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		SaveAuth(auth)
 
 		createAndSetSessionCookie(w)
+		FileLogger.Printf("%s | INFO | AUTH | Login success type=first_setup", time.Now().Format("2006-01-02 15:04:05"))
 		respondWithJSON(w, http.StatusOK, map[string]interface{}{"success": true, "message": "访问密码设置成功"})
 		return
 	}
 
 	if CheckPasswordHash(creds.Password, auth.PasswordHash) {
 		createAndSetSessionCookie(w)
+		FileLogger.Printf("%s | INFO | AUTH | Login success type=password_login", time.Now().Format("2006-01-02 15:04:05"))
 		respondWithJSON(w, http.StatusOK, map[string]interface{}{"success": true, "message": "验证成功"})
 	} else {
+		FileLogger.Printf("%s | WARN | AUTH | Login failed reason=wrong_password", time.Now().Format("2006-01-02 15:04:05"))
 		respondWithJSON(w, http.StatusUnauthorized, map[string]interface{}{"success": false, "message": "访问密码错误"})
 	}
 }
@@ -222,6 +225,7 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 	})
 
+	FileLogger.Printf("%s | INFO | AUTH | Logout", time.Now().Format("2006-01-02 15:04:05"))
 	w.WriteHeader(http.StatusOK)
 }
 

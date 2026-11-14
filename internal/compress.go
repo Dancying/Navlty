@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"compress/gzip"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/andybalholm/brotli"
 )
@@ -73,7 +73,7 @@ func selectEncoding(header string) string {
 					if parsed, err := strconv.ParseFloat(param[2:], 64); err == nil {
 						q = parsed
 					} else {
-						log.Printf("warning: invalid q value in Accept-Encoding: %s", param[2:])
+						FileLogger.Printf("%s | WARN | COMPRESS | Invalid q value in Accept-Encoding value=%s", time.Now().Format("2006-01-02 15:04:05"), param[2:])
 					}
 				}
 			}

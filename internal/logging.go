@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+// LogTime 返回当前日志时间戳字符串
+func LogTime() string {
+	return time.Now().Format("2006-01-02 15:04:05")
+}
+
 // statusWriter 记录响应状态码的写入器
 type statusWriter struct {
 	http.ResponseWriter
@@ -92,11 +97,8 @@ func (w *levelFilterWriter) Write(p []byte) (int, error) {
 	return w.inner.Write(p)
 }
 
-// InitLog 初始化统一日志文件，所有文件日志合并写入同一个按天文件
-func InitLog(dataDir string) error {
-	if dataDir == "" {
-		dataDir = "/config"
-	}
+// InitLog 初始化统一日志文件
+func InitLog(dataDir string, logLevelStr string) error {
 	logDir := filepath.Join(dataDir, "logs")
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return err
@@ -110,7 +112,7 @@ func InitLog(dataDir string) error {
 	}
 	stdWriter = writer
 
-	logLevel = parseLogLevel(os.Getenv("NAVLTY_LOG_LEVEL"))
+	logLevel = parseLogLevel(logLevelStr)
 
 	fileFilter := &levelFilterWriter{inner: stdWriter, minLevel: logLevel}
 	stderrFilter := &levelFilterWriter{inner: os.Stderr, minLevel: logLevel}
@@ -238,7 +240,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 
 		if FileLogger != nil {
 			FileLogger.Printf("%s | INFO | ACCESS | %s %s %s %d %dms",
-				time.Now().Format("2006-01-02 15:04:05"),
+				LogTime(),
 				r.Method,
 				r.URL.Path,
 				r.Proto,

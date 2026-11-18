@@ -5,10 +5,8 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/andybalholm/brotli"
 )
@@ -26,10 +24,13 @@ var compressibleTypes = []string{
 	"image/svg+xml",
 }
 
+// CompressionEnabled 压缩开关，由 main.go 启动时设置
+var CompressionEnabled bool
+
 // CompressMiddleware 响应压缩中间件
 func CompressMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !compressionEnabled() {
+		if !CompressionEnabled {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -46,19 +47,10 @@ func CompressMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// compressionEnabled 检查压缩开关环境变量
-func compressionEnabled() bool {
-	return strings.EqualFold(os.Getenv("NAVLTY_ENABLE_COMPRESSION"), "true")
-}
-
 // selectEncoding 解析 Accept-Encoding 选择优先编码
 func selectEncoding(header string) string {
-	type candidate struct {
-		name string
-		q    float64
-	}
-
-	var candidates []candidate
+	best := ""
+	bestQ := 0.0
 	for _, part := range strings.Split(header, ",") {
 		part = strings.TrimSpace(part)
 		if part == "" { continue }
@@ -73,22 +65,17 @@ func selectEncoding(header string) string {
 					if parsed, err := strconv.ParseFloat(param[2:], 64); err == nil {
 						q = parsed
 					} else {
-						FileLogger.Printf("%s | WARN | COMPRESS | Invalid q value in Accept-Encoding value=%s", time.Now().Format("2006-01-02 15:04:05"), param[2:])
+						FileLogger.Printf("%s | WARN | COMPRESS | Invalid q value in Accept-Encoding value=%s", LogTime(), param[2:])
 					}
 				}
 			}
 		}
 
-		if q > 0 { candidates = append(candidates, candidate{name: strings.ToLower(name), q: q}) }
-	}
-
-	best := ""
-	bestQ := 0.0
-	for _, c := range candidates {
-		if c.name != "br" && c.name != "gzip" { continue }
-		if c.q > bestQ {
-			best = c.name
-			bestQ = c.q
+		name = strings.ToLower(name)
+		if name != "br" && name != "gzip" { continue }
+		if q > bestQ {
+			best = name
+			bestQ = q
 		}
 	}
 	return best
@@ -131,10 +118,9 @@ func (cw *compressWriter) finish() {
 		return
 	}
 
-	h := cw.Header()
-	h.Del("Content-Length")
-	h.Set("Content-Encoding", cw.encoding)
-	if h.Get("Vary") == "" { h.Set("Vary", "Accept-Encoding") }
+	cw.Header().Del("Content-Length")
+	cw.Header().Set("Content-Encoding", cw.encoding)
+	if cw.Header().Get("Vary") == "" { cw.Header().Set("Vary", "Accept-Encoding") }
 	cw.ResponseWriter.WriteHeader(status)
 
 	var enc io.WriteCloser

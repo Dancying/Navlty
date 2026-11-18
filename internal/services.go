@@ -3,7 +3,6 @@ package internal
 import (
 	"os"
 	"sort"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -19,14 +18,14 @@ func loadOrCreate[T any](fileName string, factory func() T) T {
 	var data T
 	if err := loadJSONData(fileName, &data); err != nil {
 		if os.IsNotExist(err) {
-			FileLogger.Printf("%s | INFO | SERVICES | %s not found, creating default values fileName=%s", time.Now().Format("2006-01-02 15:04:05"), fileName)
+			FileLogger.Printf("%s | INFO | SERVICES | %s not found, creating default values fileName=%s", LogTime(), fileName)
 			defaultData := factory()
 			if err := saveJSONData(fileName, defaultData); err != nil {
-				FileLogger.Printf("%s | ERROR | SERVICES | Failed to save default fileName=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), fileName, err)
+				FileLogger.Printf("%s | ERROR | SERVICES | Failed to save default fileName=%s err=\"%v\"", LogTime(), fileName, err)
 			}
 			return defaultData
 		}
-		FileLogger.Printf("%s | WARN | SERVICES | Could not load fileName=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), fileName, err)
+		FileLogger.Printf("%s | WARN | SERVICES | Could not load fileName=%s err=\"%v\"", LogTime(), fileName, err)
 	}
 	return data
 }

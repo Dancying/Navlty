@@ -21,12 +21,6 @@ var (
 	themesDirectory    = "web/css/themes"
 )
 
-// mimeTypes 后缀与 MIME 类型的映射
-var mimeTypes = map[string]string{
-	".css": "text/css",
-	".js":  "application/javascript",
-}
-
 // m 全局压缩器实例
 var m *minify.M
 
@@ -58,28 +52,38 @@ func WarmAssetCache() {
 	assetCache.themes = make(map[string]string)
 	entries, err := os.ReadDir(themesDirectory)
 	if err != nil {
-		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read theme directory dir=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), themesDirectory, err)
+		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read theme directory dir=%s err=\"%v\"", LogTime(), themesDirectory, err)
 	}
 	for _, entry := range entries {
 		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".css") {
 			continue
 		}
 		name := strings.TrimSuffix(entry.Name(), ".css")
-		assetCache.themes[name] = minifyThemeFile(filepath.Join(themesDirectory, entry.Name()))
+		content, err := minifyFile(filepath.Join(themesDirectory, entry.Name()), "text/css")
+		if err != nil {
+			CriticalLogger.Printf("%s | ERROR | ASSETS | Could not load theme file themeFile=%s err=\"%v\"", LogTime(), entry.Name(), err)
+			continue
+		}
+		assetCache.themes[name] = content
 	}
-	FileLogger.Printf("%s | INFO | ASSETS | Asset cache warmed duration=%dms", time.Now().Format("2006-01-02 15:04:05"), time.Since(start).Milliseconds())
+	FileLogger.Printf("%s | INFO | ASSETS | Asset cache warmed duration=%dms", LogTime(), time.Since(start).Milliseconds())
 }
 
 // loadStaticAssets 合并并压缩目录下指定后缀的资源
 func loadStaticAssets(dir, suffix string) string {
 	files, err := os.ReadDir(dir)
 	if err != nil {
-		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read directory dir=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), dir, err)
+		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read directory dir=%s err=\"%v\"", LogTime(), dir, err)
 		return ""
 	}
 
-	mime := mimeTypes[suffix]
-	if mime == "" {
+	var mime string
+	switch suffix {
+	case ".css":
+		mime = "text/css"
+	case ".js":
+		mime = "application/javascript"
+	default:
 		mime = "application/octet-stream"
 	}
 
@@ -89,7 +93,7 @@ func loadStaticAssets(dir, suffix string) string {
 
 		content, err := minifyFile(filepath.Join(dir, file.Name()), mime)
 		if err != nil {
-			CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read file file=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), file.Name(), err)
+			CriticalLogger.Printf("%s | ERROR | ASSETS | Could not read file file=%s err=\"%v\"", LogTime(), file.Name(), err)
 			continue
 		}
 
@@ -108,7 +112,7 @@ func minifyFile(path, mime string) (string, error) {
 
 	minified, err := m.Bytes(mime, content)
 	if err != nil {
-		FileLogger.Printf("%s | WARN | ASSETS | Could not minify file path=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), path, err)
+		FileLogger.Printf("%s | WARN | ASSETS | Could not minify file path=%s err=\"%v\"", LogTime(), path, err)
 		return string(content), nil
 	}
 	return string(minified), nil
@@ -130,14 +134,10 @@ func LoadThemeCSS(themeName string) string {
 	if cached, ok := assetCache.themes[themeName]; ok {
 		return cached
 	}
-	return minifyThemeFile(filepath.Join(themesDirectory, themeName+".css"))
-}
-
-// minifyThemeFile 读取并压缩单个主题文件
-func minifyThemeFile(themeFile string) string {
+	themeFile := filepath.Join(themesDirectory, themeName+".css")
 	content, err := minifyFile(themeFile, "text/css")
 	if err != nil {
-		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not load theme file themeFile=%s err=\"%v\"", time.Now().Format("2006-01-02 15:04:05"), themeFile, err)
+		CriticalLogger.Printf("%s | ERROR | ASSETS | Could not load theme file themeFile=%s err=\"%v\"", LogTime(), themeFile, err)
 		return ""
 	}
 	return content

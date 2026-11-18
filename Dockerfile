@@ -9,6 +9,8 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/navlty .
 COPY web ./web
-EXPOSE 8080
+ENV NAVLTY_DATA_DIR=/config
+ENV NAVLTY_SERVICE_PORT=10400
+EXPOSE 10400
 VOLUME ["/config"]
 CMD ["/app/navlty"]

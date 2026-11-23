@@ -21,6 +21,15 @@ App.helpers = (function () {
             });
     }
 
+    // debounce 防抖函数，返回防抖包装函数
+    function debounce(func, wait) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
     // isOverflowing 判断容器内容是否超出其显示宽度
     function isOverflowing(container) {
         const span = container.querySelector('span');
@@ -48,15 +57,6 @@ App.helpers = (function () {
             titleOverflow && setScrollDistance(title);
             descOverflow && setScrollDistance(desc);
         });
-    }
-
-    // updateTimer 检测防抖计时器
-    let updateTimer;
-
-    // scheduleUpdateCardOverflow 防抖调度卡片溢出状态检测
-    function scheduleUpdateCardOverflow() {
-        clearTimeout(updateTimer);
-        updateTimer = setTimeout(updateCardOverflow, 150);
     }
 
     // setFormValue 设置表单字段的值
@@ -106,5 +106,5 @@ App.helpers = (function () {
         });
     }
 
-    return { escapeHTML, fileToBase64, updateCardOverflow, scheduleUpdateCardOverflow, setFormValue, getFormValue, copyText };
+    return { escapeHTML, fileToBase64, debounce, updateCardOverflow, setFormValue, getFormValue, copyText };
 })();

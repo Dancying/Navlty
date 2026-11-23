@@ -410,6 +410,7 @@ App.settings = (function () {
                 input.value = id;
             }
             syncCategoryPanelButton(targetPanelId, btnId);
+            showSaveButton();
         };
 
         const categoryConfig = {
@@ -620,7 +621,18 @@ App.settings = (function () {
                 result = await App.actions.changePassword();
                 break;
         }
-        result === true && hideSaveButton();
+        if (result === true) {
+            hideSaveButton();
+            if (activePanel.id === 'content-add-link' || activePanel.id === 'content-bulk-add' || activePanel.id === 'content-edit-link') {
+                const form = activePanel.querySelector('form');
+                form && form.reset();
+            }
+            if (activePanel.id === 'content-edit-link') {
+                const searchInput = document.getElementById('edit-link-search-input');
+                searchInput && (searchInput.value = '');
+                App.finder.loadLinksForEditing();
+            }
+        }
     }
 
     // get 获取原始设置

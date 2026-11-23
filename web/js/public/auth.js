@@ -58,14 +58,9 @@ App.auth = (function () {
 
     // logout 用户登出
     function logout() {
-        const finalAction = () => {
-            invalidateSession();
-            window.location.reload();
-        };
-
         App.api.request("/auth/logout", { method: "POST" })
             .catch(error => console.error("Logout failed:", error))
-            .finally(finalAction);
+            .finally(() => invalidateSession());
     }
 
     // _showAuthModal 创建并显示一个通用的认证模态框

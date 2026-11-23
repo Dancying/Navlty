@@ -1,18 +1,17 @@
 window.App = window.App || {};
 
-// init 页面加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', () => {
     App.auth.init();
     App.search.init();
     App.toast.init();
 
-    // 为面板切换按钮绑定点击事件
+    // 绑定面板切换按钮点击事件
     document.getElementById('toggle-panel-button')?.addEventListener('click', () => {
         document.getElementById('primary-panel')?.classList.toggle('active');
         document.getElementById('secondary-panel')?.classList.toggle('active');
     });
 
-    // 为设置按钮绑定点击事件
+    // 绑定设置按钮点击事件
     document.getElementById('settings-button')?.addEventListener('click', () => {
         if (App.settings?.loadAndShow) {
             App.settings.loadAndShow();
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 全局键盘快捷键处理
+    // 注册全局键盘快捷键
     const keyActions = {
         'Escape': () => {
             const activeModal = document.querySelector('.modal.show');
@@ -45,10 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
         action();
     });
 
-    // 观察卡片尺寸变化并防抖重新检测溢出状态
-    const overflowObserver = new ResizeObserver(App.helpers.scheduleUpdateCardOverflow);
-    document.querySelectorAll('.card').forEach(card => overflowObserver.observe(card));
-
-    // 字体加载完成后重新检测卡片溢出状态
-    document.fonts?.ready.then(App.helpers.scheduleUpdateCardOverflow);
+    // 卡片文本溢出检测，防抖观察卡片尺寸变化，字体加载后重新检测
+    const debouncedCardOverflow = App.helpers.debounce(App.helpers.updateCardOverflow, 150);
+    const cardOverflowObserver = new ResizeObserver(debouncedCardOverflow);
+    document.querySelectorAll('.card').forEach(card => cardOverflowObserver.observe(card));
+    document.fonts?.ready.then(debouncedCardOverflow);
 });
